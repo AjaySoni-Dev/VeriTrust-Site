@@ -67,6 +67,18 @@
             overflow-y: auto; /* Scroll only if screen is extremely small */
             display: flex;
             flex-direction: column;
+            animation: pageFadeIn 140ms ease-out both;
+        }
+
+        @keyframes pageFadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            body {
+                animation: none;
+            }
         }
 
         a {
