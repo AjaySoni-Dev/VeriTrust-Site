@@ -18,7 +18,7 @@ This folder is ready to push to GitHub and deploy on Vercel.
 
 1. Push this folder's contents to a GitHub repository.
 2. Import the repository in Vercel.
-3. Add this environment variable in Vercel Project Settings:
+3. Add this environment variable in Vercel Project Settings: 
 
 ```text
 HF_ACCESS_TOKEN=hf_your_token_here
