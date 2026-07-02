@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Documentation | VERITRUST</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/veritrust.css">
+</head>
+<body>
+  <header class="site-header">
+    <div class="nav">
+      <a class="brand" href="index.html" aria-label="VERITRUST home">
+        <img class="brand-mark" src="logo.png" alt="">
+        <img class="brand-word" src="brand.png" alt="VERITRUST">
+      </a>
+      <nav class="nav-links" aria-label="Primary">
+        <a href="index.html">Dashboard</a>
+        <a href="deepfake.html">Deepfake</a>
+        <a href="phishing.html">Phishing</a>
+        <a class="active" href="docs.html">Docs</a>
+      </nav>
+      <div class="nav-actions">
+        <a href="auth.html">Login</a>
+      </div>
+    </div>
+  </header>
+
+  <main class="container docs-layout">
+    <aside class="toc">
+      <a href="#overview">Overview</a>
+      <a href="#vercel">Vercel</a>
+      <a href="#deepfake">Deepfake</a>
+      <a href="#phishing">Phishing</a>
+      <a href="#api">API</a>
+    </aside>
+
+    <article class="doc-content">
+      <section id="overview" class="doc-section">
+        <p class="eyebrow">Documentation</p>
+        <h1>VERITRUST deployment guide.</h1>
+        <p>`VaryTrust-Domain` is now ready for GitHub plus Vercel. Static pages live at the project root, Vercel serverless functions live in `api/*.js`, and the Hugging Face token stays in Vercel environment variables.</p>
+      </section>
+
+      <section id="vercel" class="doc-section">
+        <h2>Vercel Setup</h2>
+        <ol>
+          <li>Push the `VaryTrust-Domain` folder contents to a GitHub repository.</li>
+          <li>Import the repository in Vercel.</li>
+          <li>Add `HF_ACCESS_TOKEN` in Project Settings, Environment Variables.</li>
+          <li>Deploy, then open `/api/health` and confirm `"token_configured": true`.</li>
+        </ol>
+        <div class="code-block"><code>HF_ACCESS_TOKEN=hf_your_token_here</code></div>
+      </section>
+
+      <section id="deepfake" class="doc-section">
+        <h2>Deepfake Flow</h2>
+        <ol>
+          <li>`deepfake.html` uploads the image in the browser.</li>
+          <li>The optional crop step calls the Hugging Face Space endpoint in `assets/js/config.js`.</li>
+          <li>`/api/deepfake` sends the selected crop or original image to Hugging Face Inference.</li>
+          <li>The result is normalized into Real, Fake, confidence, and risk level.</li>
+        </ol>
+      </section>
+
+      <section id="phishing" class="doc-section">
+        <h2>Phishing Flow</h2>
+        <ol>
+          <li>`phishing.html` sends JSON to `/api/phishing`.</li>
+          <li>MailGuard returns classifier scores for standard threat checks.</li>
+          <li>Cortex uses chat completion for broader context reasoning.</li>
+          <li>The response is normalized into Phishing or Legitimate.</li>
+        </ol>
+      </section>
+
+      <section id="api" class="doc-section">
+        <h2>API Files</h2>
+        <ul>
+          <li><code>api/health.js</code>: confirms the token is configured.</li>
+          <li><code>api/deepfake.js</code>: accepts multipart image uploads and model key `pixel` or `prism`.</li>
+          <li><code>api/phishing.js</code>: accepts JSON text and model key `mailguard` or `cortex`.</li>
+          <li><code>lib/veritrust-api.js</code>: shared Vercel API helpers.</li>
+          <li><code>legacy-php/*.php</code>: retained only for legacy PHP hosting and ignored by Vercel.</li>
+        </ul>
+      </section>
+    </article>
+  </main>
+</body>
+</html>
