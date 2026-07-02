@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Phishing Detection | VERITRUST</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/veritrust.css">
+  <link rel="stylesheet" href="assets/css/tool-pages.css?v=20260704">
+  <script src="assets/js/site.js" defer></script>
+  <script src="assets/js/config.js" defer></script>
+  <script src="assets/js/detection.js" defer></script>
+</head>
+<body class="vt-tool-page">
+  <header id="header">
+    <div class="container nav-container">
+      <a href="#" class="logo">
+        <img src="logo.png" alt="VERITRUST Logo" class="brand-logo-img">
+        <img src="brand.png" alt="VERITRUST" class="brand-text-img">
+      </a>
+      <nav class="nav-links">
+        <a href="auth.html">Login/ Sign Up</a>
+        <a href="#solutions">Solutions</a>
+        <a href="#how-it-works">How It Works</a>
+        <a href="#api">API</a>
+        <a href="#pricing">Pricing</a>
+        <a href="#docs">Docs</a>
+      </nav>
+      <div class="nav-actions">
+        <a href="#login" class="login-link" style="font-size: 0.875rem; color: var(--text-secondary); font-weight: 500;">Log in</a>
+        <button class="btn btn-secondary" style="padding: 0.5rem 1rem;">Dashboard</button>
+        <button class="menu-toggle" aria-label="Toggle Menu">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M4 6h16M4 12h16M4 18h16" stroke-linecap="round"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main class="tool-shell">
+    <section class="tool-topbar">
+      <div class="tool-title">
+        <p class="eyebrow">Message check</p>
+        <h1>Check if a message looks suspicious.</h1>
+        <p>Paste an email, SMS, link, or message. VERITRUST will review it for scam signs.</p>
+      </div>
+      <div class="tool-meta">
+        <a class="btn btn-secondary return-home" href="index.html">Back to landing</a>
+      </div>
+    </section>
+
+    <section class="tool-grid phishing-grid">
+      <form id="phishingForm" class="tool-panel">
+        <div class="panel-title">
+          <div>
+            <h2>Paste message</h2>
+            <p>Include the full message or link if you have it.</p>
+          </div>
+          <span class="hint">Email, SMS, URL</span>
+        </div>
+
+        <textarea id="phishingText" class="textarea tool-textarea" placeholder="Paste the message or link here..."></textarea>
+
+        <div class="action-row">
+          <select id="phishingModel" class="select" aria-label="Model">
+            <option value="mailguard">VeriTrust MailGuard</option>
+            <option value="cortex">VeriTrust Cortex</option>
+          </select>
+          <button id="phishingSubmit" class="btn btn-primary" type="submit">Check Message</button>
+        </div>
+      </form>
+
+      <aside class="tool-panel result-panel-v2">
+        <div class="panel-title">
+          <div>
+            <h2>Result</h2>
+            <p id="activityLog">Waiting for a message</p>
+          </div>
+        </div>
+        <div id="phishingResult" class="result-empty tool-result-empty">Your message result will appear here.</div>
+      </aside>
+    </section>
+  </main>
+</body>
+</html>
