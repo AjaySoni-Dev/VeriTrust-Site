@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>VERITRUST | Image and Message Checks</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/veritrust.css">
+</head>
+<body>
+  <header class="site-header">
+    <div class="nav">
+      <a class="brand" href="index.html" aria-label="VERITRUST home">
+        <img class="brand-mark" src="logo.png" alt="">
+        <img class="brand-word" src="brand.png" alt="VERITRUST">
+      </a>
+      <nav class="nav-links" aria-label="Primary">
+        <a href="index.html">Home</a>
+        <a href="docs.html">Docs</a>
+      </nav>
+      <div class="nav-actions">
+        <a href="auth.html">Login</a>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="container hero-grid">
+        <div>
+          <p class="eyebrow">Trust check</p>
+          <h1>Check images and messages before you trust them.</h1>
+          <p class="lead">Upload a photo or paste a message. VERITRUST gives a clear result so your team can decide with more confidence.</p>
+          <div class="hero-actions landing-actions">
+            <a class="btn btn-primary" href="deepfake.html">Check Image</a>
+            <a class="btn btn-secondary" href="phishing.html">Check Message</a>
+            <a class="btn btn-ghost" href="detection.html">All Checks</a>
+          </div>
+        </div>
+          <div class="console-preview trust-preview" aria-label="Result preview">
+            <div class="console-top">
+              <span class="dot green"></span>
+              <span class="dot amber"></span>
+              <span class="dot red"></span>
+            <span class="mono" style="color: var(--muted); margin-left: 8px;">Result preview</span>
+            </div>
+            <div class="console-body signal-grid">
+            <div class="signal-row"><span>Photo</span><div class="bar"><span class="blue" style="width: 82%"></span></div><strong>Check</strong></div>
+            <div class="signal-row"><span>Message</span><div class="bar"><span class="amber" style="width: 58%"></span></div><strong>Alert</strong></div>
+            <div class="signal-row"><span>Action</span><div class="bar"><span style="width: 73%"></span></div><strong>Decide</strong></div>
+            <div class="log-box">Simple results for suspicious photos, links, emails, and messages.</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="solutions" class="section">
+      <div class="container">
+        <div class="section-head">
+          <p class="eyebrow">What it does</p>
+          <h2>Simple checks for everyday digital risks.</h2>
+        </div>
+        <div class="grid-3">
+          <article class="info-card">
+            <h3>Image Check</h3>
+            <p>Check whether a face image may be edited, generated, or safe to use.</p>
+          </article>
+          <article class="info-card">
+            <h3>Message Check</h3>
+            <p>Review emails, SMS text, and links for signs of scams or phishing.</p>
+          </article>
+          <article class="info-card">
+            <h3>Clear Result</h3>
+            <p>Get a straightforward result with confidence and risk level.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section id="models" class="section">
+      <div class="container">
+        <div class="section-head">
+          <p class="eyebrow">For teams</p>
+          <h2>Built for quick checks before important decisions.</h2>
+        </div>
+        <div class="grid-3">
+          <article class="info-card">
+            <h3>Fast Review</h3>
+            <p>Run a quick check when your team needs a first signal.</p>
+          </article>
+          <article class="info-card">
+            <h3>Detailed Review</h3>
+            <p>Use a stronger check when the content matters more.</p>
+          </article>
+          <article class="info-card">
+            <h3>Easy Workflow</h3>
+            <p>Choose what to check, upload or paste content, and review the result.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="container footer-inner">
+      <span>&copy; 2026 VERITRUST. All rights reserved.</span>
+      <a href="detection.html">Choose Check</a>
+    </div>
+  </footer>
+</body>
+</html>
