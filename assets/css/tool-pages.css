@@ -6,14 +6,11 @@ body.vt-tool-page {
 .tool-shell {
   width: min(1160px, calc(100% - 32px));
   margin: 0 auto;
-  padding: calc(var(--header-height) + 18px) 0 24px;
+  padding: calc(var(--header-height) + 42px) 0 24px;
 }
 
 .tool-topbar {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
-  gap: 20px;
-  align-items: start;
+  display: block;
   margin-bottom: 16px;
 }
 
@@ -27,19 +24,6 @@ body.vt-tool-page {
   margin: 7px 0 0;
   color: var(--muted);
   font-size: 14px;
-}
-
-.tool-meta {
-  display: grid;
-  justify-items: end;
-  gap: 10px;
-}
-
-.return-home {
-  min-height: 32px;
-  padding: 0 11px;
-  border-radius: 8px;
-  font-size: 12px;
 }
 
 .tool-grid {
@@ -453,15 +437,12 @@ body.vt-tool-page {
     grid-template-columns: 1fr;
   }
 
-  .tool-meta {
-    justify-items: stretch;
-  }
 }
 
 @media (max-width: 680px) {
   .tool-shell {
     width: min(100% - 24px, 1160px);
-    padding-top: calc(var(--header-height) + 14px);
+    padding-top: calc(var(--header-height) + 34px);
   }
 
   .panel-title,
