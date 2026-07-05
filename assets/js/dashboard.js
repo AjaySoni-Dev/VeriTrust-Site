@@ -18,6 +18,13 @@ document.addEventListener('DOMContentLoaded', async () => {
     "'": '&#39;',
   }[char]));
 
+  const scanTypeLabel = (scanType) => {
+    const normalized = String(scanType || '').toLowerCase();
+    if (normalized === 'deepfake') return 'Deepfake Detection';
+    if (normalized === 'phishing') return 'Phishing Detection';
+    return scanType || 'Detection';
+  };
+
   const setSessionPill = (signedIn) => {
     const pill = document.querySelector('[data-session-pill]');
     const dot = pill?.querySelector('.status-dot');
@@ -161,7 +168,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         </div>
         ${scans.map((scan) => `
           <div class="scan-row" role="row">
-            <span>${escapeHtml(scan.scan_type)}</span>
+            <span>${escapeHtml(scanTypeLabel(scan.scan_type))}</span>
             <span>${escapeHtml(scan.final_label || scan.status)}</span>
             <span>${escapeHtml(scan.risk_level || 'unknown')}</span>
             <span>${escapeHtml(new Date(scan.created_at).toLocaleDateString())}</span>
