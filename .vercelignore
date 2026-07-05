@@ -1,6 +1,0 @@
-private/
-legacy-php/
-hf_access_api_key.txt
-.htaccess
-*.log
-node_modules/
