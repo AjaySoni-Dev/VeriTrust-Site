@@ -1886,6 +1886,22 @@ p {
   text-transform: uppercase;
 }
 
+.scan-verdict {
+  font-weight: 700;
+}
+
+.scan-verdict-danger {
+  color: #f87171;
+}
+
+.scan-verdict-safe {
+  color: #4ade80;
+}
+
+.scan-verdict-neutral {
+  color: var(--muted);
+}
+
 .setting-list {
   display: grid;
   gap: 8px;
