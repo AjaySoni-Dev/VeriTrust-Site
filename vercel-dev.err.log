@@ -1,0 +1,24 @@
+npm warn deprecated stream-to-promise@2.2.0: Deprecated. Use node:stream/promises and node:stream/consumers instead.
+npm warn deprecated tar@7.5.7: Old versions of tar are not supported, and contain widely publicized security vulnerabilities, which have been fixed in the current version. Please update. Support for old versions may be purchased (at exorbitant rates) by contacting i@izs.me
+Vercel CLI 54.20.1 (Node.js 24.15.0)
+> NOTE: The Vercel CLI now collects telemetry regarding usage of the CLI.
+> This information is used to shape the CLI roadmap and prioritize features.
+> You can learn more, including how to opt-out if you'd not like to participate in this program, by visiting the following URL:
+> https://vercel.com/docs/cli/about-telemetry
+> No existing credentials found. Starting login flow...
+> 
+  Visit https://vercel.com/oauth/device?user_code=GDQD-GDNT
+
+Waiting for authentication...
+[2K[1A[2K[G
+  Congratulations! You are now signed in.
+
+  To deploy something, run `vercel`.
+
+  💡 To deploy every commit automatically,
+  connect a Git Repository (vercel.link/git (https://vercel.link/git)).
+
+  Directory       ~\OneDrive\Desktop\VeriTrust\VaryTrust-Domain
+
+Loading teams…
+Searching for existing projects…
