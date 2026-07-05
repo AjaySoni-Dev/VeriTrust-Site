@@ -25,6 +25,23 @@ document.addEventListener('DOMContentLoaded', async () => {
     return scanType || 'Detection';
   };
 
+  const titleCase = (value) => {
+    const text = String(value || 'unknown').trim();
+    if (!text) return 'Unknown';
+    return text.charAt(0).toUpperCase() + text.slice(1).toLowerCase();
+  };
+
+  const verdictTone = (label) => {
+    const normalized = String(label || '').toLowerCase();
+    if (['phishing', 'deepfake', 'fake', 'suspicious', 'malicious'].includes(normalized)) {
+      return 'danger';
+    }
+    if (['legitimate', 'real', 'safe', 'clean'].includes(normalized)) {
+      return 'safe';
+    }
+    return 'neutral';
+  };
+
   const setSessionPill = (signedIn) => {
     const pill = document.querySelector('[data-session-pill]');
     const dot = pill?.querySelector('.status-dot');
@@ -97,7 +114,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     setLoadingText('[data-dashboard-status-title]');
-    setLoadingText('[data-dashboard-status-text]');
     setLoadingText('[data-session-label]');
     setLoadingText('[data-account-name]');
     setLoadingText('[data-account-detail]');
@@ -169,8 +185,8 @@ document.addEventListener('DOMContentLoaded', async () => {
         ${scans.map((scan) => `
           <div class="scan-row" role="row">
             <span>${escapeHtml(scanTypeLabel(scan.scan_type))}</span>
-            <span>${escapeHtml(scan.final_label || scan.status)}</span>
-            <span>${escapeHtml(scan.risk_level || 'unknown')}</span>
+            <span class="scan-verdict scan-verdict-${verdictTone(scan.final_label || scan.status)}">${escapeHtml(titleCase(scan.final_label || scan.status))}</span>
+            <span>${escapeHtml(titleCase(scan.risk_level || 'unknown'))}</span>
             <span>${escapeHtml(new Date(scan.created_at).toLocaleDateString())}</span>
           </div>
         `).join('')}
