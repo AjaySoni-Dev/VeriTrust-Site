@@ -1,0 +1,12 @@
+{
+  "status": "action_required",
+  "reason": "confirmation_required",
+  "message": "Command vercel dev requires confirmation. Use option --yes to confirm.",
+  "next": [
+    {
+      "command": "vercel dev --listen 127.0.0.1:3000 --yes",
+      "when": "Confirm and run"
+    }
+  ],
+  "hint": "Run one of the commands in next[] to complete without prompting."
+}
