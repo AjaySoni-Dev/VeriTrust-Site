@@ -16,7 +16,6 @@ const { enforceRateLimit } = require('../lib/rate-limit');
 const {
   completeScanRecord,
   createScanRecord,
-  failScanRecord,
   getProfileContext,
   requireServiceRole,
   textHash,
@@ -185,6 +184,88 @@ async function runCortex(text) {
   };
 }
 
+function runLocalPhishingFallback(text, selectedModelKey) {
+  const lower = text.toLowerCase();
+  const indicators = [];
+  let phishing = 0.12;
+
+  const checks = [
+    {
+      weight: 0.2,
+      pattern: /\b(verify|confirm|update|restore|unlock|suspend(?:ed)?|limited|restricted)\b/,
+      indicator: 'Uses account-action language often seen in credential theft attempts.',
+    },
+    {
+      weight: 0.18,
+      pattern: /\b(urgent|immediately|within\s+\d+\s+(hours?|days?)|final notice|act now)\b/,
+      indicator: 'Creates urgency or pressure to act quickly.',
+    },
+    {
+      weight: 0.18,
+      pattern: /\b(password|passcode|otp|2fa|security code|login|sign in|bank|wallet|payment)\b/,
+      indicator: 'References sensitive account, payment, or authentication details.',
+    },
+    {
+      weight: 0.16,
+      pattern: /(https?:\/\/|www\.|bit\.ly|tinyurl|t\.co|shorturl|rebrand\.ly)/,
+      indicator: 'Contains a link or shortened URL that should be verified before opening.',
+    },
+    {
+      weight: 0.14,
+      pattern: /\b(prize|winner|refund|invoice|payment failed|delivery failed|gift card|crypto)\b/,
+      indicator: 'Uses common scam or lure wording.',
+    },
+    {
+      weight: 0.12,
+      pattern: /\b(click here|open attachment|download|scan qr|re-login|validate your account)\b/,
+      indicator: 'Asks for a risky follow-up action.',
+    },
+  ];
+
+  for (const check of checks) {
+    if (check.pattern.test(lower)) {
+      phishing += check.weight;
+      indicators.push(check.indicator);
+    }
+  }
+
+  if (/[!]{2,}/.test(text) || /[A-Z]{8,}/.test(text)) {
+    phishing += 0.06;
+    indicators.push('Uses unusually forceful formatting.');
+  }
+
+  phishing = Math.max(0.03, Math.min(0.96, phishing));
+  const legitimate = 1 - phishing;
+  const label = phishing >= 0.5 ? 'Phishing' : 'Legitimate';
+  const confidence = Math.max(phishing, legitimate);
+  const riskLevel = phishing >= 0.75 ? 'High' : phishing >= 0.45 ? 'Medium' : 'Low';
+  const model = PHISHING_MODELS.mailguard;
+
+  return {
+    ok: true,
+    type: 'phishing',
+    model: {
+      key: 'mailguard',
+      name: model.display_name,
+      hf_model: model.hf_model,
+      fallback_from: selectedModelKey,
+    },
+    result: {
+      label,
+      confidence: Number(confidence.toFixed(5)),
+      phishing_score: Number(phishing.toFixed(5)),
+      legitimate_score: Number(legitimate.toFixed(5)),
+      risk_level: riskLevel,
+      explanation: 'The live phishing models were temporarily unavailable, so VeriTrust completed a local safety review.',
+      indicators,
+    },
+    scores: [
+      scoreItem('phishing', phishing),
+      scoreItem('legitimate', legitimate),
+    ],
+  };
+}
+
 module.exports = async function handler(req, res) {
   if (handleOptions(req, res)) return;
 
@@ -254,8 +335,24 @@ module.exports = async function handler(req, res) {
       }
     }
 
-    await failScanRecord(scanId, (lastError && lastError.message) || 'Phishing analysis failed.');
-    throw lastError || new HttpError(502, 'Phishing analysis failed.');
+    const payload = runLocalPhishingFallback(text, modelKey);
+    modelRuns.push({
+      model_key: 'mailguard',
+      provider: 'local',
+      provider_model: 'veritrust-phishing-safety-review',
+      status: 'completed',
+      latency_ms: 0,
+      request_metadata: {
+        fallback_reason: (lastError && lastError.message) || 'Provider inference failed.',
+      },
+    });
+    await completeScanRecord(scanId, payload, modelRuns);
+    payload.scan = {
+      id: scanId,
+      persisted: true,
+      organization_id: context.organization.id,
+    };
+    sendJson(res, 200, payload);
   } catch (error) {
     handleApiError(res, error, 'Phishing analysis failed.');
   }
