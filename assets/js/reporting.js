@@ -28,6 +28,14 @@
     return value ? [value] : [];
   }
 
+  function assetUrl(path) {
+    try {
+      return new URL(path, global.location.href).href;
+    } catch {
+      return path;
+    }
+  }
+
   function normalizeReportData(data = {}) {
     const result = data.result || {};
     const report = data.report || {};
@@ -173,6 +181,8 @@
     const visuals = options.visuals || {};
     const created = new Date(report.created_at);
     const createdLabel = Number.isNaN(created.getTime()) ? String(report.created_at || '') : created.toLocaleString();
+    const logoUrl = options.logoUrl || assetUrl('logo.png');
+    const brandUrl = options.brandUrl || assetUrl('brand.png');
 
     return `
       <!doctype html>
@@ -234,24 +244,24 @@
           .brand {
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 9px;
           }
 
-          .brand-mark {
-            width: 26px;
-            height: 26px;
-            border-radius: 8px;
-            display: grid;
-            place-items: center;
-            background: #2563eb;
-            color: #fff;
-            font-weight: 800;
-            font-size: 12px;
+          .brand-logo {
+            width: 30px;
+            height: 30px;
+            object-fit: contain;
+          }
+
+          .brand-word {
+            width: 132px;
+            height: auto;
+            object-fit: contain;
           }
 
           h1 {
             margin: 0;
-            font-size: 22px;
+            font-size: 18px;
             line-height: 1.05;
           }
 
@@ -508,9 +518,10 @@
             <header class="report-header">
               <div>
                 <div class="brand">
-                  <div class="brand-mark">VT</div>
+                  <img class="brand-logo" src="${escapeHtml(logoUrl)}" alt="VeriTrust logo">
                   <div>
-                    <h1>${escapeHtml(report.title)}</h1>
+                    <img class="brand-word" src="${escapeHtml(brandUrl)}" alt="VeriTrust">
+                    <h1>Scan Report</h1>
                     <p class="subtitle">AI-assisted risk analysis report</p>
                   </div>
                 </div>
