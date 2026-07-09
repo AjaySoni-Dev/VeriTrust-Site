@@ -1990,14 +1990,25 @@ p {
 
 .developer-panel {
   align-self: start;
+  display: grid;
+  gap: 14px;
+  overflow: hidden;
+}
+
+.developer-panel .panel-title {
+  margin-bottom: 0;
+}
+
+.developer-panel .panel-title .btn {
+  white-space: nowrap;
 }
 
 .api-key-form {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
-  gap: 0.75rem;
+  grid-template-columns: minmax(240px, 1fr) minmax(150px, auto);
+  gap: 14px;
   align-items: end;
-  margin-bottom: 1rem;
+  margin: 0;
 }
 
 .api-key-form .field {
@@ -2014,8 +2025,35 @@ p {
   text-transform: uppercase;
 }
 
+.api-key-form .input {
+  width: 100%;
+  min-height: 44px;
+  font-size: 15px;
+}
+
+.api-key-form .btn {
+  min-height: 44px;
+  padding-inline: 18px;
+  white-space: nowrap;
+}
+
+.developer-panel .api-usage-grid {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.developer-panel .usage-stat {
+  min-height: 74px;
+  display: grid;
+  align-content: center;
+  padding: 12px;
+}
+
+.developer-panel .usage-stat strong {
+  overflow-wrap: anywhere;
+  line-height: 1.2;
+}
+
 .api-key-created {
-  margin-bottom: 1rem;
   padding: 0.9rem;
   border: 1px solid rgba(96, 165, 250, 0.32);
   border-radius: 8px;
@@ -2047,18 +2085,28 @@ p {
 
 .api-key-list {
   display: grid;
-  gap: 0.6rem;
+  gap: 10px;
 }
 
 .api-key-row {
   display: grid;
-  grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr) auto;
-  gap: 0.8rem;
+  grid-template-columns: minmax(220px, 1.1fr) minmax(260px, 1fr) minmax(92px, auto);
+  gap: 16px;
   align-items: center;
-  padding: 0.8rem;
+  padding: 14px;
   border: 1px solid rgba(255, 255, 255, 0.09);
   border-radius: 8px;
   background: rgba(255, 255, 255, 0.035);
+}
+
+.api-key-row > div {
+  min-width: 0;
+}
+
+.api-key-row > div:last-child {
+  display: grid;
+  gap: 8px;
+  justify-items: end;
 }
 
 .api-key-row span,
@@ -2070,12 +2118,21 @@ p {
 }
 
 .api-key-row code {
+  display: block;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
   color: #bfdbfe;
   font-size: 0.82rem;
 }
 
 .api-key-row .status-pill {
   width: fit-content;
+}
+
+.api-key-row .btn {
+  min-width: 90px;
 }
 
 .legal-footer {
@@ -2394,6 +2451,27 @@ p {
     width: min(100% - 24px, 1160px);
     padding-top: calc(var(--header-height) + 34px);
   }
+
+  .developer-panel .api-usage-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .api-key-form,
+  .api-key-row {
+    grid-template-columns: 1fr;
+  }
+
+  .api-key-form .btn {
+    width: 100%;
+  }
+
+  .api-key-row > div:last-child {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    justify-items: stretch;
+    align-items: center;
+  }
 }
 
 @media (max-width: 560px) {
@@ -2467,14 +2545,53 @@ p {
     gap: 4px;
   }
 
-  .api-key-form,
-  .api-key-row {
+  .developer-panel {
+    gap: 12px;
+  }
+
+  .developer-panel .panel-title {
+    align-items: stretch;
+  }
+
+  .developer-panel .panel-title .btn {
+    width: 100%;
+  }
+
+  .developer-panel .api-usage-grid {
     grid-template-columns: 1fr;
+  }
+
+  .developer-panel .usage-stat {
+    min-height: 64px;
+  }
+
+  .api-key-form {
+    gap: 10px;
+  }
+
+  .api-key-form .input,
+  .api-key-form .btn {
+    min-height: 40px;
   }
 
   .api-key-secret {
     align-items: stretch;
     flex-direction: column;
+  }
+
+  .api-key-row {
+    gap: 10px;
+    padding: 12px;
+  }
+
+  .api-key-row > div:last-child {
+    display: grid;
+    justify-items: stretch;
+  }
+
+  .api-key-row .status-pill,
+  .api-key-row .btn {
+    width: 100%;
   }
 
   .scan-row .scan-verdict {
