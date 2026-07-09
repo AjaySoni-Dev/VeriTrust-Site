@@ -1857,15 +1857,16 @@ p {
 
 .scan-filters button,
 .scan-actions button {
-  min-height: 28px;
+  min-height: 26px;
   border: 1px solid var(--border);
   border-radius: 6px;
-  padding: 0 9px;
+  padding: 0 8px;
   background: #0b0d11;
   color: var(--muted);
-  font-size: 11px;
+  font-size: 10.5px;
   font-weight: 700;
   cursor: pointer;
+  white-space: nowrap;
 }
 
 .scan-filters button.active,
@@ -1921,11 +1922,12 @@ p {
 
 .scan-row {
   display: grid;
-  grid-template-columns: 1fr 0.9fr 0.75fr 0.75fr 0.85fr 0.85fr 1fr;
-  gap: 10px;
+  grid-template-columns: minmax(150px, 1.05fr) minmax(78px, 0.55fr) minmax(74px, 0.52fr) minmax(82px, 0.58fr) minmax(90px, 0.62fr) minmax(88px, 0.58fr) minmax(230px, 1.28fr);
+  gap: 8px;
   align-items: center;
   border-bottom: 1px solid var(--border);
-  padding: 9px 10px;
+  min-height: 48px;
+  padding: 7px 10px;
   color: var(--muted);
   font-size: 12px;
 }
@@ -1936,13 +1938,20 @@ p {
 
 .scan-actions {
   display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
+  flex-wrap: nowrap;
+  gap: 7px;
+  align-items: center;
+  justify-content: flex-start;
+  min-width: 0;
+}
+
+.scan-actions button {
+  flex: 0 0 auto;
 }
 
 .scan-detail-row {
   border-bottom: 1px solid var(--border);
-  padding: 9px 10px;
+  padding: 6px 10px;
   background: #090b0f;
 }
 
@@ -1953,7 +1962,7 @@ p {
 .scan-detail-row summary {
   width: fit-content;
   color: var(--muted);
-  font-size: 12px;
+  font-size: 11.5px;
   font-weight: 700;
   cursor: pointer;
 }
@@ -2090,10 +2099,10 @@ p {
 
 .api-key-row {
   display: grid;
-  grid-template-columns: minmax(220px, 1.1fr) minmax(260px, 1fr) minmax(92px, auto);
-  gap: 16px;
+  grid-template-columns: minmax(150px, 0.55fr) minmax(600px, 1.65fr) minmax(86px, auto);
+  gap: 14px;
   align-items: center;
-  padding: 14px;
+  padding: 12px 14px;
   border: 1px solid rgba(255, 255, 255, 0.09);
   border-radius: 8px;
   background: rgba(255, 255, 255, 0.035);
@@ -2105,27 +2114,36 @@ p {
 
 .api-key-row > div:last-child {
   display: grid;
-  gap: 8px;
+  gap: 7px;
   justify-items: end;
 }
 
 .api-key-main {
   display: grid;
-  gap: 5px;
+  gap: 4px;
+}
+
+.api-key-main small {
+  color: var(--soft);
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  line-height: 1.1;
+  text-transform: uppercase;
 }
 
 .api-key-meta {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 10px;
+  grid-template-columns: minmax(190px, 1fr) minmax(190px, 1fr) minmax(130px, 0.7fr);
+  gap: 8px;
   align-items: stretch;
 }
 
 .api-key-meta span {
   min-width: 0;
   display: grid;
-  gap: 3px;
-  padding: 8px 10px;
+  gap: 2px;
+  padding: 7px 9px;
   border: 1px solid rgba(255, 255, 255, 0.07);
   border-radius: 7px;
   background: rgba(0, 0, 0, 0.16);
@@ -2142,17 +2160,17 @@ p {
 }
 
 .api-key-meta strong {
-  overflow: hidden;
+  overflow: visible;
   color: var(--text);
-  font-size: 12px;
+  font-size: 11.5px;
   line-height: 1.25;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  text-overflow: clip;
+  white-space: normal;
 }
 
 .api-key-controls {
   display: grid;
-  gap: 8px;
+  gap: 7px;
   justify-items: end;
 }
 
@@ -2178,14 +2196,14 @@ p {
 }
 
 .api-key-row .api-key-status {
-  min-width: 76px;
-  min-height: 30px;
+  min-width: 62px;
+  min-height: 24px;
   display: inline-flex;
   justify-content: center;
-  padding: 0 12px;
+  padding: 0 9px;
   border-color: rgba(183, 247, 208, 0.2);
   background: rgba(16, 185, 129, 0.08);
-  font-size: 11px;
+  font-size: 9.5px;
   font-weight: 800;
   letter-spacing: 0.04em;
   line-height: 1;
@@ -2193,7 +2211,8 @@ p {
 }
 
 .api-key-row .btn {
-  min-width: 90px;
+  min-width: 86px;
+  min-height: 34px;
 }
 
 .scan-pagination {
