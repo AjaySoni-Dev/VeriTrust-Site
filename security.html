@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Security | VeriTrust</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/veritrust.css?v=20260712-footer-layout1">
+  <script src="assets/js/site.js?v=20260712-supabase5" defer></script>
+</head>
+<body>
+  <header class="site-header"><div class="nav"><a class="brand" href="index.html"><img class="brand-mark" src="logo.png" alt=""><img class="brand-word" src="brand.png" alt="VeriTrust"></a><nav class="nav-links"><a href="index.html">Home</a><a href="detection.html">Detection</a><a href="dashboard.html">Dashboard</a><a href="developers.html">Developers</a><a href="docs.html">Docs</a></nav><div class="nav-actions"><a href="auth.html">Login</a></div></div></header>
+  <main class="container docs-layout">
+    <aside class="toc"><a href="#secrets">Secrets</a><a href="#api">API keys</a><a href="#routes">Server routes</a><a href="#practice">Practices</a></aside>
+    <article class="doc-content">
+      <section class="doc-section"><p class="eyebrow">Security</p><h1>Security posture.</h1><p>VeriTrust is designed to keep private provider tokens and service-role credentials on the server, never in frontend JavaScript.</p></section>
+      <section id="secrets" class="doc-section"><h2>Secret Handling</h2><p>Production secrets are stored in environment variables. Hugging Face tokens, Supabase service-role keys, and private API credentials must not be committed or exposed to browsers.</p></section>
+      <section id="api" class="doc-section"><h2>API Key Storage</h2><p>User API keys are generated once and stored as hashes with masked metadata. Revoked keys cannot be used after revocation.</p></section>
+      <section id="routes" class="doc-section"><h2>Serverless Controls</h2><p>Serverless API routes enforce validation, authorization, rate limits, CORS checks for web routes, and safe error responses.</p></section>
+      <section id="practice" class="doc-section"><h2>Safe Use</h2><p>Use API keys only from secure backends, Python scripts, local notebooks, or trusted automation. Verify suspicious content through official channels before action.</p></section>
+      <footer class="doc-section"><p><a href="privacy.html">Privacy</a> · <a href="terms.html">Terms</a> · <a href="disclaimer.html">Disclaimer</a> · <a href="developers.html">Developers</a></p></footer>
+    </article>
+  </main>
+</body>
+</html>
