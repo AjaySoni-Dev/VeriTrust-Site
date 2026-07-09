@@ -58,6 +58,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     return Number.isNaN(date.getTime()) ? 'Never' : date.toLocaleString();
   };
 
+  const formatRole = (value) => titleCase(value || 'member');
+
   const scanResult = (scan) => {
     const result = scan.scan_results;
     if (Array.isArray(result)) return result[0] || {};
@@ -227,6 +229,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         ${cachedApiKeys.map((key) => `
           <div class="api-key-row">
             <div class="api-key-main">
+              <small>Key name</small>
               <strong>${escapeHtml(key.name || 'API Key')}</strong>
               <code>${escapeHtml(key.masked_key || key.key_prefix || '')}</code>
             </div>
@@ -574,9 +577,9 @@ document.addEventListener('DOMContentLoaded', async () => {
     setText('[data-dashboard-status-title]', org?.name || 'Workspace');
     setText('[data-dashboard-status-text]', 'Monitor scans, usage, and workspace activity from one place.');
     setText('[data-account-name]', profile.full_name || user.email || 'Signed-in user');
-    setText('[data-account-detail]', `${user.email || 'Authenticated'} - ${context.role || 'member'} in ${org?.name || 'workspace'}`);
+    setText('[data-account-detail]', `${user.email || 'Authenticated'} - ${formatRole(context.role)} in ${org?.name || 'workspace'}`);
     setText('[data-workspace-name]', org?.name || 'Workspace');
-    setText('[data-workspace-role]', context.role || 'member');
+    setText('[data-workspace-role]', formatRole(context.role));
     setText('[data-workspace-members]', stats.member_count == null ? 'Available' : String(stats.member_count));
     setText('[data-usage-images]', String(usage.deepfake_count || 0));
     setText('[data-usage-messages]', String(usage.phishing_count || 0));
@@ -610,3 +613,4 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
   }
 });
+
