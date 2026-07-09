@@ -2109,7 +2109,53 @@ p {
   justify-items: end;
 }
 
-.api-key-row span,
+.api-key-main {
+  display: grid;
+  gap: 5px;
+}
+
+.api-key-meta {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+  align-items: stretch;
+}
+
+.api-key-meta span {
+  min-width: 0;
+  display: grid;
+  gap: 3px;
+  padding: 8px 10px;
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: 7px;
+  background: rgba(0, 0, 0, 0.16);
+}
+
+.api-key-meta small {
+  overflow: hidden;
+  color: var(--soft);
+  font-size: 10px;
+  line-height: 1.2;
+  text-overflow: ellipsis;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.api-key-meta strong {
+  overflow: hidden;
+  color: var(--text);
+  font-size: 12px;
+  line-height: 1.25;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.api-key-controls {
+  display: grid;
+  gap: 8px;
+  justify-items: end;
+}
+
 .api-key-row em {
   display: block;
   color: var(--text-muted);
@@ -2131,8 +2177,42 @@ p {
   width: fit-content;
 }
 
+.api-key-row .api-key-status {
+  min-width: 76px;
+  min-height: 30px;
+  display: inline-flex;
+  justify-content: center;
+  padding: 0 12px;
+  border-color: rgba(183, 247, 208, 0.2);
+  background: rgba(16, 185, 129, 0.08);
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  line-height: 1;
+  text-transform: uppercase;
+}
+
 .api-key-row .btn {
   min-width: 90px;
+}
+
+.scan-pagination {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 14px 0 2px;
+}
+
+.scan-pagination p {
+  margin: 0;
+  color: var(--soft);
+  font-size: 12px;
+}
+
+.scan-pagination .btn {
+  min-width: 112px;
 }
 
 .legal-footer {
@@ -2465,6 +2545,10 @@ p {
     width: 100%;
   }
 
+  .api-key-meta {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
   .api-key-row > div:last-child {
     display: flex;
     flex-wrap: wrap;
@@ -2582,6 +2666,10 @@ p {
   .api-key-row {
     gap: 10px;
     padding: 12px;
+  }
+
+  .api-key-meta {
+    grid-template-columns: 1fr;
   }
 
   .api-key-row > div:last-child {
