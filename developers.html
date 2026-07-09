@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Developers | VeriTrust</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/veritrust.css?v=20260712-risk-reports2">
+  <script src="assets/js/config.js?v=20260712-supabase3" defer></script>
+  <script src="assets/js/supabase-client.js?v=20260712-supabase3" defer></script>
+  <script src="assets/js/site.js?v=20260712-supabase5" defer></script>
+</head>
+<body>
+  <header class="site-header"><div class="nav"><a class="brand" href="index.html"><img class="brand-mark" src="logo.png" alt=""><img class="brand-word" src="brand.png" alt="VeriTrust"></a><nav class="nav-links"><a href="index.html">Home</a><a href="detection.html">Detection</a><a href="dashboard.html">Dashboard</a><a class="active" href="developers.html">Developers</a><a href="docs.html">Docs</a></nav><div class="nav-actions"><a href="auth.html">Login</a></div></div></header>
+  <main class="container docs-layout">
+    <aside class="toc"><a href="#overview">Overview</a><a href="#auth">Authentication</a><a href="#phishing">Phishing</a><a href="#deepfake">Deepfake</a><a href="#usage">Usage</a><a href="#python">Python</a><a href="#jupyter">Jupyter</a><a href="#security">Security</a></aside>
+    <article class="doc-content">
+      <section id="overview" class="doc-section"><p class="eyebrow">Developers</p><h1>VeriTrust API.</h1><p>Use VeriTrust from your backend, Python scripts, Jupyter notebooks, and automation workflows. Create keys in the dashboard and keep them private.</p></section>
+      <section id="auth" class="doc-section"><h2>Authentication</h2><p>Send API keys with <code>Authorization: Bearer vtg_live_YOUR_API_KEY</code>. Raw keys are shown once when created.</p><pre><code>curl "https://YOUR_DOMAIN/api/v1/usage" \
+  -H "Authorization: Bearer vtg_live_YOUR_API_KEY"</code></pre></section>
+      <section id="phishing" class="doc-section"><h2>Phishing API</h2><p><code>POST /api/v1/phishing</code> accepts JSON with <code>text</code> and optional <code>model</code>. Use <code>fast</code>, <code>mailguard</code>, <code>robust</code>, or <code>cortex</code>.</p><pre><code>curl -X POST "https://YOUR_DOMAIN/api/v1/phishing" \
+  -H "Authorization: Bearer vtg_live_YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"text":"Your account will be blocked. Verify your password now.","model":"fast"}'</code></pre></section>
+      <section id="deepfake" class="doc-section"><h2>Deepfake API</h2><p><code>POST /api/v1/deepfake</code> accepts <code>multipart/form-data</code> with an <code>image</code> file and optional <code>model</code>.</p><pre><code>curl -X POST "https://YOUR_DOMAIN/api/v1/deepfake" \
+  -H "Authorization: Bearer vtg_live_YOUR_API_KEY" \
+  -F "image=@sample.jpg" \
+  -F "model=fast"</code></pre></section>
+      <section id="usage" class="doc-section"><h2>Usage, Errors, And Limits</h2><p>MVP keys default to 100 requests per day. Errors include <code>MISSING_API_KEY</code>, <code>INVALID_API_KEY</code>, <code>REVOKED_API_KEY</code>, <code>INSUFFICIENT_SCOPE</code>, <code>RATE_LIMITED</code>, <code>INVALID_INPUT</code>, <code>MODEL_ERROR</code>, and <code>INTERNAL_ERROR</code>.</p></section>
+      <section id="python" class="doc-section"><h2>Python Examples</h2><pre><code>import requests
+
+API_KEY = "vtg_live_YOUR_API_KEY"
+BASE_URL = "https://YOUR_DOMAIN"
+
+payload = {"text": "Your account will be blocked. Verify your password now.", "model": "fast"}
+response = requests.post(
+    f"{BASE_URL}/api/v1/phishing",
+    headers={"Authorization": f"Bearer {API_KEY}"},
+    json=payload,
+    timeout=60,
+)
+data = response.json()
+print(data["result"]["label"])
+print(data["result"]["risk_level"])
+print(data["result"]["confidence"])</code></pre><pre><code>import requests
+
+API_KEY = "vtg_live_YOUR_API_KEY"
+BASE_URL = "https://YOUR_DOMAIN"
+IMAGE_PATH = "sample.jpg"
+
+with open(IMAGE_PATH, "rb") as image_file:
+    response = requests.post(
+        f"{BASE_URL}/api/v1/deepfake",
+        headers={"Authorization": f"Bearer {API_KEY}"},
+        files={"image": image_file},
+        data={"model": "fast"},
+        timeout=120,
+    )
+
+data = response.json()
+print(data["result"]["label"])
+print(data["result"]["risk_level"])
+print(data["result"]["confidence"])</code></pre></section>
+      <section id="jupyter" class="doc-section"><h2>Using VeriTrust API In Jupyter Notebook</h2><pre><code>import os
+import requests
+from IPython.display import display, Markdown
+
+API_KEY = os.getenv("VERITRUST_API_KEY")
+BASE_URL = "https://YOUR_DOMAIN"
+
+text = """
+Your bank account will be locked today.
+Verify your password immediately using this link.
+"""
+
+response = requests.post(
+    f"{BASE_URL}/api/v1/phishing",
+    headers={"Authorization": f"Bearer {API_KEY}"},
+    json={"text": text, "model": "fast"},
+    timeout=60,
+)
+
+data = response.json()
+display(Markdown(f"""
+## VeriTrust Result
+
+**Verdict:** {data["result"]["label"]}  
+**Risk:** {data["result"]["risk_level"]}  
+**Confidence:** {data["result"]["confidence"]:.2%}  
+
+{data["result"]["summary"]}
+"""))</code></pre><pre><code>import os
+import requests
+from IPython.display import Image, display, Markdown
+
+API_KEY = os.getenv("VERITRUST_API_KEY")
+BASE_URL = "https://YOUR_DOMAIN"
+image_path = "sample.jpg"
+
+display(Image(filename=image_path))
+
+with open(image_path, "rb") as file:
+    response = requests.post(
+        f"{BASE_URL}/api/v1/deepfake",
+        headers={"Authorization": f"Bearer {API_KEY}"},
+        files={"image": file},
+        data={"model": "fast"},
+        timeout=120,
+    )
+
+data = response.json()
+display(Markdown(f"""
+## VeriTrust Deepfake Detection
+
+**Verdict:** {data["result"]["label"]}  
+**Risk:** {data["result"]["risk_level"]}  
+**Confidence:** {data["result"]["confidence"]:.2%}  
+
+{data["result"]["summary"]}
+"""))</code></pre></section>
+      <section id="security" class="doc-section"><h2>Security Best Practices</h2><p>Never hardcode production API keys in public notebooks or frontend JavaScript. Use environment variables, secret managers, or your own backend.</p></section>
+      <footer class="doc-section"><p><a href="privacy.html">Privacy</a> · <a href="terms.html">Terms</a> · <a href="security.html">Security</a> · <a href="disclaimer.html">Disclaimer</a> · <a href="model-performance.html">Model Performance</a></p></footer>
+    </article>
+  </main>
+</body>
+</html>
