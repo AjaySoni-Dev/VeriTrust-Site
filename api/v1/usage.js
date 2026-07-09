@@ -1,0 +1,42 @@
+const {
+  externalApiError,
+  recordApiUsage,
+  requestId,
+  requireApiKey,
+} = require('../../lib/api-keys');
+const {
+  handleOptions,
+  requireMethod,
+  sendJson,
+} = require('../../lib/veritrust-api');
+
+module.exports = async function handler(req, res) {
+  if (handleOptions(req, res)) return;
+  const request_id = requestId();
+  let auth = null;
+
+  try {
+    requireMethod(req, 'GET');
+    auth = await requireApiKey(req, 'usage:read');
+    const usage = await recordApiUsage(auth, {
+      endpoint: '/api/v1/usage',
+      status: 'success',
+      request_id,
+      latency_ms: 0,
+    });
+
+    sendJson(res, 200, {
+      ok: true,
+      request_id,
+      usage: usage || auth.usage,
+      api_key: {
+        name: auth.public.name,
+        masked_key: auth.public.masked_key,
+        status: auth.public.status,
+        last_used_at: auth.public.last_used_at,
+      },
+    });
+  } catch (error) {
+    externalApiError(res, error, 'Unable to load API usage.', request_id);
+  }
+};
