@@ -45,6 +45,8 @@ document.addEventListener('DOMContentLoaded', async () => {
   let activeScanFilter = 'all';
   let cachedScans = [];
   let cachedApiKeys = [];
+  let visibleScanLimit = 5;
+  const SCAN_BATCH_SIZE = 5;
 
   const riskBadgeClass = (level) => `risk-badge risk-badge-${String(level || 'low').toLowerCase()}`;
 
@@ -163,6 +165,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     filters.querySelectorAll('[data-scan-filter]').forEach((button) => {
       button.addEventListener('click', () => {
         activeScanFilter = button.dataset.scanFilter || 'all';
+        visibleScanLimit = SCAN_BATCH_SIZE;
         renderScans(cachedScans);
       });
     });
@@ -223,17 +226,17 @@ document.addEventListener('DOMContentLoaded', async () => {
       <div class="api-key-list">
         ${cachedApiKeys.map((key) => `
           <div class="api-key-row">
-            <div>
+            <div class="api-key-main">
               <strong>${escapeHtml(key.name || 'API Key')}</strong>
               <code>${escapeHtml(key.masked_key || key.key_prefix || '')}</code>
             </div>
-            <div>
-              <span>Created ${escapeHtml(formatDateTime(key.created_at))}</span>
-              <span>Last used ${escapeHtml(formatDateTime(key.last_used_at))}</span>
-              <em>${escapeHtml((key.usage?.used_today || 0))}/${escapeHtml((key.usage?.limit_daily || key.usage_limit_daily || 100))} used today</em>
+            <div class="api-key-meta">
+              <span><small>Created</small><strong>${escapeHtml(formatDateTime(key.created_at))}</strong></span>
+              <span><small>Last used</small><strong>${escapeHtml(formatDateTime(key.last_used_at))}</strong></span>
+              <span><small>Usage today</small><strong>${escapeHtml((key.usage?.used_today || 0))} of ${escapeHtml((key.usage?.limit_daily || key.usage_limit_daily || 100))} used</strong></span>
             </div>
-            <div>
-              <span class="${apiKeyStatusClass(key.status)}">${escapeHtml(titleCase(key.status || 'active'))}</span>
+            <div class="api-key-controls">
+              <span class="${apiKeyStatusClass(key.status)} api-key-status">${escapeHtml(titleCase(key.status || 'active'))}</span>
               ${key.status === 'active' ? `<button class="btn btn-secondary" type="button" data-revoke-api-key="${escapeHtml(key.id)}">Revoke</button>` : ''}
             </div>
           </div>
@@ -449,9 +452,13 @@ document.addEventListener('DOMContentLoaded', async () => {
     const table = document.querySelector('[data-recent-scans]');
     if (!table) return;
     table.removeAttribute('aria-busy');
-    cachedScans = scans || [];
+    const nextScans = scans || [];
+    if (nextScans !== cachedScans) visibleScanLimit = SCAN_BATCH_SIZE;
+    cachedScans = nextScans;
     renderFilters();
-    const visibleScans = filteredScans();
+    const matchingScans = filteredScans();
+    const visibleScans = matchingScans.slice(0, visibleScanLimit);
+    const hasMoreScans = visibleScans.length < matchingScans.length;
 
     if (!cachedScans.length) {
       table.innerHTML = `
@@ -469,7 +476,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       return;
     }
 
-    if (!visibleScans.length) {
+    if (!matchingScans.length) {
       table.innerHTML = `
         <div class="empty-state-table">
           <div class="empty-state-icon">
@@ -517,6 +524,12 @@ document.addEventListener('DOMContentLoaded', async () => {
         `;
   }).join('')}
       </div>
+      ${matchingScans.length > SCAN_BATCH_SIZE ? `
+        <div class="scan-pagination">
+          <p>Showing ${visibleScans.length} of ${matchingScans.length} scans</p>
+          ${hasMoreScans ? '<button class="btn btn-secondary" type="button" data-load-more-scans>Load more</button>' : ''}
+        </div>
+      ` : ''}
     `;
 
     table.querySelectorAll('[data-scan-action]').forEach((button) => {
@@ -526,6 +539,11 @@ document.addEventListener('DOMContentLoaded', async () => {
         if (button.dataset.scanAction === 'download') downloadReport(scan);
         if (button.dataset.scanAction === 'print') printReport(scan);
       });
+    });
+
+    table.querySelector('[data-load-more-scans]')?.addEventListener('click', () => {
+      visibleScanLimit += SCAN_BATCH_SIZE;
+      renderScans(cachedScans);
     });
   }
 
@@ -566,7 +584,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     setText('[data-usage-api-today]', String(usage.api_count || 0));
 
     if (org?.id) {
-      const scansPayload = await window.VeriTrustSupabase.getRecentScans(org.id, 20);
+      const scansPayload = await window.VeriTrustSupabase.getRecentScans(org.id, 100);
       const scans = scansPayload.scans || [];
       const summary = summarizeScans(scans);
       setText('[data-usage-total-scans]', String(summary.total));
