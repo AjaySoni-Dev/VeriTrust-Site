@@ -70,6 +70,10 @@ function isInfrastructureError(error) {
     || text.includes('schema cache')
     || text.includes('does not exist')
     || text.includes('could not find')
+    || text.includes('invalid input value for enum')
+    || text.includes('invalid input syntax')
+    || text.includes('violates check constraint')
+    || text.includes('new row for relation')
     || text.includes('pgrst202')
     || text.includes('pgrst205');
 }
