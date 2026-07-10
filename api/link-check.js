@@ -78,7 +78,10 @@ function isRecoverableContextError(error, preferredOrgId) {
   const status = Number(error?.status || 0);
   const text = `${error?.message || ''} ${JSON.stringify(error?.details || '')}`.toLowerCase();
   return isInfrastructureError(error)
-    || (!preferredOrgId && status === 403 && text.includes('no veritrust workspace is available'));
+    || (status === 403 && (
+      text.includes('no veritrust workspace is available')
+      || text.includes('you do not have access to this veritrust workspace')
+    ));
 }
 
 async function getLinkContext(req, preferredOrgId, warnings) {
