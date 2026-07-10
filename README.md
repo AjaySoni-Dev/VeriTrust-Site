@@ -2,7 +2,7 @@
 
 <p align="center">
   <strong>AI-Powered Digital Trust and Threat Detection Platform</strong><br>
-  Static security frontend, Vercel inference proxy, Hugging Face model routing, image verification, and phishing analysis.
+  Static security frontend, Vercel inference proxy, Hugging Face model routing, image verification, and phishing analysis. 
 </p>
 
 <p align="center">
