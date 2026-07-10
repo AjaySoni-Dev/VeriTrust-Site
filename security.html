@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Security | VeriTrust</title>
+  <meta name="description" content="VeriTrust security architecture, credential handling, and reporting contact.">
+  <link rel="canonical" href="https://veritrustlab.in/security">
+  <link rel="stylesheet" href="assets/css/veritrust.css">
+  <script src="assets/js/site.js" defer></script>
+</head>
+<body>
+    <header class="tool-header-shell vt-page-header">
+    <div class="tool-header-inner">
+      <a href="/" class="tool-header-brand" aria-label="VeriTrust home">
+        <img src="logo.png" alt="" class="tool-header-mark">
+        <img src="brand.png" alt="VeriTrust" class="tool-header-word">
+      </a>
+      <nav class="tool-header-links" aria-label="Primary">
+        <a href="/">Home</a>
+        <a href="/detection">Detection</a>
+        <a href="/developers">Developers</a>
+        <a href="/docs">Docs</a>
+        <a href="/model-performance">Model Performance</a>
+      </nav>
+      <div class="tool-header-actions">
+        <a href="/auth" class="tool-header-login">Log in</a>
+        <a href="/dashboard" class="tool-header-dashboard">Dashboard</a>
+        <button class="tool-menu-toggle" aria-label="Open page menu" aria-expanded="false" type="button">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+            <circle cx="12" cy="5" r="1.8"/>
+            <circle cx="12" cy="12" r="1.8"/>
+            <circle cx="12" cy="19" r="1.8"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </header>
+  <main class="container docs-layout">
+    <aside class="toc"><a href="#secrets">Secrets</a><a href="#api">API keys</a><a href="#routes">Server routes</a><a href="#practice">Practices</a></aside>
+    <article class="doc-content">
+      <section class="doc-section"><p class="eyebrow">Security</p><h1>Security posture.</h1><p>Version 2.0 - effective 10 July 2026. VeriTrust is designed to keep private provider tokens, refresh credentials, and service-role credentials on the server, never in frontend JavaScript.</p></section>
+      <section id="secrets" class="doc-section"><h2>Secret Handling</h2><p>Production secrets are stored in environment variables. Hugging Face tokens, Supabase service-role keys, and private API credentials must not be committed or exposed to browsers.</p></section>
+      <section id="api" class="doc-section"><h2>API Key Storage</h2><p>New API keys use a non-secret public lookup identifier and an independent secret protected by a versioned server-side HMAC. The raw key is returned once. Pre-remediation keys must be revoked before external API access is enabled.</p></section>
+      <section id="routes" class="doc-section"><h2>Serverless Controls</h2><p>Serverless API routes enforce validation, authorization, rate limits, CORS checks for web routes, and safe error responses.</p></section>
+      <section id="practice" class="doc-section"><h2>Safe Use</h2><p>Use API keys only from secure backends, Python scripts, local notebooks, or trusted automation. Verify suspicious content through official channels before action.</p></section>
+      <section class="doc-section"><h2>Report a vulnerability</h2><p>Follow <a href="/.well-known/security.txt">security.txt</a> or email <a href="mailto:security@veritrustlab.in">security@veritrustlab.in</a>. Do not include secrets or personal content in an initial report. Version 2.0 (10 July 2026) begins formal security-document change control.</p></section>
+      <footer class="doc-section"><p><a href="/privacy">Privacy</a> · <a href="/terms">Terms</a> · <a href="/disclaimer">Disclaimer</a> · <a href="/developers">Developers</a></p></footer>
+    </article>
+  </main>
+</body>
+</html>

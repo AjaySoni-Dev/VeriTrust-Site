@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Model Performance | VeriTrust</title>
+  <meta name="description" content="VeriTrust model governance, limitations, and benchmark status.">
+  <link rel="canonical" href="https://veritrustlab.in/model-performance">
+  <link rel="stylesheet" href="assets/css/veritrust.css">
+  <script src="assets/js/core/config-client.js" defer></script>
+  <script src="assets/js/config.js" defer></script>
+  <script src="assets/js/supabase-client.js" defer></script>
+  <script src="assets/js/site.js" defer></script>
+</head>
+<body>
+    <header class="tool-header-shell vt-page-header">
+    <div class="tool-header-inner">
+      <a href="/" class="tool-header-brand" aria-label="VeriTrust home">
+        <img src="logo.png" alt="" class="tool-header-mark">
+        <img src="brand.png" alt="VeriTrust" class="tool-header-word">
+      </a>
+      <nav class="tool-header-links" aria-label="Primary">
+        <a href="/">Home</a>
+        <a href="/detection">Detection</a>
+        <a href="/developers">Developers</a>
+        <a href="/docs">Docs</a>
+        <a href="/model-performance" class="active">Model Performance</a>
+      </nav>
+      <div class="tool-header-actions">
+        <a href="/auth" class="tool-header-login">Log in</a>
+        <a href="/dashboard" class="tool-header-dashboard">Dashboard</a>
+        <button class="tool-menu-toggle" aria-label="Open page menu" aria-expanded="false" type="button">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+            <circle cx="12" cy="5" r="1.8"/>
+            <circle cx="12" cy="12" r="1.8"/>
+            <circle cx="12" cy="19" r="1.8"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main class="container docs-layout">
+    <aside class="toc">
+      <a href="#overview">Overview</a>
+      <a href="#deepfake">Deepfake</a>
+      <a href="#phishing">Phishing</a>
+      <a href="#metrics">Planned Metrics</a>
+      <a href="#datasets">Dataset Notes</a>
+      <a href="#limitations">Limitations</a>
+    </aside>
+
+    <article class="doc-content">
+      <section id="overview" class="doc-section">
+        <p class="eyebrow">Model performance</p>
+        <h1>Evaluation status.</h1>
+        <p>Model performance metrics must be calculated on labeled test datasets. VeriTrust will publish benchmark results after controlled evaluation with documented datasets, sampling rules, and review methodology.</p>
+        <p>Until that work is complete, scan results should be treated as AI-assisted risk signals for triage rather than legal, forensic, or final proof.</p>
+      </section>
+
+      <section id="deepfake" class="doc-section">
+        <h2>Deepfake model evaluation</h2>
+        <p>Deepfake evaluation will measure how the configured image models perform on labeled real and synthetic image datasets. Benchmark results will be published after evaluation on labeled test datasets.</p>
+        <ul>
+          <li>Results will separate real-image and synthetic-image classes.</li>
+          <li>Evaluation notes will document image quality, face visibility, preprocessing, and dataset source limits.</li>
+          <li>Model scores will remain probability-style signals, not visual forensic findings.</li>
+        </ul>
+      </section>
+
+      <section id="phishing" class="doc-section">
+        <h2>Phishing model evaluation</h2>
+        <p>Phishing evaluation will compare model predictions and rule-based indicators against labeled phishing, scam, suspicious, and legitimate message datasets.</p>
+        <ul>
+          <li>Evaluation will track performance across email, SMS, URLs, and short-form messages.</li>
+          <li>Rule indicators will be assessed separately from model-only predictions.</li>
+          <li>Benchmark results will not claim that low-risk messages are proven safe.</li>
+        </ul>
+      </section>
+
+      <section id="metrics" class="doc-section">
+        <h2>Planned metrics</h2>
+        <ul>
+          <li>Accuracy, precision, recall, and F1 score after labeled evaluation.</li>
+          <li>False positive and false negative rates by scan type.</li>
+          <li>Confusion matrices for each evaluated model and dataset split.</li>
+          <li>Latency and fallback frequency under production-like conditions.</li>
+        </ul>
+      </section>
+
+      <section id="datasets" class="doc-section">
+        <h2>Dataset notes</h2>
+        <p>Dataset documentation will describe source, labeling process, sampling approach, known bias, and exclusions. Public and internal datasets may produce different results, so each benchmark will identify the dataset it used.</p>
+      </section>
+
+      <section id="limitations" class="doc-section">
+        <h2>Limitations</h2>
+        <ul>
+          <li>False positives can incorrectly flag benign content as suspicious.</li>
+          <li>False negatives can miss risky content, especially when attackers change wording, domains, or visual generation methods.</li>
+          <li>Model fallback can change score distributions because a different model handled the request.</li>
+          <li>High-impact cases should include manual review and trusted source verification.</li>
+        </ul>
+      </section>
+    </article>
+  </main>
+  <footer class="legal-footer">
+    <a href="/privacy">Privacy</a><span aria-hidden="true">&middot;</span><a href="/terms">Terms</a><span aria-hidden="true">&middot;</span><a href="/security">Security</a><span aria-hidden="true">&middot;</span><a href="/disclaimer">Disclaimer</a><span aria-hidden="true">&middot;</span><a href="/docs">Docs</a><span aria-hidden="true">&middot;</span><a href="/developers">Developers</a><span aria-hidden="true">&middot;</span><a href="/model-performance">Model Performance</a>
+  </footer>
+</body>
+</html>

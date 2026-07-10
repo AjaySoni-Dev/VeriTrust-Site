@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VeriTrust | AI Security Platform</title>
+    <meta name="description" content="AI-assisted deepfake, phishing, and link intelligence with transparent risk signals.">
+    <link rel="canonical" href="https://veritrustlab.in/">
+    <script src="assets/js/core/config-client.js" defer></script>
+    <script src="assets/js/config.js" defer></script>
+    <script src="assets/js/supabase-client.js" defer></script>
+    <script src="assets/js/site.js" defer></script>
+    <link rel="stylesheet" href="assets/css/index.css">
+</head>
+<body>
+
+    <header id="header">
+        <div class="container nav-container">
+            <a href="#" class="logo">
+                <img src="logo.png" alt="VeriTrust Logo" class="brand-logo-img">
+                <img src="brand.png" alt="VeriTrust" class="brand-text-img">
+            </a>
+            <nav class="nav-links">
+                <a href="#solutions">Solutions</a>
+                <a href="#how-it-works">How It Works</a>
+                <a href="#api">API</a>
+                <a href="/developers">Developers</a>
+                <a href="#pricing">Pricing</a>
+                <a href="/model-performance">Model Performance</a>
+                <a href="/docs">Docs</a>
+            </nav>
+            <div class="nav-actions">
+                <a href="/auth" class="login-link">Login / Sign Up</a>
+                <button class="menu-toggle" aria-label="Toggle Menu" data-menu-managed="inline">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M4 6h16M4 12h16M4 18h16" stroke-linecap="round"/>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <section class="hero">
+            <div class="container hero-grid">
+                <div class="hero-content reveal">
+                    <h1>AI-powered digital trust verification.</h1>
+                    <p>AI-powered digital trust verification for suspicious images, messages, emails, and links. Sign in to run and save scans.</p>
+                    <div class="hero-actions">
+    <a href="/dashboard" class="btn btn-primary">Start Free Scan</a>
+    <a href="/docs" class="btn btn-secondary">View Docs</a>
+    <a href="/developers" class="btn btn-secondary">Use the API</a>
+</div>
+                </div>
+                
+                <div class="hero-illustration reveal">
+                    <div class="console-header">
+                        <div class="console-dot"></div>
+                        <div class="console-dot" style="background: var(--border-subtle);"></div>
+                        <div class="console-dot" style="background: var(--border-subtle);"></div>
+                        <span style="margin-left: 0.5rem; font-size: 0.75rem; color: var(--text-tertiary); font-family: monospace;">analyze --target video.mp4</span>
+                    </div>
+                    <div class="console-body">
+                        <svg viewBox="0 0 400 250" preserveAspectRatio="xMidYMid meet" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <pattern id="grid" width="20" height="20" patternUnits="userSpaceOnUse">
+                                <path d="M 20 0 L 0 0 0 20" fill="none" stroke="#27272A" stroke-width="0.5"/>
+                            </pattern>
+                            <rect width="100%" height="100%" fill="url(#grid)" />
+
+                            <text x="20" y="30" font-family="monospace" font-size="10" fill="#71717A">> Initializing neural network...</text>
+                            <text x="20" y="45" font-family="monospace" font-size="10" fill="#71717A">> Extracting frequency artifacts...</text>
+                            <text x="20" y="60" font-family="monospace" font-size="10" fill="#3B82F6">> Model: V3 Premium Deep Analysis</text>
+
+                            <rect x="20" y="80" width="160" height="120" rx="4" fill="#121214" stroke="#3F3F46" stroke-width="1"/>
+                            
+                            <rect x="40" y="100" width="120" height="80" rx="2" fill="#18181B" stroke="#52525B" stroke-width="1" stroke-dasharray="2 2"/>
+                            
+                            <g>
+                                <line x1="40" y1="100" x2="40" y2="180" stroke="#3B82F6" stroke-width="2">
+                                    <animate attributeName="x1" values="40;160;40" dur="3s" repeatCount="indefinite" />
+                                    <animate attributeName="x2" values="40;160;40" dur="3s" repeatCount="indefinite" />
+                                </line>
+                            </g>
+
+                            <circle cx="80" cy="120" r="3" fill="#EF4444" class="anim-pulse"/>
+                            <circle cx="120" cy="140" r="3" fill="#EF4444" class="anim-pulse" style="animation-delay: 0.5s"/>
+                            <line x1="80" y1="120" x2="120" y2="140" stroke="#EF4444" stroke-width="0.5" opacity="0.5"/>
+
+                            <rect x="200" y="80" width="180" height="60" rx="4" fill="#121214" stroke="#3F3F46" stroke-width="1"/>
+                            <text x="215" y="105" font-family="monospace" font-size="9" fill="#A1A1AA">CONFIDENCE SCORE</text>
+                            <text x="215" y="125" font-family="var(--font-display)" font-size="20" font-weight="600" fill="#FAFAFA">98.4%</text>
+                            
+                            <rect x="200" y="150" width="180" height="50" rx="4" fill="rgba(239, 68, 68, 0.05)" stroke="#EF4444" stroke-width="1"/>
+                            <path d="M215 170l4 4 8-8" stroke="#EF4444" stroke-width="1.5" stroke-linecap="round" fill="none"/>
+                            <text x="235" y="170" font-family="monospace" font-size="10" fill="#EF4444">DEEPFAKE DETECTED</text>
+                            <text x="235" y="185" font-family="monospace" font-size="8" fill="#71717A">Facial boundary mismatch</text>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="trust-section reveal" style="padding: 2.5rem 0; border-top: 1px solid var(--border-subtle); border-bottom: 1px solid var(--border-subtle);">
+            <div class="container">
+                <div class="trust-grid">
+                    <div class="trust-badge">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+                        Multi-Model Edge
+                    </div>
+                    <div class="trust-badge">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                        Enterprise Grade
+                    </div>
+                    <div class="trust-badge">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M9 9h6v6H9z"/></svg>
+                        Developer API
+                    </div>
+                    <div class="trust-badge">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
+                        Security-minded
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="solutions" class="reveal">
+            <div class="container">
+                <div class="section-header">
+                    <h2>Security Architecture</h2>
+                    <p>Use cautious AI-assisted analysis and deterministic indicators to support modern content and message review workflows.</p>
+                </div>
+                
+                <div class="grid-3">
+                    <div class="card">
+                        <div class="solution-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
+                        </div>
+                        <h3>Media Verification</h3>
+                        <p>Review images for possible synthetic-media risk using model scores and clear manual-review guidance.</p>
+                        <ul class="solution-list">
+                            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg> Image model score review</li>
+                            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg> Confidence and risk bands</li>
+                            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg> Report-ready evidence notes</li>
+                        </ul>
+                    </div>
+
+                    <div class="card">
+                        <div class="solution-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><path d="M22 6l-10 7L2 6"/></svg>
+                        </div>
+                        <h3>Threat Intelligence</h3>
+                        <p>Review suspicious messages for phishing, scam, credential, and urgency-based risk indicators.</p>
+                        <ul class="solution-list">
+                            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg> Email payload scanning</li>
+                            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg> URL semantic analysis</li>
+                            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg> Smishing SMS protection</li>
+                        </ul>
+                    </div>
+
+                    <div class="card">
+                        <div class="solution-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 18l6-6-6-6M8 6l-6 6 6 6"/></svg>
+                        </div>
+                        <h3>API Integration</h3>
+                        <p>Use Vercel API routes to keep provider tokens server-side while returning structured JSON reports.</p>
+                        <ul class="solution-list">
+                            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg> REST-style serverless endpoints</li>
+                            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg> JSON reports and saved scan history</li>
+                            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg> Environment-variable secret handling</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="how-it-works" class="reveal">
+            <div class="container">
+                <div class="section-header">
+                    <h2>Verification Pipeline</h2>
+                    <p>Serverless processing architecture for repeatable model calls, risk scoring, and report-ready responses.</p>
+                </div>
+                
+                <div class="grid-4">
+                    <div class="card">
+                        <div class="step-number">01</div>
+                        <h3>Ingestion</h3>
+                        <p style="margin-top: 0.5rem; font-size: 0.875rem;">Submit an image or message through the protected VeriTrust API route.</p>
+                    </div>
+                    <div class="card">
+                        <div class="step-number">02</div>
+                        <h3>Processing</h3>
+                        <p style="margin-top: 0.5rem; font-size: 0.875rem;">Input is validated before the server calls the configured inference provider.</p>
+                    </div>
+                    <div class="card">
+                        <div class="step-number">03</div>
+                        <h3>Computation</h3>
+                        <p style="margin-top: 0.5rem; font-size: 0.875rem;">Risk logic converts model scores and rule indicators into clear triage labels.</p>
+                    </div>
+                    <div class="card">
+                        <div class="step-number">04</div>
+                        <h3>Response</h3>
+                        <p style="margin-top: 0.5rem; font-size: 0.875rem;">Receive structured JSON with verdict, confidence, risk, evidence, and disclaimer fields.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="reveal">
+            <div class="container">
+                <div class="section-header">
+                    <h2>Platform Features</h2>
+                    <p>Designed for engineers. Built for scale.</p>
+                </div>
+                
+                <div class="features-grid">
+                    <div class="feature-item">
+                        <div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></div>
+                        <div class="feature-content">
+                            <h3>Deepfake Detection</h3>
+                            <p>Review face images with AI-assisted synthetic-media scoring and report-ready results.</p>
+                        </div>
+                    </div>
+                    <div class="feature-item">
+                        <div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></svg></div>
+                        <div class="feature-content">
+                            <h3>Phishing Detection</h3>
+                            <p>Check suspicious emails, SMS messages, and scam text with model and rule signals.</p>
+                        </div>
+                    </div>
+                    <div class="feature-item">
+                        <div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg></div>
+                        <div class="feature-content">
+                            <h3>Link Intelligence</h3>
+                            <p>Analyze suspicious URLs, shortened links, and domain impersonation patterns.</p>
+                        </div>
+                    </div>
+                    <div class="feature-item">
+                        <div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg></div>
+                        <div class="feature-content">
+                            <h3>Developer API Access</h3>
+                            <p>Call Deepfake, Phishing, Link Intelligence, and Usage APIs with scoped keys.</p>
+                        </div>
+                    </div>
+                    <div class="feature-item">
+                        <div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div>
+                        <div class="feature-content">
+                            <h3>Python And Jupyter Support</h3>
+                            <p>Use server-side Python scripts and notebooks with environment-based API keys.</p>
+                        </div>
+                    </div>
+                    <div class="feature-item">
+                        <div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg></div>
+                        <div class="feature-content">
+                            <h3>Report-Ready History</h3>
+                            <p>Export JSON and PDF-style reports from authenticated scan history.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="stats-section reveal">
+            <div class="container stats-grid">
+                <div class="stat-item">
+                    <h2>Reports</h2>
+                    <p>JSON and print export</p>
+                </div>
+                <div class="stat-item">
+                    <h2>Risk</h2>
+                    <p>Low to Critical bands</p>
+                </div>
+                <div class="stat-item">
+                    <h2>Models</h2>
+                    <p>Provider fallback noted</p>
+                </div>
+                <div class="stat-item">
+                    <h2>Metrics</h2>
+                    <p>Benchmarks pending</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="pricing" class="reveal">
+            <div class="container">
+                <div class="section-header">
+                    <h2>Verified plans</h2>
+                    <p>Prices, limits, and availability are loaded from the billing contract after sign-in.</p>
+                </div>
+
+                <div class="card pricing-card">
+                    <h3>Plan details are account-specific</h3>
+                    <p>VeriTrust does not display stale or hard-coded commercial limits. Sign in to view the plans and intervals returned by the verified server contract. Billing controls stay unavailable while billing is disabled.</p>
+                    <a href="/dashboard" class="btn btn-secondary">View account plans</a>
+                </div>
+            </div>
+        </section>
+
+        <section class="cta-section reveal">
+            <div class="container">
+                <div class="cta-container">
+                    <div class="cta-content">
+                        <h2>Ready to deploy?</h2>
+                        <p>Use VeriTrust to support repeatable review workflows with cautious AI-assisted risk analysis.</p>
+                        <div class="cta-actions">
+                            <a href="/dashboard" class="btn btn-primary">Start Free Scan</a>
+                            <a href="/docs" class="btn btn-secondary">View Docs</a>
+                            <a href="/developers" class="btn btn-secondary">Use the API</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-brand">
+                    <a href="/" class="logo" style="margin-bottom: 0.5rem;">
+                        <img src="logo.png" alt="VeriTrust Logo" class="brand-logo-img">
+                        <img src="brand.png" alt="VeriTrust" class="brand-text-img">
+                    </a>
+                    <p>Developer-first AI security platform. Identify synthetic media and digital threats programmatically.</p>
+                    <div class="social-links">
+                        <a href="/docs" aria-label="Docs"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M4 4.5A2.5 2.5 0 0 1 6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5z"/></svg></a>
+                        <a href="/developers" aria-label="Developers"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 18l6-6-6-6M8 6l-6 6 6 6"/></svg></a>
+                        <a href="/security" aria-label="Security"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></a>
+                    </div>
+                </div>
+                
+                <div class="footer-links">
+                    <h3>Products</h3>
+                    <ul>
+                        <li><a href="/deepfake">Image Deepfake Detection</a></li>
+                        <li><a href="/phishing">Phishing Analysis</a></li>
+                        <li><a href="/link-check">Link Intelligence</a></li>
+                        <li><a href="/detection">Detection Modules</a></li>
+                        <li><a href="/dashboard">Scan History</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-links">
+                    <h3>Developers</h3>
+                    <ul>
+                        <li><a href="/docs">Documentation</a></li>
+                        <li><a href="/developers">Developers</a></li>
+                        <li><a href="/dashboard">Dashboard</a></li>
+                        <li><a href="/model-performance">Model Performance</a></li>
+                        <li><a href="/security">Security Notes</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-links">
+                    <h3>Company</h3>
+                    <ul>
+                        <li><a href="/docs">Docs</a></li>
+                        <li><a href="/security">Security</a></li>
+                        <li><a href="/disclaimer">Disclaimer</a></li>
+                        <li><a href="/model-performance">Model Performance</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-links">
+                    <h3>Legal</h3>
+                    <ul>
+                        <li><a href="/privacy">Privacy</a></li>
+                        <li><a href="/terms">Terms</a></li>
+                        <li><a href="/security">Security</a></li>
+                        <li><a href="/disclaimer">Disclaimer</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="footer-bottom">
+                <p>&copy; 2026 VeriTrust. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="assets/js/index.js" defer></script>
+</body>
+</html>
