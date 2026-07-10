@@ -66,7 +66,10 @@ async function parseJsonResponse(response) {
     throw new Error(response.ok ? 'The server returned an unexpected response.' : `The server could not complete this check. Status ${response.status}.`);
   }
   if (!response.ok || data.ok === false) {
-    throw new Error(data?.error?.message || 'Request failed.');
+    const error = new Error(data?.error?.message || 'Request failed.');
+    error.code = data?.error?.code || '';
+    error.status = response.status;
+    throw error;
   }
   return data;
 }
@@ -330,10 +333,14 @@ function renderResult(data) {
   });
 }
 
-function renderError(message) {
+function renderError(message, details = {}) {
   lastResult = null;
   const target = qs('#linkResult');
   if (!target) return;
+  const detailParts = [
+    details.code ? `Code: ${details.code}` : '',
+    details.status ? `Status: ${details.status}` : '',
+  ].filter(Boolean);
   target.classList.remove('result-empty', 'result-loading');
   target.classList.add('result-ready');
   target.innerHTML = `
@@ -345,6 +352,7 @@ function renderError(message) {
       <span class="status-pill">VeriTrust Swift</span>
     </div>
     <p class="result-note">${escapeHtml(message || 'Link analysis failed.')}</p>
+    ${detailParts.length ? `<p class="result-muted">${escapeHtml(detailParts.join(' · '))}</p>` : ''}
     <div class="result-section">
       <h3>Next step</h3>
       <p class="result-muted">Check that you are signed in, the URL starts with http:// or https://, and the deployment has the latest API route.</p>
@@ -466,7 +474,10 @@ document.addEventListener('DOMContentLoaded', () => {
         setLog('Link analysis complete.');
       }
     } catch (error) {
-      renderError(error.message || 'Link analysis failed.');
+      renderError(error.message || 'Link analysis failed.', {
+        code: error.code,
+        status: error.status,
+      });
       setLog(error.message || 'Link analysis failed.');
     } finally {
       setLoading(button, false);
