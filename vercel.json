@@ -5,9 +5,6 @@
   "functions": {
     "api/*.js": {
       "maxDuration": 60
-    },
-    "api/v1/*.js": {
-      "maxDuration": 60
     }
   },
   "headers": [
