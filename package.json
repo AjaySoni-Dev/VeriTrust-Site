@@ -1,0 +1,16 @@
+{
+  "name": "veritrust-domain",
+  "version": "1.0.0",
+  "private": true,
+  "description": "VeriTrust landing site and Vercel API proxy",
+  "scripts": {
+    "check": "node --check assets/js/config.js && node --check assets/js/supabase-client.js && node --check assets/js/auth.js && node --check assets/js/reporting.js && node --check assets/js/reporting.dark-onepage-v6.js && node --check assets/js/dashboard.js && node --check assets/js/detection.js && node --check assets/js/detection.dark-onepage-v6.js && node --check assets/js/link-check.js && node --check assets/js/site.js && node --check api/client-config.js && node --check api/health.js && node --check api/session.js && node --check api/scans.js && node --check api/deepfake.js && node --check api/phishing.js && node --check api/link-check.js && node --check api/api-keys.js && node --check api/billing/checkout.js && node --check api/billing/portal.js && node --check api/billing/subscription.js && node --check api/billing/webhook.js && node --check api/v1/deepfake.js && node --check api/v1/phishing.js && node --check api/v1/link-check.js && node --check api/v1/usage.js && node --check lib/api-keys.js && node --check lib/billing.js && node --check lib/entitlements.js && node --check lib/detection-service.js && node --check lib/link-intelligence.js && node --check lib/config.js && node --check lib/rate-limit.js && node --check lib/validators.js && node --check lib/risk-engine.js && node --check lib/veritrust-api.js && node --check lib/supabase-server.js",
+    "start": "vercel dev"
+  },
+  "dependencies": {
+    "busboy": "^1.6.0"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}
