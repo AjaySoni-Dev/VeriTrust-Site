@@ -173,8 +173,9 @@ textarea {
   gap: 0.3rem;
   text-decoration: none;
   flex: 0 0 auto;
-  max-width: 198px;
-  overflow: hidden;
+  width: auto;
+  max-width: 320px;
+  overflow: visible;
 }
 
 #header .logo img {
@@ -191,11 +192,12 @@ textarea {
 }
 
 .brand-text-img {
-  height: 50px !important;
-  width: auto !important;
-  max-width: 250px !important;
+  width: 220px !important;
+  height: 60px !important;
+  max-width: none !important;
   object-fit: contain;
   margin-top: 2px;
+  flex-shrink: 0;
 }
 
 #header .nav-links {
