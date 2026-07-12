@@ -38,9 +38,9 @@ const VeriTrustPageAccess = (() => {
     }
 
     const isRecovery = isAuth && callback?.type === 'recovery';
-    if (session && (isLanding || (isAuth && !isRecovery))) {
+    if (session && isAuth && !isRecovery) {
       const params = new URLSearchParams(window.location.search);
-      window.location.replace(isAuth ? safeRedirect(params.get('redirect')) : 'dashboard.html');
+      window.location.replace(safeRedirect(params.get('redirect')));
       return { allowed: false, session };
     }
 
