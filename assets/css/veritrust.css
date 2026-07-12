@@ -270,12 +270,12 @@ header,
 
 .tool-header-brand {
   flex: 0 0 auto;
-  width: 198px;
-  max-width: 198px;
+  width: auto;
+  max-width: none;
   display: flex;
   align-items: center;
-  gap: 0.3rem;
-  overflow: hidden;
+  gap: 0.5rem;
+  overflow: visible;
 }
 
 .tool-header-mark {
@@ -288,10 +288,10 @@ header,
 
 .tool-header-word {
   flex: 0 0 auto;
-  width: auto !important;
-  max-width: 160px !important;
-  height: 19.5px !important;
-  margin-top: 2px;
+  width: 240px !important;
+  height: 55px !important;
+  max-width: none !important;
+  margin-top: 0;
   object-fit: contain;
 }
 
