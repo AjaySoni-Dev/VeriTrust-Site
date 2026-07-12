@@ -192,7 +192,7 @@ textarea {
 
 .brand-text-img {
   height: 30px !important;
-  width: auto !important;
+  width: 500 !important;
   max-width: 240px !important;
   object-fit: contain;
   margin-top: 2px;
