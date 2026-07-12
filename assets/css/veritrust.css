@@ -191,9 +191,9 @@ textarea {
 }
 
 .brand-text-img {
-  height: 23.5px !important;
+  height: 30px !important;
   width: auto !important;
-  max-width: 220px !important;
+  max-width: 240px !important;
   object-fit: contain;
   margin-top: 2px;
 }
