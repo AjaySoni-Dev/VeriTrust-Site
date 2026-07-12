@@ -1,0 +1,146 @@
+{
+  "version": 2,
+  "cleanUrls": true,
+  "trailingSlash": false,
+  "functions": {
+    "api/*.js": {
+      "maxDuration": 60
+    }
+  },
+  "headers": [
+    {
+      "source": "/assets/(.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=0, must-revalidate"
+        }
+      ]
+    },
+    {
+      "source": "/deepfake.html",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "no-store, no-cache, must-revalidate"
+        }
+      ]
+    },
+    {
+      "source": "/deepfake",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "no-store, no-cache, must-revalidate"
+        }
+      ]
+    },
+    {
+      "source": "/(.*)",
+      "headers": [
+        {
+          "key": "X-Content-Type-Options",
+          "value": "nosniff"
+        },
+        {
+          "key": "Referrer-Policy",
+          "value": "strict-origin-when-cross-origin"
+        },
+        {
+          "key": "Permissions-Policy",
+          "value": "camera=(), microphone=(), geolocation=()"
+        },
+        {
+          "key": "X-Frame-Options",
+          "value": "DENY"
+        }
+      ]
+    }
+  ],
+  "rewrites": [
+    {
+      "source": "/api/v1/deepfake",
+      "destination": "/api/v1?route=deepfake"
+    },
+    {
+      "source": "/api/v1/phishing",
+      "destination": "/api/v1?route=phishing"
+    },
+    {
+      "source": "/api/v1/link-check",
+      "destination": "/api/v1?route=link-check"
+    },
+    {
+      "source": "/api/v1/usage",
+      "destination": "/api/v1?route=usage"
+    },
+    {
+      "source": "/api/billing/checkout",
+      "destination": "/api/billing?route=checkout"
+    },
+    {
+      "source": "/api/billing/portal",
+      "destination": "/api/billing?route=portal"
+    },
+    {
+      "source": "/api/billing/subscription",
+      "destination": "/api/billing?route=subscription"
+    },
+    {
+      "source": "/api/billing/webhook",
+      "destination": "/api/billing?route=webhook"
+    },
+    {
+      "source": "/detection",
+      "destination": "/detection.html"
+    },
+    {
+      "source": "/deepfake",
+      "destination": "/deepfake.html"
+    },
+    {
+      "source": "/phishing",
+      "destination": "/phishing.html"
+    },
+    {
+      "source": "/link-check",
+      "destination": "/link-check.html"
+    },
+    {
+      "source": "/docs",
+      "destination": "/docs.html"
+    },
+    {
+      "source": "/dashboard",
+      "destination": "/dashboard.html"
+    },
+    {
+      "source": "/auth",
+      "destination": "/auth.html"
+    },
+    {
+      "source": "/model-performance",
+      "destination": "/model-performance.html"
+    },
+    {
+      "source": "/privacy",
+      "destination": "/privacy.html"
+    },
+    {
+      "source": "/terms",
+      "destination": "/terms.html"
+    },
+    {
+      "source": "/security",
+      "destination": "/security.html"
+    },
+    {
+      "source": "/disclaimer",
+      "destination": "/disclaimer.html"
+    },
+    {
+      "source": "/developers",
+      "destination": "/developers.html"
+    }
+  ]
+}
