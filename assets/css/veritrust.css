@@ -1812,20 +1812,23 @@ p {
   overflow: hidden;
   color: transparent !important;
   border-radius: 5px;
-  opacity: 0.92;
-  background: #171b20;
+  opacity: 1;
+  background: #12161b;
   contain: paint;
+  isolation: isolate;
+  clip-path: inset(0 round 5px);
 }
 
 .dashboard-shimmer::after {
   content: '';
   position: absolute;
   inset: 0 auto 0 0;
-  width: 58%;
+  width: 44%;
   border-radius: inherit;
-  background: linear-gradient(100deg, transparent 0%, rgba(65, 72, 82, 0.72) 50%, transparent 100%);
-  animation: vt-dashboard-shimmer-slide 1.25s ease-in-out infinite;
+  background: linear-gradient(100deg, #12161b 0%, #222831 50%, #12161b 100%);
+  animation: vt-dashboard-shimmer-slide 1.4s ease-in-out infinite;
   will-change: transform;
+  pointer-events: none;
 }
 
 .dashboard-shimmer-text {
@@ -1858,8 +1861,10 @@ p {
   border-color: transparent !important;
   caret-color: transparent;
   text-shadow: none !important;
-  background: #171b20 !important;
+  background: #12161b !important;
   contain: paint;
+  isolation: isolate;
+  clip-path: inset(0 round 4px);
 }
 
 .dashboard-is-loading .dashboard-shell :is(h1, h2, p, strong, em, button, a, .account-avatar, .status-pill)::after,
@@ -1868,15 +1873,16 @@ p {
   content: '';
   position: absolute;
   inset: 0 auto 0 0;
-  width: 58%;
+  width: 44%;
   border-radius: inherit;
-  background: linear-gradient(100deg, transparent 0%, rgba(65, 72, 82, 0.72) 50%, transparent 100%);
-  animation: vt-dashboard-shimmer-slide 1.25s ease-in-out infinite;
+  background: linear-gradient(100deg, #12161b 0%, #222831 50%, #12161b 100%);
+  animation: vt-dashboard-shimmer-slide 1.4s ease-in-out infinite;
   will-change: transform;
+  pointer-events: none;
 }
 
 .dashboard-is-loading .dashboard-shell input {
-  background: #171b20 !important;
+  background: #12161b !important;
 }
 
 .dashboard-is-loading .dashboard-shell * {
@@ -1899,18 +1905,22 @@ p {
 .dashboard-is-loading .dashboard-shell .billing-meter i,
 .dashboard-is-loading .dashboard-shell .billing-meter b {
   position: relative;
-  background: #171b20;
+  overflow: hidden;
+  background: #12161b;
   contain: paint;
+  isolation: isolate;
+  clip-path: inset(0 round 999px);
 }
 
 .dashboard-is-loading .dashboard-shell .billing-meter i::after {
   content: '';
   position: absolute;
   inset: 0 auto 0 0;
-  width: 58%;
-  background: linear-gradient(100deg, transparent 0%, rgba(65, 72, 82, 0.72) 50%, transparent 100%);
-  animation: vt-dashboard-shimmer-slide 1.25s ease-in-out infinite;
+  width: 44%;
+  background: linear-gradient(100deg, #12161b 0%, #222831 50%, #12161b 100%);
+  animation: vt-dashboard-shimmer-slide 1.4s ease-in-out infinite;
   will-change: transform;
+  pointer-events: none;
 }
 
 .dashboard-skeleton-table .scan-row span.dashboard-shimmer {
