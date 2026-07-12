@@ -173,9 +173,8 @@ textarea {
   gap: 0.3rem;
   text-decoration: none;
   flex: 0 0 auto;
-  width: auto;
-  max-width: 320px;
-  overflow: visible;
+  max-width: 198px;
+  overflow: hidden;
 }
 
 #header .logo img {
@@ -192,12 +191,11 @@ textarea {
 }
 
 .brand-text-img {
-  width: 300px !important;
-  height: 100px !important;
-  max-width: none !important;
+  height: 30px !important;
+  width: auto !important;
+  max-width: 240px !important;
   object-fit: contain;
   margin-top: 2px;
-  flex-shrink: 0;
 }
 
 #header .nav-links {
@@ -270,12 +268,12 @@ header,
 
 .tool-header-brand {
   flex: 0 0 auto;
-  width: auto;
-  max-width: none;
+  width: 198px;
+  max-width: 198px;
   display: flex;
   align-items: center;
-  gap: 0.5rem;
-  overflow: visible;
+  gap: 0.3rem;
+  overflow: hidden;
 }
 
 .tool-header-mark {
@@ -288,10 +286,10 @@ header,
 
 .tool-header-word {
   flex: 0 0 auto;
-  width: 240px !important;
-  height: 55px !important;
-  max-width: none !important;
-  margin-top: 0;
+  width: auto !important;
+  max-width: 160px !important;
+  height: 19.5px !important;
+  margin-top: 2px;
   object-fit: contain;
 }
 
