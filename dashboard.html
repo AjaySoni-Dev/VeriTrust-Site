@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" href="/favicon.ico" type="image/x-icon">
+  <title>Dashboard | VeriTrust</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/veritrust.css?v=20260712-workspace1">
+  <script src="assets/js/config.js?v=20260712-dashboard6" defer></script>
+  <script src="assets/js/supabase-client.js?v=20260712-dashboard6" defer></script>
+  <script src="assets/js/site.js?v=20260712-workspace1" defer></script>
+  <script src="assets/js/reporting.dark-onepage-v6.js" defer></script>
+  <script src="assets/js/dashboard.js?v=20260712-workspace1" defer></script>
+</head>
+<body class="dashboard-is-loading">
+    <header class="tool-header-shell vt-page-header">
+    <div class="tool-header-inner">
+      <a href="index.html" class="tool-header-brand" aria-label="VeriTrust home">
+        <img src="logo.png" alt="" class="tool-header-mark">
+        <img src="brand.png" alt="VeriTrust" class="tool-header-word">
+      </a>
+      <nav class="tool-header-links" aria-label="Primary">
+        <a href="index.html">Home</a>
+        <a href="detection.html">Detection</a>
+        <a href="developers.html">Developers</a>
+        <a href="docs.html">Docs</a>
+        <a href="model-performance.html">Model Performance</a>
+        <a class="workspace-menu-link active" href="dashboard.html">Workspace overview</a>
+        <a class="workspace-menu-link" href="scans.html">Scans</a>
+        <a class="workspace-menu-link" href="api-access.html">API access</a>
+        <a class="workspace-menu-link" href="billing.html">Billing</a>
+        <a class="workspace-menu-link" href="account.html">Account</a>
+      </nav>
+      <div class="tool-header-actions">
+        <a href="auth.html" class="tool-header-login">Log in</a>
+        <a href="dashboard.html" class="tool-header-dashboard active">Dashboard</a>
+        <button class="tool-menu-toggle" aria-label="Open page menu" aria-expanded="false" type="button">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+            <circle cx="12" cy="5" r="1.8"/>
+            <circle cx="12" cy="12" r="1.8"/>
+            <circle cx="12" cy="19" r="1.8"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main class="dashboard-shell workspace-page">
+    <section class="dashboard-head">
+      <div>
+        <p class="eyebrow">Workspace</p>
+        <h1>Workspace overview.</h1>
+        <p class="lead" data-dashboard-status-text>Open saved web scans, API keys, deployed plan limits, billing status, or profile settings for the active workspace.</p>
+      </div>
+      <a class="btn btn-primary" href="detection.html">New Scan</a>
+    </section>
+
+    <nav class="workspace-nav" aria-label="Workspace">
+      <a class="active" href="dashboard.html" aria-current="page">Overview</a>
+      <a href="scans.html">Scans</a>
+      <a href="api-access.html">API access</a>
+      <a href="billing.html">Billing</a>
+      <a href="account.html">Account</a>
+    </nav>
+
+    <section class="workspace-hub" aria-label="Workspace areas">
+      <a class="workspace-card" href="scans.html"><span>Web scan history</span><strong>Review saved checks</strong><p>Filter workspace records and export the available JSON or print report.</p><em>Open scans &rarr;</em></a>
+      <a class="workspace-card" href="api-access.html"><span>Developer tools</span><strong>Manage API access</strong><p>Create keys and monitor daily request usage.</p><em>Open API access &rarr;</em></a>
+      <a class="workspace-card" href="billing.html"><span>Plan &amp; limits</span><strong>Review billing</strong><p>View deployed quotas, subscription status, and renewal details.</p><em>Open billing &rarr;</em></a>
+      <a class="workspace-card" href="account.html"><span>Profile &amp; workspace</span><strong>Manage your profile</strong><p>Update supported profile fields and review implemented access controls.</p><em>Open account &rarr;</em></a>
+    </section>
+
+    <section class="dashboard-grid dashboard-overview-grid">
+      <article class="dashboard-panel dashboard-wide">
+        <div class="panel-title">
+          <div>
+            <h2>Usage</h2>
+            <p>Current workspace activity.</p>
+          </div>
+        </div>
+        <div class="usage-grid">
+          <div class="usage-stat"><span>Web scans this month</span><strong data-usage-total-scans>0</strong></div>
+          <div class="usage-stat"><span>Deepfake this month</span><strong data-usage-images>0</strong></div>
+          <div class="usage-stat"><span>Phishing this month</span><strong data-usage-messages>0</strong></div>
+          <div class="usage-stat"><span>Link this month</span><strong data-usage-links>0</strong></div>
+          <div class="usage-stat"><span>High risk recent</span><strong data-usage-high-risk>0</strong></div>
+          <div class="usage-stat"><span>API today</span><strong data-usage-api-today>0</strong></div>
+          <div class="usage-stat"><span>API remaining</span><strong data-usage-api-remaining>100</strong></div>
+        </div>
+      </article>
+
+    </section>
+  </main>
+  <footer class="legal-footer">
+    <a href="privacy.html">Privacy</a><span aria-hidden="true">&middot;</span><a href="terms.html">Terms</a><span aria-hidden="true">&middot;</span><a href="security.html">Security</a><span aria-hidden="true">&middot;</span><a href="disclaimer.html">Disclaimer</a><span aria-hidden="true">&middot;</span><a href="docs.html">Docs</a><span aria-hidden="true">&middot;</span><a href="developers.html">Developers</a><span aria-hidden="true">&middot;</span><a href="model-performance.html">Model Performance</a>
+  </footer>
+</body>
+</html>
