@@ -12,7 +12,7 @@ body.vt-tool-page {
 
 .tool-topbar {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 320px;
+  grid-template-columns: minmax(0, 1fr);
   gap: 16px;
   align-items: end;
   margin-bottom: 16px;
@@ -24,54 +24,10 @@ body.vt-tool-page {
 }
 
 .tool-title p:not(.eyebrow) {
-  max-width: 640px;
+  max-width: 760px;
   margin: 7px 0 0;
   color: var(--muted);
   font-size: 14px;
-}
-
-.tool-workspace-card {
-  min-width: 0;
-  display: grid;
-  grid-template-columns: auto minmax(0, 1fr);
-  gap: 11px;
-  align-items: start;
-  border: 1px solid rgba(245, 158, 11, 0.26);
-  border-radius: 8px;
-  padding: 11px;
-  background: rgba(245, 158, 11, 0.06);
-}
-
-.tool-workspace-card.ready {
-  border-color: rgba(34, 197, 94, 0.3);
-  background: rgba(34, 197, 94, 0.06);
-}
-
-.tool-workspace-card strong {
-  display: block;
-  color: var(--text);
-  font-size: 13px;
-}
-
-.tool-workspace-card p {
-  margin: 2px 0 0;
-  color: var(--soft);
-  font-size: 12px;
-  overflow-wrap: anywhere;
-}
-
-.history-state {
-  min-height: 24px;
-  display: inline-flex;
-  align-items: center;
-  border: 1px solid rgba(245, 158, 11, 0.32);
-  border-radius: 999px;
-  padding: 0 8px;
-  color: #fde68a;
-  background: rgba(245, 158, 11, 0.08);
-  font-size: 11px;
-  font-weight: 700;
-  white-space: nowrap;
 }
 
 .tool-grid {
@@ -431,8 +387,8 @@ body.vt-tool-page {
 }
 
 .result-dialog {
-  width: min(760px, calc(100% - 24px));
-  max-width: 760px;
+  width: min(680px, calc(100% - 24px));
+  max-width: 680px;
   max-height: calc(100dvh - 24px);
   margin: auto;
   padding: 0;
@@ -517,7 +473,7 @@ body.vt-tool-page {
   min-height: 0;
   overflow-y: auto;
   overscroll-behavior: contain;
-  padding: 12px;
+  padding: 14px;
   scrollbar-width: thin;
 }
 
@@ -632,6 +588,7 @@ body.vt-tool-page {
 
 .result-summary {
   display: flex;
+  flex-wrap: wrap;
   justify-content: space-between;
   align-items: start;
   gap: 12px;
@@ -653,7 +610,7 @@ body.vt-tool-page {
 
 .result-metrics {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 8px;
   margin-top: 10px;
 }
@@ -730,6 +687,73 @@ body.vt-tool-page {
   font-size: 13px;
 }
 
+.result-details {
+  margin-top: 10px;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  background: #0f1116;
+}
+
+.result-details > summary {
+  min-height: 38px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 10px;
+  color: var(--text);
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  list-style: none;
+}
+
+.result-details > summary::-webkit-details-marker {
+  display: none;
+}
+
+.result-details > summary::after {
+  content: '+';
+  margin-left: auto;
+  color: var(--soft);
+  font-family: var(--mono);
+  font-size: 15px;
+  font-weight: 500;
+}
+
+.result-details[open] > summary {
+  border-bottom: 1px solid var(--border);
+}
+
+.result-details[open] > summary::after {
+  content: '−';
+}
+
+.result-details > summary span {
+  min-width: 20px;
+  min-height: 20px;
+  display: inline-grid;
+  place-items: center;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 0 6px;
+  color: var(--soft);
+  font-size: 10px;
+  font-weight: 700;
+}
+
+.result-details > .signal-list,
+.result-details > .entity-grid,
+.result-details > .result-meta,
+.result-details > .result-muted,
+.result-details > .result-disclaimer {
+  margin: 0;
+  padding: 10px;
+}
+
+.result-details > .result-disclaimer {
+  padding-top: 0;
+}
+
 .result-muted,
 .result-disclaimer,
 .fallback-notice {
@@ -773,6 +797,7 @@ body.vt-tool-page {
 
 .entity-grid {
   display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 7px;
 }
 
@@ -812,7 +837,7 @@ body.vt-tool-page {
 
 .report-actions {
   display: grid;
-  grid-template-columns: 1fr;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 7px;
   margin-top: 12px;
 }
@@ -1008,11 +1033,40 @@ body.vt-tool-page {
     padding: 10px;
   }
 
+  .result-dialog .result-summary {
+    display: flex;
+  }
+
   .result-dialog .result-metrics {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 
   .result-dialog .report-actions {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .result-dialog .result-metrics .metric {
+    padding: 8px 6px;
+  }
+
+  .result-dialog .result-metrics .metric strong {
+    font-size: 14px;
+  }
+
+  .result-dialog .risk-badge {
+    min-height: 20px;
+    padding: 0 5px;
+    font-size: 10px !important;
+  }
+
+  .result-dialog .report-actions .btn {
+    min-width: 0;
+    min-height: 36px;
+    padding: 0 5px;
+    white-space: nowrap;
+  }
+
+  .result-dialog .entity-grid {
     grid-template-columns: 1fr;
   }
 }
