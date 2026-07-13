@@ -77,7 +77,7 @@
   }
 
   async function signUp({ email, password, fullName, workspaceName }) {
-    const redirectTo = new URL('auth.html', global.location.href).href;
+    const redirectTo = 'https://veritrustlab.in/auth.html';
     const data = await supabaseFetch(`/auth/v1/signup?redirect_to=${encodeURIComponent(redirectTo)}`, {
       method: 'POST',
       body: {
