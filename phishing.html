@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" class="vt-auth-checking" aria-busy="true">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -9,13 +9,13 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="assets/css/veritrust.css?v=20260712-unified-header2">
-  <link rel="stylesheet" href="assets/css/tool-pages.css?v=20260713-result-dialog1">
+  <link rel="stylesheet" href="assets/css/tool-pages.css?v=20260713-result-dialog2">
   <script src="assets/js/config.js?v=20260712-supabase3" defer></script>
   <script src="assets/js/supabase-client.js?v=20260712-supabase3" defer></script>
   <script src="assets/js/site.js?v=20260712-unified-header2" defer></script>
   <script src="assets/js/reporting.dark-onepage-v6.js" defer></script>
-  <script src="assets/js/result-dialog.js?v=20260713-result-dialog1" defer></script>
-  <script src="assets/js/detection.dark-onepage-v6.js" defer></script>
+  <script src="assets/js/result-dialog.js?v=20260713-result-dialog2" defer></script>
+  <script src="assets/js/detection.dark-onepage-v6.js?v=20260713-auth-dialog2" defer></script>
 </head>
 <body class="vt-tool-page">
     <header class="tool-header-shell vt-page-header">
@@ -52,13 +52,6 @@
         <h1>Review a message for phishing risk.</h1>
         <p>Paste 8 to 12,000 characters of email, SMS, URL, or message text for model scoring and rule-based indicators.</p>
       </div>
-      <aside class="tool-workspace-card">
-        <span class="history-state">Sign in</span>
-        <div>
-          <strong>Saved scan history</strong>
-          <p>Sign in to save message checks to your dashboard.</p>
-        </div>
-      </aside>
     </section>
 
     <section class="tool-grid phishing-grid">
