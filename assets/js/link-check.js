@@ -103,22 +103,6 @@ async function authHeaders() {
   return { Authorization: `Bearer ${token}` };
 }
 
-async function updateWorkspaceUi() {
-  const card = qs('.tool-workspace-card');
-  const badge = qs('.history-state', card);
-  if (!card || !window.VeriTrustSupabase?.isConfigured()) return;
-
-  try {
-    const context = await getScanContext();
-    qs('strong', card).textContent = context.organization?.name || 'Workspace';
-    qs('p', card).textContent = `Signed in as ${context.user?.email || 'authenticated user'}. Completed link checks are saved when workspace persistence succeeds.`;
-    if (badge) badge.textContent = 'Will save';
-    card.classList.add('ready');
-  } catch {
-    if (badge) badge.textContent = 'Sign in';
-  }
-}
-
 function normalizedReport(data) {
   const result = data.result || {};
   return {
@@ -256,8 +240,8 @@ function renderExtracted(extracted = {}) {
   if (!visibleDetails.length) return '';
 
   return `
-    <div class="result-section">
-      <h3>Extracted details</h3>
+    <details class="result-details">
+      <summary>Extracted details <span>${visibleDetails.length}</span></summary>
       <div class="entity-grid">
         ${visibleDetails.map(([label, value]) => `
           <div class="entity-group">
@@ -266,7 +250,7 @@ function renderExtracted(extracted = {}) {
           </div>
         `).join('')}
       </div>
-    </div>
+    </details>
   `;
 }
 
@@ -299,26 +283,29 @@ function renderResult(data) {
       <div class="metric"><span>Confidence</span><strong>${confidence}</strong></div>
       <div class="metric"><span>Link score</span><strong>${score}</strong></div>
       <div class="metric"><span>Risk</span><strong class="${riskBadgeClass(result.risk_level || 'Low')}">${escapeHtml(result.risk_level || 'Low')}</strong></div>
-      <div class="metric"><span>Band</span><strong>${escapeHtml(result.confidence_band || 'N/A')}</strong></div>
     </div>
     <p class="result-note">${escapeHtml(result.summary || 'Link analysis complete.')}</p>
     ${fallback ? `<p class="fallback-notice">Fallback used: ${escapeHtml(model.fallback_from_name || model.fallback_from || modelMeta.fallback_from || 'selected model')} to ${escapeHtml(model.name || 'VeriTrust Swift')}. ${escapeHtml(fallbackReason)}</p>` : ''}
     ${data.warning?.message ? `<p class="fallback-notice">${escapeHtml(data.warning.message)}</p>` : ''}
-    <div class="result-section">
-      <h3>Indicators</h3>
+    <details class="result-details">
+      <summary>Indicators <span>${Array.isArray(result.indicators) ? result.indicators.length : 0}</span></summary>
       ${renderSignalList(result.indicators || [])}
-    </div>
+    </details>
     ${renderExtracted(result.extracted || {})}
-    <div class="result-meta">
-      <span>Model: ${escapeHtml(model.name || 'VeriTrust Swift')}</span>
-      ${model.hf_model ? `<span>HF model: ${escapeHtml(model.hf_model)}</span>` : ''}
-      ${data.scan_id || data.scan?.id ? `<span>Scan ID: ${escapeHtml(data.scan_id || data.scan.id)}</span>` : ''}
-    </div>
-    <p class="result-disclaimer">${escapeHtml(result.disclaimer || data.report?.disclaimer || 'AI-assisted result. Manual review is recommended.')}</p>
+    <details class="result-details result-technical">
+      <summary>Technical details</summary>
+      <div class="result-meta">
+        <span>Model: ${escapeHtml(model.name || 'VeriTrust Swift')}</span>
+        <span>Confidence band: ${escapeHtml(result.confidence_band || 'N/A')}</span>
+        ${model.hf_model ? `<span>HF model: ${escapeHtml(model.hf_model)}</span>` : ''}
+        ${data.scan_id || data.scan?.id ? `<span>Scan ID: ${escapeHtml(data.scan_id || data.scan.id)}</span>` : ''}
+      </div>
+      <p class="result-disclaimer">${escapeHtml(result.disclaimer || data.report?.disclaimer || 'AI-assisted result. Manual review is recommended.')}</p>
+    </details>
     <div class="report-actions">
-      <button class="btn btn-secondary" type="button" data-report-action="download">Download JSON Report</button>
-      <button class="btn btn-secondary" type="button" data-report-action="print">Save PDF Report</button>
-      <button class="btn btn-secondary" type="button" data-report-action="copy">Copy Summary</button>
+      <button class="btn btn-secondary" type="button" data-report-action="download" aria-label="Download JSON report">JSON</button>
+      <button class="btn btn-secondary" type="button" data-report-action="print" aria-label="Save PDF report">Save PDF</button>
+      <button class="btn btn-secondary" type="button" data-report-action="copy" aria-label="Copy result summary">Copy</button>
     </div>
   `;
 
@@ -392,7 +379,6 @@ async function analyzeLink() {
   });
 
   renderResult(data);
-  qs('.history-state').textContent = data.scan?.persisted ? 'Saved' : 'Not saved';
   if (data.warning?.message) setLog(data.warning.message);
   return data;
 }
@@ -461,9 +447,11 @@ function bindCustomModelSelects() {
   });
 }
 
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
+  const access = await window.VeriTrustPageAccess;
+  if (!access?.allowed) return;
+
   bindCustomModelSelects();
-  updateWorkspaceUi();
 
   qs('#linkCheckForm')?.addEventListener('submit', async (event) => {
     event.preventDefault();
