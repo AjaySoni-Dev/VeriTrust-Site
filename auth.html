@@ -102,64 +102,45 @@
             display: flex;
             flex-direction: column;
             min-height: 100%;
-            padding-top: var(--header-height);
         }
 
-        .auth-nav {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 1.25rem 2rem;
-            width: 100%;
-            max-width: none;
-            margin: 0 auto;
-            background: var(--bg-surface);
-            border-bottom: 1px solid var(--border-subtle);
-            opacity: 1;
-        }
-
-        /* Top Left - Back Link */
-        .back-link {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            color: var(--text-secondary);
-            font-size: 0.8125rem;
-            font-weight: 500;
-        }
-
-        .back-link:hover {
-            color: var(--text-primary);
-        }
-
-        .back-link svg {
-            width: 16px;
-            height: 16px;
-            transition: transform 0.2s ease;
-        }
-
-        .back-link:hover svg {
-            transform: translateX(-4px);
-        }
-
-        /* Top Right - Logo Image */
-        .top-logo {
+        .auth-back-button {
+            position: fixed;
+            top: max(1rem, env(safe-area-inset-top));
+            left: max(1rem, env(safe-area-inset-left));
+            z-index: 20;
+            width: 42px;
+            height: 42px;
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            text-decoration: none;
+            color: var(--text-secondary);
+            background: rgba(9, 9, 11, 0.92);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-sm);
+            box-shadow: var(--inner-glow), 0 10px 24px rgba(0, 0, 0, 0.28);
+            backdrop-filter: blur(10px);
         }
-        
-        .brand-logo-img {
-            height: 32px;
-            width: auto;
-            object-fit: contain;
-            display: block;
+
+        .auth-back-button:hover {
+            color: var(--text-primary);
+            border-color: var(--border-hover);
+            background: var(--bg-surface-light);
+        }
+
+        .auth-back-button:focus-visible {
+            outline: 2px solid var(--accent-main);
+            outline-offset: 3px;
+        }
+
+        .auth-back-button svg {
+            width: 20px;
+            height: 20px;
             transition: transform 0.2s ease;
         }
 
-        .top-logo:hover .brand-logo-img {
-            transform: translateY(-2px);
+        .auth-back-button:hover svg {
+            transform: translateX(-2px);
         }
 
         .auth-main {
@@ -167,7 +148,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 0 1.5rem;
+            padding: 4.5rem 1.5rem 1.5rem;
         }
 
         /* Wrapper for Center Content */
@@ -505,9 +486,6 @@
 
         /* Responsive Adjustments */
         @media (max-width: 480px) {
-            .auth-nav {
-                padding: 1rem 1.5rem;
-            }
             .auth-card {
                 padding: 1.5rem;
             }
@@ -522,22 +500,11 @@
     </style>
 </head>
 <body>
-
-    <header class="tool-header-shell vt-page-header">
-        <div class="tool-header-inner">
-            <a href="index.html" class="tool-header-brand" aria-label="VeriTrust home">
-                <img src="logo.png" alt="VeriTrust Logo" class="tool-header-mark">
-                <img src="brand.png" alt="VeriTrust" class="tool-header-word">
-            </a>
-            <nav class="tool-header-links" aria-label="Primary">
-                <a href="index.html">Home</a><a href="detection.html">Detection</a><a href="developers.html">Developers</a><a href="docs.html">Docs</a><a href="model-performance.html">Model Performance</a>
-            </nav>
-            <div class="tool-header-actions">
-                <a href="auth.html" class="tool-header-login">Log in</a><a href="dashboard.html" class="tool-header-dashboard">Dashboard</a>
-                <button class="tool-menu-toggle" aria-label="Toggle Menu" aria-expanded="false" type="button"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 12h16M4 18h16" stroke-linecap="round"/></svg></button>
-            </div>
-        </div>
-    </header>
+    <a href="index.html" class="auth-back-button" aria-label="Back to home" title="Back to home">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+            <path d="M19 12H5M11 18l-6-6 6-6" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+    </a>
 
     <div class="auth-layout">
         <main class="auth-main">
