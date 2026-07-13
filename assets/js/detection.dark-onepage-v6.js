@@ -56,12 +56,6 @@ function setLog(message) {
   setText('activityLog', message);
 }
 
-function setHistoryState(value) {
-  qsa('.history-state').forEach((node) => {
-    node.textContent = value;
-  });
-}
-
 function setLoading(button, loading, label) {
   if (!button) return;
   if (!button.dataset.defaultLabel) button.dataset.defaultLabel = button.textContent;
@@ -129,27 +123,6 @@ async function authHeaders() {
   const token = await window.VeriTrustSupabase?.getAccessToken();
   if (!token) throw new Error('Sign in before running a saved VeriTrust scan.');
   return { Authorization: `Bearer ${token}` };
-}
-
-async function updateWorkspaceUi() {
-  const card = qs('.tool-workspace-card');
-  if (!card || !window.VeriTrustSupabase?.isConfigured()) return;
-
-  try {
-    const context = await getScanContext();
-    const strong = qs('strong', card);
-    const text = qs('p', card);
-    if (strong) strong.textContent = context.organization?.name || 'Workspace';
-    if (text) text.textContent = `Signed in as ${context.user?.email || 'authenticated user'}. Completed scans will be saved.`;
-    card.classList.add('ready');
-    setHistoryState('Will save');
-  } catch {
-    const strong = qs('strong', card);
-    const text = qs('p', card);
-    if (strong) strong.textContent = 'Sign in required';
-    if (text) text.textContent = 'Sign in to save scans and review history.';
-    setHistoryState('Sign in');
-  }
 }
 
 function dataUrlToFile(dataUrl, filename) {
@@ -542,8 +515,8 @@ function renderExtractedEntities(extracted) {
   const groups = Object.entries(extracted || {}).filter(([, values]) => Array.isArray(values) && values.length);
   if (!groups.length) return '';
   return `
-    <div class="result-section">
-      <h3>Extracted</h3>
+    <details class="result-details">
+      <summary>Extracted details <span>${groups.length}</span></summary>
       <div class="entity-grid">
         ${groups.map(([key, values]) => `
           <div class="entity-group">
@@ -552,7 +525,7 @@ function renderExtractedEntities(extracted) {
           </div>
         `).join('')}
       </div>
-    </div>
+    </details>
   `;
 }
 
@@ -601,25 +574,28 @@ function renderResult(targetId, data) {
       <div class="metric"><span>Confidence</span><strong>${confidence}</strong></div>
       <div class="metric"><span>${data.type === 'deepfake' ? 'Fake score' : 'Phishing score'}</span><strong>${primaryScore}</strong></div>
       <div class="metric"><span>Risk</span><strong class="${riskBadgeClass(result.risk_level || 'Low')}">${escapeHtml(result.risk_level || 'Low')}</strong></div>
-      <div class="metric"><span>Band</span><strong>${escapeHtml(result.confidence_band || 'N/A')}</strong></div>
     </div>
     <p class="result-note">${escapeHtml(explanation)}</p>
     ${data.model?.fallback_used || data.model?.fallback_from ? '<p class="fallback-notice">Backup model used because the selected model was unavailable.</p>' : ''}
-    <div class="result-section">
-      <h3>${data.type === 'deepfake' ? 'Score details' : 'Indicators'}</h3>
+    <details class="result-details">
+      <summary>${data.type === 'deepfake' ? 'Score details' : 'Indicators'} <span>${signals.length}</span></summary>
       ${renderSignalList(signals, data.type === 'deepfake' ? 'No additional score details were returned.' : 'No strong phishing indicators were found.')}
-    </div>
+    </details>
     ${renderExtractedEntities(result.extracted)}
-    <div class="result-meta">
-      <span>Model: ${escapeHtml(modelLabel)}</span>
-      ${data.scan_id || data.scan?.id ? `<span>Scan ID: ${escapeHtml(data.scan_id || data.scan.id)}</span>` : ''}
-    </div>
-    <p class="result-disclaimer">${escapeHtml(result.disclaimer || data.report?.disclaimer || 'AI-assisted result. Manual review is recommended.')}</p>
+    <details class="result-details result-technical">
+      <summary>Technical details</summary>
+      <div class="result-meta">
+        <span>Model: ${escapeHtml(modelLabel)}</span>
+        <span>Confidence band: ${escapeHtml(result.confidence_band || 'N/A')}</span>
+        ${data.scan_id || data.scan?.id ? `<span>Scan ID: ${escapeHtml(data.scan_id || data.scan.id)}</span>` : ''}
+      </div>
+      <p class="result-disclaimer">${escapeHtml(result.disclaimer || data.report?.disclaimer || 'AI-assisted result. Manual review is recommended.')}</p>
+    </details>
     ${!isError ? `
       <div class="report-actions">
-        <button class="btn btn-secondary" type="button" data-report-action="download">Download JSON Report</button>
-        <button class="btn btn-secondary" type="button" data-report-action="print">Save PDF Report</button>
-        <button class="btn btn-secondary" type="button" data-report-action="copy">Copy Summary</button>
+        <button class="btn btn-secondary" type="button" data-report-action="download" aria-label="Download JSON report">JSON</button>
+        <button class="btn btn-secondary" type="button" data-report-action="print" aria-label="Save PDF report">Save PDF</button>
+        <button class="btn btn-secondary" type="button" data-report-action="copy" aria-label="Copy result summary">Copy</button>
       </div>
     ` : ''}
   `;
@@ -676,7 +652,6 @@ async function analyzeDeepfake() {
     'Unable to reach image analysis. Please check your connection and try again.'
   );
   renderResult('deepfakeResult', data);
-  setHistoryState(data.scan?.persisted ? 'Saved' : 'Not saved');
   setLog('Image check complete.');
 }
 
@@ -707,7 +682,6 @@ async function analyzePhishing() {
     'Unable to reach message analysis. Please check your connection and try again.'
   );
   renderResult('phishingResult', data);
-  setHistoryState(data.scan?.persisted ? 'Saved' : 'Not saved');
   setLog('Message check complete.');
 }
 
@@ -813,11 +787,13 @@ async function checkHealth() {
   }
 }
 
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
+  const access = await window.VeriTrustPageAccess;
+  if (!access?.allowed) return;
+
   bindModules();
   bindCustomModelSelects();
   checkHealth();
-  updateWorkspaceUi();
 
   qs('#deepfakeImage')?.addEventListener('change', (event) => {
     const file = event.target.files && event.target.files[0];
