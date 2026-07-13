@@ -316,8 +316,13 @@
             align-items: center;
         }
 
+        .hero-content {
+            padding-left: clamp(1rem, 2.5vw, 2rem);
+        }
+
         .hero-content h1 {
             margin-bottom: 1.25rem;
+            font-size: clamp(1.85rem, 4.2vw, 3.1rem);
             text-wrap: balance;
         }
 
@@ -774,6 +779,9 @@
                 grid-template-columns: 1fr;
                 gap: 3rem;
                 text-align: center;
+            }
+            .hero-content {
+                padding: 0 clamp(0.75rem, 3vw, 1.5rem);
             }
             .hero-content p { 
                 margin: 0 auto 2rem; 
