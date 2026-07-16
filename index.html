@@ -24,7 +24,7 @@
             --bg-surface: #121A26;
             --bg-surface-hover: #192332;
             --bg-surface-light: #172235;
-            --bg-page-gradient: radial-gradient(circle at 50% -8%, #16325F 0, #09111F 34rem, #060910 100%);
+            --bg-page-gradient: radial-gradient(circle at 50% -8%, #10213B 0, #09111F 30rem, #060910 100%);
             --bg-section-tint: #0B1320;
             --header-bg: rgba(8, 13, 22, 0.92);
 
@@ -40,8 +40,8 @@
             --accent-hover: #93C5FD;
             --accent-button: #2563EB;
             --accent-button-hover: #1D4ED8;
-            --accent-glow: rgba(59, 130, 246, 0.20);
-            --accent-soft: rgba(59, 130, 246, 0.12);
+            --accent-glow: rgba(59, 130, 246, 0.10);
+            --accent-soft: rgba(59, 130, 246, 0.08);
             --accent-border: rgba(96, 165, 250, 0.34);
 
             --status-success: #34D399;
@@ -238,8 +238,8 @@
             display: flex;
             align-items: center;
             opacity: 1 !important;
-            backdrop-filter: blur(16px) saturate(135%) !important;
-            -webkit-backdrop-filter: blur(16px) saturate(135%) !important;
+            backdrop-filter: blur(16px) saturate(115%) !important;
+            -webkit-backdrop-filter: blur(16px) saturate(115%) !important;
             transition: background-color 0.25s ease, border-color 0.2s ease;
         }
 
@@ -382,7 +382,7 @@
             background-image: linear-gradient(to right, var(--border-subtle) 1px, transparent 1px), linear-gradient(to bottom, var(--border-subtle) 1px, transparent 1px);
             background-size: 48px 48px;
             mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.22), transparent 72%);
-            opacity: 0.24;
+            opacity: 0.14;
         }
 
         .hero-grid {
@@ -861,8 +861,8 @@
                 padding: 0.75rem clamp(1rem, 4vw, 2rem) 1rem;
                 background: var(--header-bg);
                 border-bottom: 1px solid var(--border-subtle);
-                backdrop-filter: blur(16px) saturate(135%);
-                -webkit-backdrop-filter: blur(16px) saturate(135%);
+                backdrop-filter: blur(16px) saturate(115%);
+                -webkit-backdrop-filter: blur(16px) saturate(115%);
                 animation: menuDrop 0.2s ease-out both;
             }
 
