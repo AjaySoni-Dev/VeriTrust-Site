@@ -20,13 +20,13 @@
         :root {
             color-scheme: dark;
 
-            --bg-base: #070A10;
-            --bg-surface: #0B0E14;
-            --bg-surface-hover: #171C24;
-            --bg-surface-light: #111722;
-            --bg-page-gradient: radial-gradient(circle at 50% -8%, #162D5C 0, #0B0E14 34rem, #070A10 100%);
-            --bg-section-tint: #0E131B;
-            --header-bg: rgba(11, 14, 20, 0.94);
+            --bg-base: #060910;
+            --bg-surface: #121A26;
+            --bg-surface-hover: #192332;
+            --bg-surface-light: #172235;
+            --bg-page-gradient: radial-gradient(circle at 50% -8%, #16325F 0, #09111F 34rem, #060910 100%);
+            --bg-section-tint: #0B1320;
+            --header-bg: rgba(8, 13, 22, 0.92);
 
             --border-subtle: #29313D;
             --border-hover: #3A4655;
@@ -49,8 +49,8 @@
             --danger-soft: rgba(248, 113, 113, 0.09);
 
             --console-grid: #29313D;
-            --console-panel: #111722;
-            --console-fill: #171C24;
+            --console-panel: #172235;
+            --console-fill: #1C2A40;
             --console-muted: #7D8590;
             --console-border: #3A4655;
             --console-text: #FFFFFF;
@@ -69,11 +69,7 @@
             --radius-md: 3px;
             --radius-lg: 4px;
             
-            /* Shadows & FX */
-            --shadow-card: 0 12px 32px rgba(0, 0, 0, 0.24);
-            --shadow-header: 0 8px 24px rgba(0, 0, 0, 0.2);
-            --shadow-button: 0 1px 2px rgba(0, 0, 0, 0.28), 0 8px 20px rgba(37, 99, 235, 0.24);
-            --inner-glow: inset 0 1px 0 rgba(255, 255, 255, 0.045);
+            /* Focus remains visible without relying on decorative elevation. */
             --focus-ring: 0 0 0 3px rgba(96, 165, 250, 0.34);
         }
 
@@ -193,7 +189,6 @@
 
         section {
             padding: var(--section-pad-y) 0;
-            border-bottom: 1px solid var(--border-subtle);
         }
 
         /* Buttons */
@@ -206,33 +201,29 @@
             font-weight: 500;
             font-size: 0.875rem;
             min-height: 42px;
-            transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
+            transition: background-color 0.2s ease, color 0.2s ease;
             cursor: pointer;
             gap: 0.5rem;
             font-family: var(--font-sans);
-            border: 1px solid transparent;
+            border: 0;
         }
 
         .btn-primary {
             background-color: var(--accent-button);
             color: #FFFFFF;
-            box-shadow: var(--shadow-button), inset 0 1px 0 rgba(255,255,255,0.18);
         }
 
         .btn-primary:hover {
             background-color: var(--accent-button-hover);
-            transform: translateY(-1px);
         }
 
         .btn-secondary {
             background-color: var(--bg-surface-hover);
             color: var(--text-primary);
-            border-color: var(--border-hover);
         }
 
         .btn-secondary:hover {
             background-color: var(--bg-surface);
-            border-color: var(--border-active);
         }
 
         /* Navigation */
@@ -249,12 +240,11 @@
             opacity: 1 !important;
             backdrop-filter: blur(16px) saturate(135%) !important;
             -webkit-backdrop-filter: blur(16px) saturate(135%) !important;
-            transition: background-color 0.25s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+            transition: background-color 0.25s ease, border-color 0.2s ease;
         }
 
         header.is-scrolled {
             border-bottom-color: var(--border-hover);
-            box-shadow: var(--shadow-header);
         }
 
         .nav-container {
@@ -319,12 +309,12 @@
             align-items: center;
             justify-content: center;
             background: var(--bg-surface);
-            border: 1px solid var(--border-subtle);
+            border: 0;
             border-radius: var(--radius-sm);
             color: var(--text-primary);
             cursor: pointer;
             padding: 0;
-            transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease, transform 0.2s ease;
+            transition: background-color 0.2s ease, color 0.2s ease;
         }
 
         .menu-toggle {
@@ -333,7 +323,6 @@
 
         .menu-toggle:hover {
             background: var(--bg-surface-hover);
-            border-color: var(--border-hover);
         }
 
         .menu-toggle svg {
@@ -347,7 +336,7 @@
             justify-content: center;
             min-height: 40px;
             padding: 0.5rem 1rem;
-            border: 1px solid var(--border-hover);
+            border: 0;
             border-radius: var(--radius-sm);
             background-color: var(--bg-surface-hover);
             color: var(--text-primary);
@@ -358,7 +347,6 @@
 
         .login-link:hover {
             background-color: var(--bg-surface-light);
-            border-color: var(--border-active);
             color: var(--text-primary);
         }
 
@@ -433,17 +421,15 @@
             width: 100%;
             max-width: 540px;
             margin: 0 auto;
-            border: 1px solid var(--border-subtle);
+            border: 0;
             border-radius: var(--radius-md);
             background: var(--bg-surface);
-            box-shadow: var(--shadow-card);
             overflow: hidden;
         }
 
         .console-header {
             height: 2.5rem;
             background: var(--bg-surface-light);
-            border-bottom: 1px solid var(--border-subtle);
             display: flex;
             align-items: center;
             padding: 0 1rem;
@@ -486,8 +472,6 @@
         .trust-section {
             padding: 2.5rem 0;
             background: var(--bg-section-tint);
-            border-top: 1px solid var(--border-subtle);
-            border-bottom: 1px solid var(--border-subtle);
         }
 
         .trust-grid {
@@ -529,21 +513,17 @@
         /* Cards */
         .card {
             background: var(--bg-surface);
-            border: 1px solid var(--border-subtle);
+            border: 0;
             border-radius: var(--radius-md);
             padding: 1.5rem;
-            transition: border-color 0.2s ease, background-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
-            box-shadow: var(--inner-glow);
+            transition: background-color 0.2s ease;
             height: 100%;
             display: flex;
             flex-direction: column;
         }
 
         .card:hover {
-            border-color: var(--border-hover);
-            background: var(--bg-surface);
-            box-shadow: var(--shadow-card);
-            transform: translateY(-2px);
+            background: var(--bg-surface-hover);
         }
 
         /* Solutions Section */
@@ -552,7 +532,6 @@
             height: 36px;
             border-radius: var(--radius-sm);
             background: var(--accent-soft);
-            border: 1px solid var(--accent-border);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -567,7 +546,6 @@
         .solution-list {
             margin-top: auto;
             padding-top: 1.25rem;
-            border-top: 1px solid var(--border-subtle);
         }
 
         .solution-list li {
@@ -591,7 +569,6 @@
             width: 28px;
             height: 28px;
             background: var(--accent-soft);
-            border: 1px solid var(--accent-border);
             color: var(--accent-main);
             border-radius: var(--radius-sm);
             display: flex;
@@ -626,7 +603,6 @@
             align-items: center;
             justify-content: center;
             flex-shrink: 0;
-            border: 1px solid var(--accent-border);
             margin-top: 0.25rem;
         }
         
@@ -648,7 +624,6 @@
         /* Stats Section */
         .stats-section {
             background: var(--bg-section-tint);
-            border-bottom: 1px solid var(--border-subtle);
             padding: clamp(3rem, 6vw, 5rem) 0;
         }
 
@@ -680,9 +655,7 @@
         }
 
         .pricing-card.popular {
-            border-color: var(--accent-border);
-            background: var(--bg-surface);
-            box-shadow: 0 18px 45px var(--accent-glow);
+            background: var(--bg-surface-light);
         }
 
         .popular-badge {
@@ -751,7 +724,6 @@
 
         .cta-container {
             background: linear-gradient(145deg, var(--bg-surface) 0%, var(--accent-soft) 100%);
-            border: 1px solid var(--accent-border);
             border-radius: var(--radius-lg);
             padding: clamp(3rem, 6vw, 5rem) 2rem;
             text-align: center;
@@ -782,7 +754,6 @@
         footer {
             background: var(--bg-surface);
             padding: 4rem 0 2rem;
-            border-top: 1px solid var(--border-subtle);
         }
 
         .footer-grid {
@@ -808,7 +779,7 @@
             width: 32px;
             height: 32px;
             border-radius: var(--radius-sm);
-            border: 1px solid var(--border-subtle);
+            border: 0;
             background: var(--bg-surface-light);
             display: flex;
             align-items: center;
@@ -817,7 +788,6 @@
         }
 
         .social-links a:hover {
-            border-color: var(--border-hover);
             color: var(--text-primary);
             background: var(--bg-surface-hover);
         }
@@ -891,7 +861,6 @@
                 padding: 0.75rem clamp(1rem, 4vw, 2rem) 1rem;
                 background: var(--header-bg);
                 border-bottom: 1px solid var(--border-subtle);
-                box-shadow: var(--shadow-header);
                 backdrop-filter: blur(16px) saturate(135%);
                 -webkit-backdrop-filter: blur(16px) saturate(135%);
                 animation: menuDrop 0.2s ease-out both;
@@ -972,11 +941,6 @@
                 margin-top: 0.75rem;
             }
 
-            /* Pricing Stack */
-            .pricing-card.popular {
-                transform: none;
-                box-shadow: none;
-            }
             .popular-badge {
                 left: 1.5rem;
             }
@@ -1192,7 +1156,7 @@
             </div>
         </section>
 
-        <section class="trust-section reveal" style="padding: 2.5rem 0; border-top: 1px solid var(--border-subtle); border-bottom: 1px solid var(--border-subtle);">
+        <section class="trust-section reveal" style="padding: 2.5rem 0;">
             <div class="container">
                 <div class="trust-grid">
                     <div class="trust-badge">
