@@ -72,6 +72,9 @@
             --console-border: #CBD5E1;
             --console-text: #0F172A;
             --logo-filter: brightness(0) saturate(100%) invert(8%) sepia(16%) saturate(2231%) hue-rotate(183deg) brightness(91%) contrast(95%);
+            --brand-veri: #64748B;
+            --brand-trust: #2563EB;
+            --brand-lab: #A16207;
 
             /* Typography */
             --font-sans: 'Inter', sans-serif;
@@ -356,6 +359,30 @@
             margin-top: 2px; /* Visual alignment correction */
             filter: var(--logo-filter);
             transition: filter 0.25s ease;
+        }
+
+        .brand-text-light {
+            display: inline-flex;
+            align-items: baseline;
+            margin-top: 1px;
+            font-family: var(--font-display);
+            font-size: 1.15rem;
+            font-weight: 700;
+            line-height: 1;
+            letter-spacing: -0.055em;
+            white-space: nowrap;
+        }
+
+        .brand-text-light .brand-veri { color: var(--brand-veri); }
+        .brand-text-light .brand-trust { color: var(--brand-trust); }
+        .brand-text-light .brand-lab { color: var(--brand-lab); }
+
+        html:not([data-theme="dark"]) .brand-text-img {
+            display: none;
+        }
+
+        html[data-theme="dark"] .brand-text-light {
+            display: none;
         }
 
         .nav-links {
@@ -1102,6 +1129,10 @@
                 max-width: 138px;
             }
 
+            .brand-text-light {
+                font-size: 1.02rem;
+            }
+
             .nav-container {
                 gap: 0.75rem;
             }
@@ -1191,6 +1222,7 @@
             <a href="#" class="logo" aria-label="VeriTrust home">
                 <img src="logo.png" alt="VeriTrust Logo" class="brand-logo-img">
                 <img src="brand.png" alt="VeriTrust" class="brand-text-img">
+                <span class="brand-text-light" aria-hidden="true"><span class="brand-veri">VERI</span><span class="brand-trust">TRUST</span><span class="brand-lab">LAB</span></span>
             </a>
             <nav class="nav-links" id="primary-navigation" aria-label="Primary navigation">
                 <a href="#solutions">Solutions</a>
@@ -1537,9 +1569,10 @@
         <div class="container">
             <div class="footer-grid">
                 <div class="footer-brand">
-                    <a href="index.html" class="logo" style="margin-bottom: 0.5rem;">
+                    <a href="index.html" class="logo" style="margin-bottom: 0.5rem;" aria-label="VeriTrust home">
                         <img src="logo.png" alt="VeriTrust Logo" class="brand-logo-img">
                         <img src="brand.png" alt="VeriTrust" class="brand-text-img">
+                        <span class="brand-text-light" aria-hidden="true"><span class="brand-veri">VERI</span><span class="brand-trust">TRUST</span><span class="brand-lab">LAB</span></span>
                     </a>
                     <p>AI-assisted image, message, and URL review for cautious web and API-based triage.</p>
                     <div class="social-links">
