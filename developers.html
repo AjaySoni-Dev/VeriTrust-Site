@@ -1,0 +1,211 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" href="/favicon.ico" type="image/x-icon">
+  <title>Developers | VeriTrust</title>
+  <meta name="description" content="Reference for the implemented VeriTrust API v1 deepfake, phishing, link-check and usage endpoints, including scoped API-key authentication and plan-based limits.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@500;600&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/veritrust.css?v=20260716-final-theme1">
+  <script src="assets/js/config.js?v=20260712-supabase3" defer></script>
+  <script src="assets/js/supabase-client.js?v=20260712-supabase3" defer></script>
+  <script src="assets/js/site.js?v=20260712-unified-header2" defer></script>
+</head>
+<body>
+  <header class="tool-header-shell vt-page-header">
+    <div class="tool-header-inner">
+      <a href="index.html" class="tool-header-brand" aria-label="VeriTrust home">
+        <img src="logo.png" alt="" class="tool-header-mark">
+        <img src="brand.png" alt="VeriTrust" class="tool-header-word">
+      </a>
+      <nav class="tool-header-links" aria-label="Primary">
+        <a href="index.html">Home</a>
+        <a href="detection.html">Detection</a>
+        <a href="developers.html" class="active">Developers</a>
+        <a href="docs.html">Docs</a>
+        <a href="model-performance.html">Model Performance</a>
+      </nav>
+      <div class="tool-header-actions">
+        <a href="auth.html" class="tool-header-login">Log in</a>
+        <a href="dashboard.html" class="tool-header-dashboard">Dashboard</a>
+        <button class="tool-menu-toggle" aria-label="Open page menu" aria-expanded="false" type="button">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+            <circle cx="12" cy="5" r="1.8"/>
+            <circle cx="12" cy="12" r="1.8"/>
+            <circle cx="12" cy="19" r="1.8"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main class="container docs-layout">
+    <aside class="toc">
+      <a href="#overview">Overview</a>
+      <a href="#auth">Authentication</a>
+      <a href="#scopes">Scopes</a>
+      <a href="#errors">Errors</a>
+      <a href="#deepfake">Deepfake</a>
+      <a href="#phishing">Phishing</a>
+      <a href="#link">Link Intelligence</a>
+      <a href="#usage">Usage</a>
+      <a href="#examples">Examples</a>
+      <a href="#security">Security</a>
+    </aside>
+
+    <article class="doc-content">
+      <section id="overview" class="doc-section">
+        <p class="eyebrow">Developers</p>
+        <h1>VeriTrust Developer API.</h1>
+        <p>Use the REST-style API from a trusted backend or private script. The implemented v1 surface contains Deepfake, Phishing, Link Intelligence, and Usage routes; VeriTrust does not currently ship an official SDK.</p>
+        <p>Signed-in users can create and revoke keys from API Access when their workspace plan permits it. The raw key is returned once; later list responses contain only masked metadata.</p>
+      </section>
+
+      <section id="auth" class="doc-section">
+        <h2>Authentication</h2>
+        <p>Send the key as a Bearer token over HTTPS. Do not embed it in frontend JavaScript, a mobile binary, a public repository, or a shared notebook.</p>
+        <pre class="code-block"><code>Authorization: Bearer vtg_live_YOUR_API_KEY</code></pre>
+        <pre class="code-block"><code>curl "https://YOUR_DOMAIN/api/v1/usage" \
+  -H "Authorization: Bearer vtg_live_YOUR_API_KEY"</code></pre>
+      </section>
+
+      <section id="scopes" class="doc-section">
+        <h2>Scopes</h2>
+        <p>New keys default to <code>deepfake:scan</code>, <code>phishing:scan</code>, <code>link:scan</code>, and <code>usage:read</code>.</p>
+        <ul>
+          <li><code>deepfake:scan</code> - use Deepfake API</li>
+          <li><code>phishing:scan</code> - use Phishing API</li>
+          <li><code>link:scan</code> - use Link Intelligence API</li>
+          <li><code>usage:read</code> - read API usage</li>
+        </ul>
+      </section>
+
+      <section id="errors" class="doc-section">
+        <h2>Rate Limits And Error Format</h2>
+        <p>Requests are checked against both the key&apos;s daily limit and the workspace&apos;s monthly API quota. The API Access and Billing pages show the deployed values; do not assume one fixed limit across plans. API v1 JSON responses include a <code>request_id</code> for support and logging.</p>
+        <pre class="code-block"><code>{
+  "ok": false,
+  "request_id": "vt_req_xxxxx",
+  "error": {
+    "code": "INVALID_INPUT",
+    "message": "Please provide a valid URL or text containing a URL."
+  }
+}</code></pre>
+        <p>Common error codes include <code>MISSING_API_KEY</code>, <code>INVALID_API_KEY</code>, <code>REVOKED_API_KEY</code>, <code>INSUFFICIENT_SCOPE</code>, <code>RATE_LIMITED</code>, <code>API_NOT_INCLUDED</code>, <code>MONTHLY_API_LIMIT_REACHED</code>, <code>SUBSCRIPTION_INACTIVE</code>, <code>INVALID_INPUT</code>, <code>INVALID_MODEL</code>, <code>MODEL_ERROR</code>, and <code>INTERNAL_ERROR</code>.</p>
+      </section>
+
+      <section id="deepfake" class="doc-section">
+        <h2>Deepfake API</h2>
+        <p><code>POST /api/v1/deepfake</code> accepts <code>multipart/form-data</code> with a JPG, PNG, WEBP, or BMP <code>image</code> up to 4 MB. Model values are <code>fast</code>/<code>pixel</code> and <code>robust</code>/<code>prism</code>. Optional <code>crop=true</code> attempts face preprocessing through the configured crop service and falls back to the original image if cropping is unavailable.</p>
+        <pre class="code-block"><code>curl -X POST "https://YOUR_DOMAIN/api/v1/deepfake" \
+  -H "Authorization: Bearer vtg_live_YOUR_API_KEY" \
+  -F "image=@sample.jpg" \
+  -F "model=fast" \
+  -F "crop=true"</code></pre>
+      </section>
+
+      <section id="phishing" class="doc-section">
+        <h2>Phishing API</h2>
+        <p><code>POST /api/v1/phishing</code> accepts JSON with 8 to 12,000 characters in <code>text</code> and an optional <code>model</code>. Use <code>fast</code>/<code>mailguard</code> for the text classifier or <code>robust</code>/<code>cortex</code> for the instruction model. The final score also includes implemented deterministic message indicators.</p>
+        <pre class="code-block"><code>curl -X POST "https://YOUR_DOMAIN/api/v1/phishing" \
+  -H "Authorization: Bearer vtg_live_YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"text":"Your account will be blocked. Verify your password now.","model":"fast"}'</code></pre>
+      </section>
+
+      <section id="link" class="doc-section">
+        <h2>Link Intelligence API</h2>
+        <p><code>POST /api/v1/link-check</code> accepts JSON with an HTTP or HTTPS <code>url</code>, optional <code>context</code>, and optional <code>model</code>. Only <code>swift</code> is accepted in this version; <code>sentinel</code> is unavailable. The route analyzes the URL string and does not fetch the target page or follow redirects.</p>
+        <pre class="code-block"><code>curl -X POST "https://YOUR_DOMAIN/api/v1/link-check" \
+  -H "Authorization: Bearer vtg_live_YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "url": "https://secure-bank-verify-example.com/login",
+    "model": "swift"
+  }'</code></pre>
+      </section>
+
+      <section id="usage" class="doc-section">
+        <h2>Usage API</h2>
+        <p><code>GET /api/v1/usage</code> requires <code>usage:read</code> and returns the key&apos;s daily usage, masked key metadata, and available workspace billing snapshot. Usage lookups are themselves recorded as API usage events.</p>
+      </section>
+
+      <section id="examples" class="doc-section">
+        <h2>Python Example</h2>
+        <pre class="code-block"><code>import os
+import requests
+
+API_KEY = os.environ["VERITRUST_API_KEY"]
+BASE_URL = "https://YOUR_DOMAIN"
+
+payload = {
+    "url": "https://secure-bank-verify-example.com/login",
+    "model": "swift"
+}
+
+response = requests.post(
+    f"{BASE_URL}/api/v1/link-check",
+    headers={"Authorization": f"Bearer {API_KEY}"},
+    json=payload,
+    timeout=60
+)
+
+data = response.json()
+
+print(data["result"]["label"])
+print(data["result"]["risk_level"])
+print(data["result"]["confidence"])
+print(data["result"]["summary"])</code></pre>
+
+        <h2>Private Jupyter Notebook Example</h2>
+        <pre class="code-block"><code>import os
+import requests
+from IPython.display import display, Markdown
+
+API_KEY = os.environ["VERITRUST_API_KEY"]
+BASE_URL = "https://YOUR_DOMAIN"
+
+url = "https://secure-bank-verify-example.com/login"
+
+response = requests.post(
+    f"{BASE_URL}/api/v1/link-check",
+    headers={"Authorization": f"Bearer {API_KEY}"},
+    json={"url": url, "model": "swift"},
+    timeout=60
+)
+
+data = response.json()
+
+display(Markdown(f"""
+## VeriTrust Link Intelligence
+
+**URL:** {url}  
+**Verdict:** {data["result"]["label"]}  
+**Risk:** {data["result"]["risk_level"]}  
+**Confidence:** {data["result"]["confidence"]:.2%}  
+
+{data["result"]["summary"]}
+"""))</code></pre>
+      </section>
+
+      <section id="security" class="doc-section">
+        <h2>Security Best Practices</h2>
+        <p>Never expose VeriTrust API keys in frontend JavaScript, public GitHub repositories, or shared notebooks. Use environment variables or server-side calls.</p>
+        <ul>
+          <li>Store keys in environment variables or a secret manager.</li>
+          <li>Rotate and revoke keys from the dashboard when access changes.</li>
+          <li>Use the narrowest scope set that fits your integration.</li>
+          <li>Do not log raw API keys or paste them into public notebooks.</li>
+        </ul>
+      </section>
+    </article>
+  </main>
+
+  <footer class="legal-footer">
+    <a href="docs.html">Docs</a><span aria-hidden="true">&middot;</span><a href="developers.html">Developers</a><span aria-hidden="true">&middot;</span><a href="model-performance.html">Model Performance</a><span aria-hidden="true">&middot;</span><a href="privacy.html">Privacy</a><span aria-hidden="true">&middot;</span><a href="terms.html">Terms</a><span aria-hidden="true">&middot;</span><a href="security.html">Security</a><span aria-hidden="true">&middot;</span><a href="disclaimer.html">Disclaimer</a>
+  </footer>
+</body>
+</html>
