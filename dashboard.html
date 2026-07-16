@@ -5,49 +5,83 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="icon" href="/favicon.ico" type="image/x-icon">
   <title>Dashboard | VeriTrust</title>
-  <meta name="theme-color" content="#09090b">
+  <meta name="theme-color" content="#0c0e12">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="assets/css/veritrust.css?v=20260712-workspace1">
   <style>
     body.vt-dashboard-page {
-      --dashboard-canvas: #030712;
-      --dashboard-surface: #09090b;
-      --dashboard-surface-raised: #101216;
-      --dashboard-surface-soft: #0b0d11;
-      --dashboard-border: #27272a;
-      --dashboard-border-strong: #3f3f46;
-      --dashboard-accent-soft: rgba(59, 130, 246, 0.1);
-      --dashboard-accent-border: rgba(96, 165, 250, 0.28);
-      --dashboard-shadow: 0 18px 48px rgba(0, 0, 0, 0.28);
-      --dashboard-shadow-soft: 0 10px 30px rgba(0, 0, 0, 0.2);
+      --bg: #0c0e12;
+      --surface: #11141a;
+      --surface-2: #16191f;
+      --surface-3: #1b1f26;
+      --border: #252a32;
+      --border-strong: #343b46;
+      --text: #edf0f4;
+      --muted: #a7afb9;
+      --soft: #818b97;
+      --blue: #6f94da;
+      --blue-2: #4b6eae;
+      --header-bg: #0c0e12;
+      --bg-base: #080a0e;
+      --bg-surface: var(--bg);
+      --bg-surface-hover: var(--surface-2);
+      --bg-surface-light: var(--surface);
+      --border-subtle: var(--border);
+      --border-hover: var(--border-strong);
+      --border-active: #46505e;
+      --text-primary: var(--text);
+      --text-secondary: var(--muted);
+      --text-tertiary: var(--soft);
+      --accent-main: var(--blue);
+      --accent-hover: #82a3df;
+      --shimmer-base: #15181d;
+      --shimmer-edge: #181c22;
+      --shimmer-highlight: #222731;
+      --dashboard-canvas: #080a0e;
+      --dashboard-surface: #0c0e12;
+      --dashboard-surface-raised: #11141a;
+      --dashboard-surface-soft: #0f1217;
+      --dashboard-border: #252a32;
+      --dashboard-border-strong: #343b46;
+      --dashboard-accent-soft: rgba(98, 139, 215, 0.08);
+      --dashboard-accent-border: rgba(122, 157, 223, 0.22);
+      --dashboard-text-strong: #edf0f4;
+      --dashboard-text: #a7afb9;
+      --dashboard-muted: #818b97;
+      --dashboard-blue: #6f94da;
+      --dashboard-blue-strong: #4b6eae;
+      --dashboard-blue-button-hover: #5072b0;
+      --dashboard-blue-soft: #9ab4e0;
+      --dashboard-shadow: 0 18px 48px rgba(0, 0, 0, 0.22);
+      --dashboard-shadow-soft: 0 10px 30px rgba(0, 0, 0, 0.16);
       min-width: 0;
       overflow-x: hidden;
       background-color: var(--dashboard-canvas);
       background-image:
-        radial-gradient(circle at 78% -10%, rgba(37, 99, 235, 0.2), transparent 34rem),
-        linear-gradient(rgba(63, 63, 70, 0.08) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(63, 63, 70, 0.08) 1px, transparent 1px);
+        radial-gradient(circle at 78% -10%, rgba(75, 96, 137, 0.14), transparent 34rem),
+        linear-gradient(rgba(78, 88, 104, 0.055) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(78, 88, 104, 0.055) 1px, transparent 1px);
       background-size: auto, 56px 56px, 56px 56px;
       background-attachment: fixed;
-      color: #fafafa;
+      color: var(--dashboard-text-strong);
     }
 
     body.vt-dashboard-page ::selection {
-      background: rgba(59, 130, 246, 0.38);
-      color: #fff;
+      background: rgba(98, 139, 215, 0.26);
+      color: #f5f7fa;
     }
 
     body.vt-dashboard-page :where(a, button):focus-visible {
       outline: none;
-      box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.32);
+      box-shadow: 0 0 0 3px rgba(122, 157, 223, 0.24);
     }
 
     body.vt-dashboard-page .tool-header-shell {
-      background: rgba(9, 9, 11, 0.9) !important;
-      border-bottom-color: rgba(63, 63, 70, 0.72);
-      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.22);
+      background: rgba(12, 14, 18, 0.92) !important;
+      border-bottom-color: rgba(52, 59, 70, 0.66);
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.17);
       backdrop-filter: blur(18px) saturate(135%) !important;
       -webkit-backdrop-filter: blur(18px) saturate(135%) !important;
     }
@@ -103,7 +137,7 @@
     body.vt-dashboard-page .tool-header-dashboard.active {
       border-color: var(--dashboard-accent-border);
       background: var(--dashboard-accent-soft);
-      color: #dbeafe;
+      color: #cbd7ea;
     }
 
     body.vt-dashboard-page .tool-menu-toggle {
@@ -130,7 +164,7 @@
       padding: clamp(21px, 3vw, 30px);
       border: 1px solid var(--dashboard-border);
       border-radius: 12px;
-      background: linear-gradient(135deg, rgba(18, 18, 20, 0.98), rgba(9, 9, 11, 0.94));
+      background: linear-gradient(135deg, rgba(17, 20, 26, 0.98), rgba(12, 14, 18, 0.95));
       box-shadow: var(--dashboard-shadow);
     }
 
@@ -143,7 +177,7 @@
       width: 280px;
       height: 280px;
       border-radius: 50%;
-      background: rgba(37, 99, 235, 0.18);
+      background: rgba(88, 120, 180, 0.13);
       filter: blur(28px);
       pointer-events: none;
     }
@@ -160,7 +194,7 @@
       border: 1px solid var(--dashboard-accent-border);
       border-radius: 999px;
       background: var(--dashboard-accent-soft);
-      color: #93c5fd;
+      color: var(--dashboard-blue-soft);
       font-family: var(--font);
       font-size: 9px;
       font-weight: 700;
@@ -169,7 +203,7 @@
 
     body.vt-dashboard-page .dashboard-head h1 {
       max-width: 720px;
-      color: #fafafa;
+      color: var(--dashboard-text-strong);
       font-size: clamp(27px, 3.4vw, 35px);
       letter-spacing: -0.035em;
       line-height: 1.08;
@@ -179,7 +213,7 @@
     body.vt-dashboard-page .dashboard-head .lead {
       max-width: 720px;
       margin: 11px 0 0;
-      color: #a1a1aa;
+      color: var(--dashboard-text);
       font-size: clamp(12.5px, 1.35vw, 14px);
       line-height: 1.58;
     }
@@ -189,20 +223,20 @@
       z-index: 1;
       min-width: 108px;
       min-height: 38px;
-      border-color: #2563eb;
+      border-color: var(--dashboard-blue-strong);
       border-radius: 8px;
       padding-inline: 14px;
-      background: #2563eb;
-      box-shadow: 0 10px 24px rgba(37, 99, 235, 0.24), inset 0 1px 0 rgba(255, 255, 255, 0.16);
-      color: #fff;
+      background: var(--dashboard-blue-strong);
+      box-shadow: 0 10px 24px rgba(84, 119, 183, 0.17), inset 0 1px 0 rgba(255, 255, 255, 0.11);
+      color: #f7f8fa;
       font-size: 12px;
       transition: background-color 180ms ease, border-color 180ms ease, box-shadow 180ms ease, transform 180ms ease;
     }
 
     body.vt-dashboard-page .dashboard-head > .btn:hover {
-      border-color: #3b82f6;
-      background: #3b82f6;
-      box-shadow: 0 12px 28px rgba(37, 99, 235, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.18);
+      border-color: var(--dashboard-blue-button-hover);
+      background: var(--dashboard-blue-button-hover);
+      box-shadow: 0 12px 28px rgba(84, 119, 183, 0.21), inset 0 1px 0 rgba(255, 255, 255, 0.12);
       transform: translateY(-1px);
     }
 
@@ -215,9 +249,9 @@
       gap: 6px;
       margin-bottom: 12px;
       padding: 5px;
-      border-color: rgba(63, 63, 70, 0.82);
+      border-color: rgba(52, 59, 70, 0.75);
       border-radius: 9px;
-      background: rgba(9, 9, 11, 0.88);
+      background: rgba(12, 14, 18, 0.88);
       box-shadow: var(--dashboard-shadow-soft);
       backdrop-filter: blur(14px) saturate(130%);
       -webkit-backdrop-filter: blur(14px) saturate(130%);
@@ -243,22 +277,22 @@
     body.vt-dashboard-page .workspace-nav a {
       min-height: 34px;
       border-radius: 6px;
-      color: #8b8b95;
+      color: var(--dashboard-muted);
       font-size: 11px;
       transition: background-color 160ms ease, border-color 160ms ease, color 160ms ease;
     }
 
     body.vt-dashboard-page .workspace-nav a:hover {
       border-color: var(--dashboard-border);
-      background: #121214;
-      color: #d4d4d8;
+      background: var(--dashboard-surface-raised);
+      color: #c4cad2;
     }
 
     body.vt-dashboard-page .workspace-nav a.active {
       border-color: var(--dashboard-accent-border);
       background: var(--dashboard-accent-soft);
-      color: #dbeafe;
-      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
+      color: #cbd7ea;
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.03);
     }
 
     body.vt-dashboard-page .workspace-hub {
@@ -276,20 +310,20 @@
       padding: 15px 16px;
       border-color: var(--dashboard-border);
       border-radius: 9px;
-      background: linear-gradient(155deg, rgba(18, 18, 20, 0.98), rgba(9, 9, 11, 0.98));
+      background: linear-gradient(155deg, rgba(17, 20, 26, 0.98), rgba(12, 14, 18, 0.98));
       box-shadow: var(--dashboard-shadow-soft);
       transition: background-color 180ms ease, border-color 180ms ease, box-shadow 180ms ease, transform 180ms ease;
     }
 
     body.vt-dashboard-page .workspace-card span {
-      color: #60a5fa;
+      color: var(--dashboard-blue);
       font-size: 9px;
       letter-spacing: 0.1em;
     }
 
     body.vt-dashboard-page .workspace-card strong {
       max-width: 210px;
-      color: #fafafa;
+      color: var(--dashboard-text-strong);
       font-family: var(--display);
       font-size: 16px;
       letter-spacing: -0.02em;
@@ -297,14 +331,14 @@
     }
 
     body.vt-dashboard-page .workspace-card p {
-      color: #8b8b95;
+      color: var(--dashboard-muted);
       font-size: 11px;
       line-height: 1.5;
     }
 
     body.vt-dashboard-page .workspace-card em {
       padding-top: 5px;
-      color: #93c5fd;
+      color: var(--dashboard-blue-soft);
       font-size: 11px;
     }
 
@@ -316,7 +350,7 @@
       padding: clamp(15px, 2vw, 19px);
       border-color: var(--dashboard-border);
       border-radius: 9px;
-      background: linear-gradient(150deg, rgba(16, 18, 22, 0.99), rgba(9, 9, 11, 0.99));
+      background: linear-gradient(150deg, rgba(17, 20, 26, 0.99), rgba(12, 14, 18, 0.99));
       box-shadow: var(--dashboard-shadow-soft);
     }
 
@@ -327,14 +361,14 @@
     }
 
     body.vt-dashboard-page .panel-title h2 {
-      color: #fafafa;
+      color: var(--dashboard-text-strong);
       font-size: clamp(16px, 1.7vw, 18px);
       letter-spacing: -0.025em;
     }
 
     body.vt-dashboard-page .panel-title p {
       margin-top: 3px;
-      color: #8b8b95;
+      color: var(--dashboard-muted);
       font-size: 11px;
     }
 
@@ -356,7 +390,7 @@
 
     body.vt-dashboard-page .usage-stat:first-child {
       grid-column: span 2;
-      background: linear-gradient(135deg, rgba(37, 99, 235, 0.14), rgba(11, 13, 17, 0.98));
+      background: linear-gradient(135deg, rgba(98, 139, 215, 0.1), rgba(15, 18, 23, 0.98));
       border-color: var(--dashboard-accent-border);
     }
 
@@ -367,13 +401,13 @@
       left: 0;
       width: 44px;
       height: 2px;
-      background: #3b82f6;
+      background: var(--dashboard-blue);
       opacity: 0.75;
     }
 
     body.vt-dashboard-page .usage-stat span {
       max-width: 160px;
-      color: #8b8b95;
+      color: var(--dashboard-muted);
       font-size: 9.5px;
       font-weight: 600;
       line-height: 1.45;
@@ -381,7 +415,7 @@
 
     body.vt-dashboard-page .usage-stat strong {
       margin-top: 6px;
-      color: #fafafa;
+      color: var(--dashboard-text-strong);
       font-family: var(--display);
       font-size: clamp(18px, 2vw, 23px);
       letter-spacing: -0.035em;
@@ -389,7 +423,7 @@
     }
 
     body.vt-dashboard-page .usage-stat:first-child strong {
-      color: #dbeafe;
+      color: #cbd7ea;
       font-size: clamp(22px, 2.5vw, 28px);
     }
 
@@ -397,25 +431,25 @@
       width: min(1080px, calc(100% - 36px));
       margin-top: 0;
       border-top-color: var(--dashboard-border);
-      color: #8b8b95;
+      color: var(--dashboard-muted);
     }
 
     body.vt-dashboard-page .legal-footer a {
-      color: #8b8b95;
+      color: var(--dashboard-muted);
       transition: color 160ms ease;
     }
 
     @media (hover: hover) and (pointer: fine) {
       body.vt-dashboard-page .workspace-card:hover {
         border-color: var(--dashboard-accent-border);
-        background: linear-gradient(155deg, rgba(19, 24, 34, 0.99), rgba(9, 9, 11, 0.99));
-        box-shadow: 0 18px 42px rgba(0, 0, 0, 0.3);
+        background: linear-gradient(155deg, rgba(19, 23, 30, 0.99), rgba(12, 14, 18, 0.99));
+        box-shadow: 0 18px 42px rgba(0, 0, 0, 0.23);
         transform: translateY(-3px);
       }
 
       body.vt-dashboard-page .usage-stat:hover {
         border-color: var(--dashboard-border-strong);
-        background-color: #101216;
+        background-color: var(--dashboard-surface-raised);
         transform: translateY(-1px);
       }
     }
@@ -492,8 +526,8 @@
 
       body.vt-dashboard-page .tool-header-links.is-open > a:hover,
       body.vt-dashboard-page .tool-header-links.is-open > a.active {
-        background: #18181b;
-        color: #fafafa;
+        background: var(--dashboard-surface-raised);
+        color: var(--dashboard-text-strong);
       }
 
       body.vt-dashboard-page .tool-header-links.is-open .workspace-menu-link {
