@@ -65,9 +65,9 @@
             --section-pad-y: clamp(4rem, 8vw, 7rem); /* Fluid vertical padding */
             --header-height: 4.5rem; /* Slightly increased to comfortably fit the larger logo */
             
-            --radius-sm: 6px;
-            --radius-md: 12px;
-            --radius-lg: 16px;
+            --radius-sm: 2px;
+            --radius-md: 3px;
+            --radius-lg: 4px;
             
             /* Shadows & FX */
             --shadow-card: 0 12px 32px rgba(0, 0, 0, 0.24);
@@ -692,7 +692,7 @@
             background: var(--accent-button);
             color: #FFFFFF;
             padding: 0.25rem 0.75rem;
-            border-radius: 4px;
+            border-radius: 2px;
             font-size: 0.6875rem;
             font-weight: 700;
             text-transform: uppercase;
@@ -1163,9 +1163,9 @@
                             <text x="20" y="45" font-family="var(--font-mono)" font-size="10" fill="var(--console-muted)">> Requesting model scores...</text>
                             <text x="20" y="60" font-family="var(--font-mono)" font-size="10" fill="var(--accent-main)">> Model: VeriTrust Prism</text>
 
-                            <rect x="20" y="80" width="160" height="120" rx="4" fill="var(--console-panel)" stroke="var(--console-border)" stroke-width="1"/>
+                            <rect x="20" y="80" width="160" height="120" rx="2" fill="var(--console-panel)" stroke="var(--console-border)" stroke-width="1"/>
                             
-                            <rect x="40" y="100" width="120" height="80" rx="2" fill="var(--console-fill)" stroke="var(--border-active)" stroke-width="1" stroke-dasharray="2 2"/>
+                            <rect x="40" y="100" width="120" height="80" rx="1" fill="var(--console-fill)" stroke="var(--border-active)" stroke-width="1" stroke-dasharray="2 2"/>
                             
                             <g>
                                 <line x1="40" y1="100" x2="40" y2="180" stroke="var(--accent-main)" stroke-width="2">
@@ -1178,11 +1178,11 @@
                             <circle cx="120" cy="140" r="3" fill="var(--status-danger)" class="anim-pulse" style="animation-delay: 0.5s"/>
                             <line x1="80" y1="120" x2="120" y2="140" stroke="var(--status-danger)" stroke-width="0.5" opacity="0.5"/>
 
-                            <rect x="200" y="80" width="180" height="60" rx="4" fill="var(--console-panel)" stroke="var(--console-border)" stroke-width="1"/>
+                            <rect x="200" y="80" width="180" height="60" rx="2" fill="var(--console-panel)" stroke="var(--console-border)" stroke-width="1"/>
                             <text x="215" y="105" font-family="var(--font-mono)" font-size="9" fill="var(--text-secondary)">EXAMPLE MODEL SCORE</text>
                             <text x="215" y="125" font-family="var(--font-display)" font-size="20" font-weight="600" fill="var(--console-text)">72.0%</text>
                             
-                            <rect x="200" y="150" width="180" height="50" rx="4" fill="var(--danger-soft)" stroke="var(--status-danger)" stroke-width="1"/>
+                            <rect x="200" y="150" width="180" height="50" rx="2" fill="var(--danger-soft)" stroke="var(--status-danger)" stroke-width="1"/>
                             <path d="M215 170l4 4 8-8" stroke="var(--status-danger)" stroke-width="1.5" stroke-linecap="round" fill="none"/>
                             <text x="235" y="170" font-family="var(--font-mono)" font-size="10" fill="var(--status-danger)">MANUAL REVIEW ADVISED</text>
                             <text x="235" y="185" font-family="var(--font-mono)" font-size="8" fill="var(--console-muted)">Model score, not forensic proof</text>
