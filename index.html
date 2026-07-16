@@ -6,7 +6,7 @@
     <link rel="icon" href="/favicon.ico" type="image/x-icon">
     <title>VeriTrust | AI-Assisted Image, Message and Link Review</title>
     <meta name="description" content="Review suspicious images, messages, emails and URLs with AI-assisted scores, rule-based indicators, saved scan history and a scoped developer API.">
-    <meta name="theme-color" content="#0C0E12">
+    <meta name="theme-color" content="#0B0E14">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -20,38 +20,40 @@
         :root {
             color-scheme: dark;
 
-            --bg-base: #080A0E;
-            --bg-surface: #0C0E12;
-            --bg-surface-hover: #16191F;
-            --bg-surface-light: #11141A;
-            --bg-page-gradient: radial-gradient(circle at 50% -8%, #182134 0, #0C0E12 34rem, #080A0E 100%);
-            --bg-section-tint: #0F1217;
-            --header-bg: rgba(12, 14, 18, 0.94);
+            --bg-base: #070A10;
+            --bg-surface: #0B0E14;
+            --bg-surface-hover: #171C24;
+            --bg-surface-light: #111722;
+            --bg-page-gradient: radial-gradient(circle at 50% -8%, #1A2944 0, #0B0E14 34rem, #070A10 100%);
+            --bg-section-tint: #0E131B;
+            --header-bg: rgba(11, 14, 20, 0.94);
 
-            --border-subtle: #252A32;
-            --border-hover: #343B46;
-            --border-active: #46505E;
+            --border-subtle: #29313D;
+            --border-hover: #3A4655;
+            --border-active: #4B5A6D;
 
-            --text-primary: #EDF0F4;
-            --text-secondary: #A7AFB9;
-            --text-tertiary: #818B97;
+            --text-primary: #F1F3F7;
+            --text-secondary: #ADB5C0;
+            --text-tertiary: #858F9D;
 
-            --accent-main: #4B6EAE;
-            --accent-hover: #5275B5;
-            --accent-glow: rgba(75, 110, 174, 0.11);
-            --accent-soft: rgba(98, 139, 215, 0.07);
-            --accent-border: rgba(122, 157, 223, 0.2);
+            --accent-main: #6A9AF0;
+            --accent-hover: #83ACF4;
+            --accent-button: #436FBE;
+            --accent-button-hover: #4774C2;
+            --accent-glow: rgba(79, 127, 211, 0.16);
+            --accent-soft: rgba(106, 154, 240, 0.10);
+            --accent-border: rgba(131, 172, 244, 0.28);
 
-            --status-success: #5ABF9D;
-            --status-danger: #E68181;
-            --danger-soft: rgba(230, 129, 129, 0.07);
+            --status-success: #45C59B;
+            --status-danger: #EF8585;
+            --danger-soft: rgba(239, 133, 133, 0.08);
 
-            --console-grid: #252A32;
-            --console-panel: #11141A;
-            --console-fill: #16191F;
-            --console-muted: #818B97;
-            --console-border: #343B46;
-            --console-text: #EDF0F4;
+            --console-grid: #29313D;
+            --console-panel: #111722;
+            --console-fill: #171C24;
+            --console-muted: #858F9D;
+            --console-border: #3A4655;
+            --console-text: #F1F3F7;
 
             /* Typography */
             --font-sans: 'Inter', sans-serif;
@@ -67,11 +69,11 @@
             --radius-lg: 16px;
             
             /* Shadows & FX */
-            --shadow-card: 0 12px 32px rgba(0, 0, 0, 0.22);
-            --shadow-header: 0 8px 24px rgba(0, 0, 0, 0.18);
-            --shadow-button: 0 1px 2px rgba(0, 0, 0, 0.26), 0 7px 18px rgba(84, 119, 183, 0.12);
-            --inner-glow: inset 0 1px 0 rgba(255, 255, 255, 0.035);
-            --focus-ring: 0 0 0 3px rgba(122, 157, 223, 0.24);
+            --shadow-card: 0 12px 32px rgba(0, 0, 0, 0.24);
+            --shadow-header: 0 8px 24px rgba(0, 0, 0, 0.2);
+            --shadow-button: 0 1px 2px rgba(0, 0, 0, 0.27), 0 7px 18px rgba(67, 111, 190, 0.17);
+            --inner-glow: inset 0 1px 0 rgba(255, 255, 255, 0.045);
+            --focus-ring: 0 0 0 3px rgba(131, 172, 244, 0.28);
         }
 
         /* Reset & Base */
@@ -211,13 +213,13 @@
         }
 
         .btn-primary {
-            background-color: var(--accent-main);
+            background-color: var(--accent-button);
             color: #FFFFFF;
             box-shadow: var(--shadow-button), inset 0 1px 0 rgba(255,255,255,0.18);
         }
 
         .btn-primary:hover {
-            background-color: var(--accent-hover);
+            background-color: var(--accent-button-hover);
             transform: translateY(-1px);
         }
 
@@ -682,7 +684,7 @@
             position: absolute;
             top: -12px;
             left: 2rem;
-            background: var(--accent-main);
+            background: var(--accent-button);
             color: #FFFFFF;
             padding: 0.25rem 0.75rem;
             border-radius: 4px;
