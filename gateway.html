@@ -10,11 +10,11 @@
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@500;600&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="assets/css/veritrust.css?v=20260717-gateway">
   <link rel="stylesheet" href="assets/css/tool-pages.css?v=20260717-gateway">
-  <link rel="stylesheet" href="assets/css/gateway.css?v=20260717-gateway">
+  <link rel="stylesheet" href="assets/css/gateway.css?v=20260718-ui2">
   <script src="assets/js/config.js?v=20260717-gateway" defer></script>
   <script src="assets/js/supabase-client.js?v=20260717-gateway" defer></script>
   <script src="assets/js/site.js?v=20260712-unified-header2" defer></script>
-  <script src="assets/js/gateway.js?v=20260717-gateway" defer></script>
+  <script src="assets/js/gateway.js?v=20260718-ui2" defer></script>
 </head>
 <body class="vt-tool-page">
   <header class="tool-header-shell vt-page-header">
@@ -48,7 +48,7 @@
       <section class="tool-panel gateway-result" aria-live="polite">
         <div class="panel-title"><div><h2>Unified decision</h2><p id="gateway-status-copy">No scan submitted.</p></div><span id="gateway-status" class="status-pill">Idle</span></div>
         <div id="gateway-empty" class="tool-result-empty">The combined risk, recommendation, and per-model evidence will appear here.</div>
-        <div id="gateway-output" hidden>
+        <div id="gateway-output" class="gateway-output" hidden>
           <div class="gateway-decision"><div><span>Recommendation</span><strong id="gateway-recommendation">—</strong></div><div><span>Risk</span><strong id="gateway-risk">—</strong></div><div><span>Verdict</span><strong id="gateway-verdict">—</strong></div></div>
           <div id="gateway-reasons" class="gateway-reasons"></div>
           <h3>Evidence</h3><div id="gateway-evidence" class="gateway-evidence"></div>
