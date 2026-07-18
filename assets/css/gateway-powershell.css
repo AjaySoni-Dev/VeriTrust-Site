@@ -178,50 +178,69 @@
 .ps-flow > b { color: #435066; font-weight: 400; }
 
 .ps-guide-layout {
-  display: grid;
-  grid-template-columns: 210px minmax(0, 1fr);
-  gap: 24px;
-  align-items: start;
+  display: block;
+  min-width: 0;
 }
 
 .ps-guide-nav {
   position: sticky;
-  top: calc(var(--header-height) + 24px);
-  display: grid;
-  padding: 16px;
-  border: 1px solid var(--border);
+  top: calc(var(--header-height) + 10px);
+  z-index: 20;
+  display: flex;
+  gap: 6px;
+  margin-bottom: 12px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding: 5px;
+  border: 1px solid rgba(83, 101, 126, 0.72);
   border-radius: 3px;
-  background: var(--surface);
+  background: rgba(18, 26, 38, 0.97);
+  backdrop-filter: blur(14px) saturate(115%);
+  -webkit-backdrop-filter: blur(14px) saturate(115%);
+  scroll-snap-type: x proximity;
+  scrollbar-width: none;
+  scrollbar-color: transparent transparent;
+  -ms-overflow-style: none;
 }
 
-.ps-guide-nav p {
-  margin: 0 0 9px;
-  padding: 0 9px 10px;
-  border-bottom: 1px solid var(--border);
-  color: #eef5ff;
-  font-size: 11px;
-  font-weight: 800;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
+.ps-guide-nav::-webkit-scrollbar {
+  display: none;
+  width: 0;
+  height: 0;
+  background: transparent;
 }
 
 .ps-guide-nav a {
-  padding: 7px 9px;
+  flex: 1 0 92px;
+  min-height: 34px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 7px 10px;
   border-radius: 2px;
   color: var(--muted);
-  font-size: 12px;
+  font-size: 11px;
+  text-align: center;
+  white-space: nowrap;
+  scroll-snap-align: center;
+  transition: background-color 160ms ease, color 160ms ease;
 }
 
 .ps-guide-nav a:hover,
 .ps-guide-nav a.is-current {
-  color: #fff;
-  background: rgba(96, 165, 250, 0.1);
+  color: #d6e2f5;
+  background: rgba(59, 130, 246, 0.08);
+}
+
+.ps-guide-nav a:focus-visible {
+  outline: 2px solid rgba(96, 165, 250, 0.72);
+  outline-offset: -2px;
 }
 
 .ps-guide-content { min-width: 0; }
 
 .ps-guide-section {
-  scroll-margin-top: calc(var(--header-height) + 24px);
+  scroll-margin-top: calc(var(--header-height) + 72px);
   margin-bottom: 20px;
   padding: clamp(24px, 3.5vw, 34px);
   border: 0;
@@ -429,9 +448,8 @@
   .ps-terminal-card { width: 100%; max-width: 620px; }
   .ps-flow { grid-template-columns: repeat(4, minmax(0, 1fr)); }
   .ps-flow > b { display: none; }
-  .ps-guide-layout { grid-template-columns: minmax(0, 1fr); gap: 20px; }
-  .ps-guide-nav { position: sticky; top: var(--header-height); z-index: 10; display: flex; overflow-x: auto; padding: 9px; white-space: nowrap; }
-  .ps-guide-nav p { display: none; }
+  .ps-guide-nav { top: calc(var(--header-height) + 7px); gap: 5px; margin-bottom: 14px; }
+  .ps-guide-nav a { flex-basis: 96px; }
   .ps-prerequisite-grid { grid-template-columns: minmax(0, 1fr); }
 }
 
