@@ -10,7 +10,7 @@
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@500;600&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="assets/css/veritrust.css?v=20260717-gateway">
   <link rel="stylesheet" href="assets/css/tool-pages.css?v=20260717-gateway">
-  <link rel="stylesheet" href="assets/css/gateway.css?v=20260718-ui2">
+  <link rel="stylesheet" href="assets/css/gateway.css?v=20260718-powershell-feature">
   <script src="assets/js/config.js?v=20260717-gateway" defer></script>
   <script src="assets/js/supabase-client.js?v=20260717-gateway" defer></script>
   <script src="assets/js/site.js?v=20260712-unified-header2" defer></script>
@@ -28,7 +28,18 @@
   <main class="tool-shell gateway-shell">
     <section class="gateway-heading">
       <div><p class="eyebrow">Unified security gateway</p><h1>One decision across every signal.</h1><p>Submit a message, URLs, and supported media. VeriTrust routes only applicable models, preserves partial status, and returns a policy-backed recommendation.</p></div>
-      <div class="gateway-heading-aside"><span class="gateway-mode">Advisory mode</span><a class="btn btn-secondary" href="gateway-powershell.html">PowerShell guide</a></div>
+      <div class="gateway-heading-aside"><span class="gateway-mode">Advisory mode</span></div>
+    </section>
+
+    <section class="gateway-powershell-feature" aria-labelledby="gateway-powershell-title">
+      <div class="gateway-powershell-mark" aria-hidden="true"><span>PS</span><b>&gt;_</b></div>
+      <div class="gateway-powershell-copy">
+        <p class="eyebrow">Featured integration</p>
+        <h2 id="gateway-powershell-title">Bring VeriTrust into your security workflow.</h2>
+        <p>Use copy-ready Windows PowerShell commands to authenticate, run phishing, link, deepfake, or combined scans, and retrieve the complete policy decision and evidence report.</p>
+        <div class="gateway-powershell-points" aria-label="PowerShell integration capabilities"><span>Four detection flows</span><span>Private media uploads</span><span>Complete reports</span></div>
+      </div>
+      <a class="btn btn-primary gateway-powershell-action" href="gateway-powershell.html">Explore PowerShell guide <span aria-hidden="true">&rarr;</span></a>
     </section>
 
     <div id="gateway-auth" class="gateway-notice" hidden>Sign in before submitting a gateway scan. <a href="auth.html">Open sign in</a></div>
