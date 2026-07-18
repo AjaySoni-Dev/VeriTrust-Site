@@ -50,9 +50,111 @@
   white-space: nowrap;
 }
 
-.gateway-heading-aside .btn {
-  min-width: 148px;
+.gateway-powershell-feature {
+  position: relative;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  gap: 20px;
+  align-items: center;
+  margin-bottom: 20px;
+  padding: clamp(20px, 3vw, 28px);
+  overflow: hidden;
+  border: 1px solid rgba(96, 165, 250, 0.42);
+  border-left: 4px solid #60a5fa;
+  background: #101d30;
+}
+
+.gateway-powershell-feature::after {
+  content: '';
+  position: absolute;
+  right: -70px;
+  bottom: -95px;
+  width: 230px;
+  height: 230px;
+  border: 1px solid rgba(96, 165, 250, 0.1);
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.gateway-powershell-mark {
+  position: relative;
+  z-index: 1;
+  width: 68px;
+  height: 68px;
+  display: grid;
+  place-content: center;
+  gap: 2px;
+  border: 1px solid rgba(147, 197, 253, 0.34);
+  background: #172a45;
+  color: #dbeafe;
+  font-family: var(--mono);
+  text-align: center;
+}
+
+.gateway-powershell-mark span {
+  color: #93c5fd;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+}
+
+.gateway-powershell-mark b {
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.gateway-powershell-copy {
+  position: relative;
+  z-index: 1;
+  min-width: 0;
+}
+
+.gateway-powershell-copy .eyebrow {
+  margin-bottom: 6px;
+  color: #93c5fd;
+}
+
+.gateway-powershell-copy h2 {
+  margin: 0;
+  font-size: clamp(19px, 2.4vw, 26px);
+  letter-spacing: -0.025em;
+}
+
+.gateway-powershell-copy > p:not(.eyebrow) {
+  max-width: 760px;
+  margin: 8px 0 0;
+  color: #b7c3d4;
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.gateway-powershell-points {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+  margin-top: 12px;
+}
+
+.gateway-powershell-points span {
+  padding: 5px 7px;
+  background: #172a45;
+  color: #bfdbfe;
+  font: 600 9px var(--mono);
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+}
+
+.gateway-powershell-action {
+  position: relative;
+  z-index: 1;
+  min-width: 224px;
+  min-height: 46px;
+  justify-content: space-between;
   white-space: nowrap;
+}
+
+.gateway-powershell-action span {
+  font-size: 17px;
 }
 
 .gateway-notice {
@@ -362,6 +464,15 @@
     justify-items: start;
   }
 
+  .gateway-powershell-feature {
+    grid-template-columns: auto minmax(0, 1fr);
+  }
+
+  .gateway-powershell-action {
+    grid-column: 1 / -1;
+    width: fit-content;
+  }
+
   .gateway-layout {
     grid-template-columns: 1fr;
   }
@@ -378,6 +489,7 @@
   }
 
   .gateway-heading,
+  .gateway-powershell-feature,
   .gateway-form,
   .gateway-result,
   .gateway-history {
@@ -386,6 +498,22 @@
 
   .gateway-heading h1 {
     font-size: clamp(30px, 10vw, 42px);
+  }
+
+  .gateway-powershell-feature {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .gateway-powershell-mark {
+    width: 58px;
+    height: 58px;
+  }
+
+  .gateway-powershell-action {
+    grid-column: auto;
+    width: 100%;
+    min-width: 0;
   }
 
   .gateway-decision,
