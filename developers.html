@@ -67,6 +67,7 @@
         <h1>VeriTrust Developer API.</h1>
         <p>Use the REST-style API from a trusted backend or private script. The implemented v1 surface contains Deepfake, Phishing, Link Intelligence, and Usage routes; VeriTrust does not currently ship an official SDK.</p>
         <p>Signed-in users can create and revoke keys from API Access when their workspace plan permits it. The raw key is returned once; later list responses contain only masked metadata.</p>
+        <p><a class="btn btn-primary" href="gateway-powershell.html">Open the PowerShell gateway guide</a></p>
       </section>
 
       <section id="auth" class="doc-section">
@@ -79,12 +80,15 @@
 
       <section id="scopes" class="doc-section">
         <h2>Scopes</h2>
-        <p>New keys default to <code>deepfake:scan</code>, <code>phishing:scan</code>, <code>link:scan</code>, and <code>usage:read</code>.</p>
+        <p>New keys default to the focused detection scopes plus unified-gateway scan, read, and cancel access.</p>
         <ul>
           <li><code>deepfake:scan</code> - use Deepfake API</li>
           <li><code>phishing:scan</code> - use Phishing API</li>
           <li><code>link:scan</code> - use Link Intelligence API</li>
           <li><code>usage:read</code> - read API usage</li>
+          <li><code>gateway:scan</code> - submit unified gateway scans and private uploads</li>
+          <li><code>gateway:read</code> - read tenant-scoped gateway status and reports</li>
+          <li><code>gateway:cancel</code> - cancel an unfinished gateway scan</li>
         </ul>
       </section>
 
