@@ -48,9 +48,33 @@
   });
 
   const links = [...document.querySelectorAll('.ps-guide-nav a')];
+  const guideNav = document.querySelector('.ps-guide-nav');
   const sections = links
     .map((link) => document.querySelector(link.getAttribute('href')))
     .filter(Boolean);
+
+  function setCurrentLink(activeLink) {
+    links.forEach((link) => {
+      const isCurrent = link === activeLink;
+      link.classList.toggle('is-current', isCurrent);
+      if (isCurrent) link.setAttribute('aria-current', 'location');
+      else link.removeAttribute('aria-current');
+    });
+
+    if (!guideNav || !activeLink) return;
+    const targetLeft = activeLink.offsetLeft - ((guideNav.clientWidth - activeLink.offsetWidth) / 2);
+    const maxLeft = Math.max(0, guideNav.scrollWidth - guideNav.clientWidth);
+    guideNav.scrollTo({
+      left: Math.max(0, Math.min(targetLeft, maxLeft)),
+      behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth'
+    });
+  }
+
+  if (links.length) setCurrentLink(links[0]);
+
+  links.forEach((link) => {
+    link.addEventListener('click', () => setCurrentLink(link));
+  });
 
   if ('IntersectionObserver' in window && sections.length) {
     const observer = new IntersectionObserver((entries) => {
@@ -58,7 +82,7 @@
         .filter((entry) => entry.isIntersecting)
         .sort((left, right) => right.intersectionRatio - left.intersectionRatio)[0];
       if (!visible) return;
-      links.forEach((link) => link.classList.toggle('is-current', link.hash === `#${visible.target.id}`));
+      setCurrentLink(links.find((link) => link.hash === `#${visible.target.id}`));
     }, { rootMargin: '-20% 0px -65% 0px', threshold: [0, 0.2, 0.6] });
     sections.forEach((section) => observer.observe(section));
   }
