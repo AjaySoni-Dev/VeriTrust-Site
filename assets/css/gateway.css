@@ -216,14 +216,43 @@
   background: var(--surface-2);
 }
 
-.gateway-evidence header {
+.gateway-evidence-head {
   display: flex;
   justify-content: space-between;
   gap: 14px;
+  align-items: center;
+  min-width: 0;
 }
 
 .gateway-evidence strong {
+  min-width: 0;
+  overflow-wrap: anywhere;
+  color: var(--text);
+  font-size: 14px;
   text-transform: capitalize;
+}
+
+.gateway-evidence-head span {
+  flex: 0 0 auto;
+  padding: 4px 7px;
+  background: rgba(34, 197, 94, 0.09);
+  color: #86efac;
+  font: 600 9px var(--mono);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.gateway-evidence-head span[data-status='failed'],
+.gateway-evidence-head span[data-status='cancelled'] {
+  background: rgba(239, 68, 68, 0.1);
+  color: #fca5a5;
+}
+
+.gateway-evidence-head span[data-status='queued'],
+.gateway-evidence-head span[data-status='processing'],
+.gateway-evidence-head span[data-status='accepted'] {
+  background: rgba(96, 165, 250, 0.1);
+  color: #bfdbfe;
 }
 
 .gateway-evidence p {
@@ -297,6 +326,11 @@
   line-height: 1.65;
 }
 
+.gateway-result .tool-result-empty[hidden],
+.gateway-result .gateway-output[hidden] {
+  display: none !important;
+}
+
 .gateway-result.is-loading .tool-result-empty::before {
   content: '';
   width: 24px;
@@ -360,5 +394,9 @@
   .gateway-actions .btn,
   .gateway-history .btn {
     width: 100%;
+  }
+
+  .gateway-evidence-head {
+    align-items: flex-start;
   }
 }
