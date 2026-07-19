@@ -1,0 +1,724 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#1A1A1A">
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="/favicon-32.png" type="image/png" sizes="32x32">
+    <link rel="icon" href="/favicon-48.png" type="image/png" sizes="48x48">
+    <link rel="icon" href="/favicon-96.png" type="image/png" sizes="96x96">
+    <link rel="icon" href="/favicon-192.png" type="image/png" sizes="192x192">
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" sizes="180x180">
+    <title>Authentication | VeriTrust</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@500;600&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="assets/css/veritrust.css?v=20260716-final-theme2">
+    <script src="assets/js/config.js?v=20260718-auth-config2" defer></script>
+    <script src="assets/js/supabase-client.js?v=20260718-auth-config2" defer></script>
+    <script src="assets/js/site.js?v=20260713-auth-guard2" defer></script>
+    <script src="assets/js/auth.js?v=20260713-auth4" defer></script>
+    <style>
+        :root {
+            /* Cloudflare/Claude Console Dark Palette */
+            --bg-base: #000000;
+            --bg-surface: #09090B;
+            --bg-surface-hover: #18181B;
+            --bg-surface-light: #121214;
+            
+            --border-subtle: #27272A;
+            --border-hover: #3F3F46;
+            --border-active: #52525B;
+            
+            --text-primary: #FAFAFA;
+            --text-secondary: #A1A1AA;
+            --text-tertiary: #71717A;
+            
+            --accent-main: #2563EB;
+            --accent-hover: #1D4ED8;
+            --accent-glow: rgba(37, 99, 235, 0.15);
+            
+            /* Typography */
+            --font-sans: 'Inter', ui-sans-serif, system-ui, sans-serif;
+            --font-display: 'Inter', ui-sans-serif, system-ui, sans-serif;
+            
+            --radius-sm: 6px;
+            --radius-md: 10px;
+            --radius-lg: 16px;
+            
+            /* Shadows & FX */
+            --shadow-card: 0 25px 50px -12px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.05);
+            --inner-glow: inset 0 1px 0 0 rgba(255, 255, 255, 0.05);
+        }
+
+        /* Reset & Base */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        [hidden] {
+            display: none !important;
+        }
+
+        html {
+            font-size: 16px;
+        }
+
+        body {
+            font-family: var(--font-sans);
+            color: var(--text-primary);
+            background-color: var(--bg-surface);
+            background-image: radial-gradient(circle at 50% -20%, var(--bg-surface-hover), var(--bg-base) 80%);
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            line-height: 1.5;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            
+            /* Viewport fitting */
+            height: 100vh;
+            overflow-y: auto; /* Scroll only if screen is extremely small */
+            display: flex;
+            flex-direction: column;
+            animation: pageFadeIn 140ms ease-out both;
+        }
+
+        @keyframes pageFadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            body {
+                animation: none;
+            }
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+            transition: color 0.2s ease;
+        }
+
+        /* Layout */
+        .auth-layout {
+            display: flex;
+            flex-direction: column;
+            min-height: 100%;
+        }
+
+        .auth-back-button {
+            position: fixed;
+            top: max(1rem, env(safe-area-inset-top));
+            left: max(1rem, env(safe-area-inset-left));
+            z-index: 20;
+            width: 42px;
+            height: 42px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-secondary);
+            background: rgba(9, 9, 11, 0.92);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-sm);
+            box-shadow: var(--inner-glow), 0 10px 24px rgba(0, 0, 0, 0.28);
+            backdrop-filter: blur(10px);
+        }
+
+        .auth-back-button:hover {
+            color: var(--text-primary);
+            border-color: var(--border-hover);
+            background: var(--bg-surface-light);
+        }
+
+        .auth-back-button:focus-visible {
+            outline: 2px solid var(--accent-main);
+            outline-offset: 3px;
+        }
+
+        .auth-back-button svg {
+            width: 20px;
+            height: 20px;
+            transition: transform 0.2s ease;
+        }
+
+        .auth-back-button:hover svg {
+            transform: translateX(-2px);
+        }
+
+        .auth-main {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 4.5rem 1.5rem 1.5rem;
+        }
+
+        /* Wrapper for Center Content */
+        .auth-wrapper {
+            width: 100%;
+            max-width: 440px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* Auth Card */
+        .auth-card {
+            width: 100%;
+            background: var(--bg-surface);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-lg);
+            padding: 1.75rem 2rem;
+            box-shadow: var(--inner-glow), var(--shadow-card);
+            position: relative;
+        }
+
+        .auth-message {
+            color: var(--text-secondary);
+            font-size: 0.75rem;
+        }
+
+        .auth-message {
+            display: none;
+            border: 1px solid var(--border-hover);
+            border-radius: var(--radius-sm);
+            padding: 0.7rem 0.75rem;
+            margin-top: 1rem;
+            background: var(--bg-surface-light);
+        }
+
+        .auth-message.active {
+            display: block;
+        }
+
+        .auth-message[data-tone="success"] {
+            border-color: rgba(34, 197, 94, 0.45);
+            color: #BBF7D0;
+        }
+
+        .auth-message[data-tone="error"] {
+            border-color: rgba(239, 68, 68, 0.5);
+            color: #FECACA;
+        }
+
+        .provider-note {
+            margin-top: 0.8rem;
+            color: var(--text-tertiary);
+            font-size: 0.72rem;
+            text-align: center;
+        }
+
+        /* Header / Brand Name Image (Inside the Card) */
+        .auth-header {
+            text-align: center;
+            margin-bottom: 1.25rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .brand-text-img {
+            height: 20px;
+            width: auto;
+            max-width: 240px;
+            object-fit: contain;
+            display: block;
+            margin-bottom: 0.5rem;
+        }
+
+        .auth-header p {
+            color: var(--text-secondary);
+            font-size: 0.8125rem;
+        }
+
+        /* Segmented Tabs */
+        .auth-tabs {
+            display: flex;
+            background: var(--bg-surface-light);
+            padding: 0.25rem;
+            border-radius: var(--radius-sm);
+            border: 1px solid var(--border-subtle);
+            margin-bottom: 1.25rem;
+        }
+
+        .tab-btn {
+            flex: 1;
+            background: transparent;
+            border: none;
+            color: var(--text-secondary);
+            padding: 0.4rem;
+            font-size: 0.8125rem;
+            font-weight: 500;
+            font-family: var(--font-sans);
+            cursor: pointer;
+            border-radius: 4px;
+            transition: all 0.2s ease;
+        }
+
+        .tab-btn:hover:not(.active) {
+            color: var(--text-primary);
+        }
+
+        .tab-btn.active {
+            color: var(--text-primary);
+            background: var(--bg-surface);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.05);
+        }
+
+        /* Forms */
+        .auth-form {
+            display: none;
+            flex-direction: column;
+            gap: 1rem;
+            animation: fadeIn 0.3s ease forwards;
+        }
+
+        .auth-form.active {
+            display: flex;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.35rem;
+        }
+
+        .form-group label {
+            font-size: 0.8125rem;
+            font-weight: 500;
+            color: var(--text-primary);
+        }
+
+        .form-input {
+            width: 100%;
+            background: var(--bg-surface-light);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-sm);
+            padding: 0.5rem 0.75rem;
+            color: var(--text-primary);
+            font-family: var(--font-sans);
+            font-size: 0.8125rem;
+            transition: all 0.2s ease;
+            box-shadow: inset 0 1px 2px rgba(0,0,0,0.2);
+        }
+
+        .form-input::placeholder {
+            color: var(--text-tertiary);
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--accent-main);
+            box-shadow: 0 0 0 1px var(--accent-main), inset 0 1px 2px rgba(0,0,0,0.2);
+            background: var(--bg-surface);
+        }
+
+        /* Utilities */
+        .form-options {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 0.75rem;
+            margin-top: -0.25rem;
+        }
+
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            color: var(--text-secondary);
+            cursor: pointer;
+        }
+
+        .checkbox-group input {
+            appearance: none;
+            width: 14px;
+            height: 14px;
+            border: 1px solid var(--border-hover);
+            border-radius: 3px;
+            background: var(--bg-surface-light);
+            cursor: pointer;
+            position: relative;
+            transition: all 0.2s ease;
+        }
+
+        .checkbox-group input:checked {
+            background: var(--accent-main);
+            border-color: var(--accent-main);
+        }
+
+        .checkbox-group input:checked::after {
+            content: '';
+            position: absolute;
+            left: 3px;
+            top: 1px;
+            width: 3px;
+            height: 7px;
+            border: solid white;
+            border-width: 0 2px 2px 0;
+            transform: rotate(45deg);
+        }
+
+        .forgot-link {
+            appearance: none;
+            padding: 0;
+            border: 0;
+            background: transparent;
+            color: var(--text-secondary);
+            font: inherit;
+            font-weight: 500;
+            cursor: pointer;
+        }
+
+        .forgot-link:hover {
+            color: var(--accent-hover);
+        }
+
+        /* Buttons */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0.6rem 1rem;
+            border-radius: var(--radius-sm);
+            font-weight: 500;
+            font-size: 0.8125rem;
+            transition: all 0.2s ease;
+            cursor: pointer;
+            gap: 0.5rem;
+            font-family: var(--font-sans);
+            border: 1px solid transparent;
+            width: 100%;
+        }
+
+        .btn-primary {
+            background-color: var(--accent-main);
+            color: #FFFFFF;
+            box-shadow: 0 0 0 1px rgba(0,0,0,0.2), inset 0 1px 0 rgba(255,255,255,0.1);
+        }
+
+        .btn-primary:hover {
+            background-color: var(--accent-hover);
+            box-shadow: 0 0 0 1px rgba(0,0,0,0.2), inset 0 1px 0 rgba(255,255,255,0.1), 0 4px 12px var(--accent-glow);
+        }
+
+        .btn-secondary {
+            background-color: var(--bg-surface-hover);
+            color: var(--text-primary);
+            border-color: var(--border-hover);
+            box-shadow: var(--inner-glow), 0 1px 2px rgba(0,0,0,0.2);
+        }
+
+        .btn-secondary:hover {
+            background-color: var(--bg-surface-light);
+            border-color: var(--border-active);
+        }
+
+        .btn[aria-disabled="true"] {
+            cursor: not-allowed;
+            opacity: 0.72;
+        }
+
+        /* Divider */
+        .divider {
+            display: flex;
+            align-items: center;
+            text-align: center;
+            margin: 1.25rem 0;
+            color: var(--text-tertiary);
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+
+        .divider::before,
+        .divider::after {
+            content: '';
+            flex: 1;
+            border-bottom: 1px solid var(--border-subtle);
+        }
+
+        .divider span {
+            padding: 0 1rem;
+        }
+
+        /* Social Logins */
+        .social-logins {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.75rem;
+        }
+
+        .social-icon {
+            width: 16px;
+            height: 16px;
+            fill: currentColor;
+        }
+
+        /* Footer */
+        .auth-footer {
+            text-align: center;
+            padding: 1.5rem;
+            color: var(--text-tertiary);
+            font-size: 0.75rem;
+            margin-top: auto;
+        }
+
+        .auth-footer a {
+            color: var(--text-secondary);
+        }
+
+        .auth-footer a:hover {
+            color: var(--text-primary);
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(4px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .reveal {
+            animation: fadeIn 0.5s ease-out forwards;
+            opacity: 0; 
+        }
+        
+        .delay-1 {
+            animation-delay: 0.1s;
+        }
+
+        /* Responsive Adjustments */
+        @media (max-width: 480px) {
+            .auth-card {
+                padding: 1.5rem;
+            }
+            .form-row {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+            .social-logins {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Final VeriTrust authentication treatment */
+        :root {
+            --bg-base: #060910;
+            --bg-surface: #121A26;
+            --bg-surface-hover: #192332;
+            --bg-surface-light: #172235;
+            --border-subtle: #29313D;
+            --border-hover: #3A4655;
+            --border-active: #4B5A6D;
+            --text-primary: #FFFFFF;
+            --text-secondary: #A1A1AA;
+            --text-tertiary: #7D8590;
+            --font-display: 'Inter', ui-sans-serif, system-ui, sans-serif;
+            --radius-sm: 2px;
+            --radius-md: 3px;
+            --radius-lg: 4px;
+            --shadow-card: none;
+            --inner-glow: none;
+        }
+
+        body {
+            background-color: var(--bg-base);
+            background-image: radial-gradient(circle at 50% -8%, #10213B 0, #09111F 30rem, #060910 100%);
+        }
+
+        .auth-back-button {
+            border: 0;
+            border-radius: var(--radius-sm);
+            background: #121A26;
+            box-shadow: none;
+            backdrop-filter: none;
+        }
+
+        .auth-card {
+            border: 0;
+            border-radius: var(--radius-lg);
+            background: var(--bg-surface);
+            box-shadow: none;
+        }
+
+        .auth-message {
+            border: 0;
+            border-radius: var(--radius-sm);
+            background: var(--bg-surface-light);
+        }
+
+        .auth-tabs {
+            border: 0;
+            border-radius: var(--radius-md);
+            background: var(--bg-surface-light);
+        }
+
+        .tab-btn {
+            border-radius: var(--radius-sm);
+        }
+
+        .tab-btn.active {
+            background: var(--bg-surface);
+            box-shadow: none;
+        }
+
+        .form-input {
+            border: 1px solid var(--border-hover);
+            border-radius: var(--radius-sm);
+            background: var(--bg-surface-light);
+            box-shadow: none;
+        }
+
+        .form-input:focus {
+            border-color: var(--accent-main);
+            background: var(--bg-surface-light);
+            box-shadow: 0 0 0 2px rgba(96, 165, 250, 0.22);
+        }
+
+        .checkbox-group input {
+            border-radius: var(--radius-sm);
+            box-shadow: none;
+        }
+
+        .btn {
+            border: 0;
+            border-radius: var(--radius-sm);
+            box-shadow: none;
+        }
+
+        .btn-primary,
+        .btn-primary:hover,
+        .btn-secondary,
+        .btn-secondary:hover {
+            box-shadow: none;
+        }
+    </style>
+    <link rel="stylesheet" href="assets/css/graphite-orange-theme.css?v=20260719-reference7">
+</head>
+<body class="vt-graphite-theme vt-auth-page">
+    <a href="index.html" class="auth-back-button" aria-label="Back to home" title="Back to home">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+            <path d="M19 12H5M11 18l-6-6 6-6" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+    </a>
+
+    <div class="auth-layout">
+        <main class="auth-main">
+            <div class="auth-wrapper">
+
+                <div class="auth-card reveal delay-1">
+                    
+                    <div class="auth-header">
+                        <img src="brand.png" alt="VeriTrust" class="brand-text-img">
+                        <p>AI-assisted image, message, and link review</p>
+                    </div>
+
+                    <div class="auth-tabs">
+                        <button class="tab-btn active" data-target="login-form">Log in</button>
+                        <button class="tab-btn" data-target="signup-form">Create account</button>
+                    </div>
+
+                    <div class="auth-forms-wrapper">
+                        
+                        <form id="login-form" class="auth-form active" data-auth-mode="login">
+                            <div class="form-group">
+                                <label for="login-email">Email address</label>
+                                <input type="email" id="login-email" class="form-input" placeholder="name@company.com" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="login-password">Password</label>
+                                <input type="password" id="login-password" class="form-input" placeholder="Password" required>
+                            </div>
+                            
+                            <div class="form-options">
+                                <span class="checkbox-group">Session persists until sign-out.</span>
+                                <button type="button" class="forgot-link" data-auth-action="reset">Forgot password?</button>
+                            </div>
+
+                            <button type="submit" class="btn btn-primary">Sign in</button>
+                        </form>
+
+                        <form id="signup-form" class="auth-form" data-auth-mode="signup">
+                            <div class="form-group">
+                                <label for="signup-name">Full name</label>
+                                <input type="text" id="signup-name" class="form-input" placeholder="John Doe" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="signup-email">Email address</label>
+                                <input type="email" id="signup-email" class="form-input" placeholder="name@company.com" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="signup-workspace">Workspace name</label>
+                                <input type="text" id="signup-workspace" class="form-input" placeholder="Acme Security Team">
+                            </div>
+                            
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="signup-password">Password</label>
+                                    <input type="password" id="signup-password" class="form-input" placeholder="Strong password" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="signup-confirm">Confirm</label>
+                                    <input type="password" id="signup-confirm" class="form-input" placeholder="Repeat password" required>
+                                </div>
+                            </div>
+
+                            <button type="submit" class="btn btn-primary">Create account</button>
+                        </form>
+
+                        <form id="recovery-form" class="auth-form" data-auth-mode="password-update">
+                            <div class="form-group">
+                                <label for="recovery-password">New password</label>
+                                <input type="password" id="recovery-password" class="form-input" minlength="8" autocomplete="new-password" placeholder="At least 8 characters" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="recovery-confirm">Confirm new password</label>
+                                <input type="password" id="recovery-confirm" class="form-input" minlength="8" autocomplete="new-password" placeholder="Repeat new password" required>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Update password</button>
+                        </form>
+                    </div>
+
+                    <div id="authMessage" class="auth-message" aria-live="polite"></div>
+
+                    <div class="divider">
+                        <span>Or continue with</span>
+                    </div>
+
+                    <div class="social-logins">
+                        <button class="btn btn-secondary" type="button" data-auth-provider="google" aria-disabled="true">
+                            <svg class="social-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
+                                <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
+                                <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/>
+                                <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
+                            </svg>
+                            Google
+                        </button>
+                        <button class="btn btn-secondary" type="button" data-auth-provider="github" aria-disabled="true">
+                            <svg class="social-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12" fill="currentColor"/>
+                            </svg>
+                            GitHub
+                        </button>
+                    </div>
+                    <p class="provider-note">Google and GitHub sign-in are not enabled in this version.</p>
+                </div>
+            </div>
+        </main>
+
+        <footer class="auth-footer">
+            <p>&copy; 2026 VeriTrust. All rights reserved. <br> By continuing, you agree to our <a href="terms.html">Terms of Service</a> and <a href="privacy.html">Privacy Policy</a>. <a href="security.html">Security</a> · <a href="disclaimer.html">Disclaimer</a> · <a href="developers.html">Developers</a> · <a href="model-performance.html">Model Performance</a>.</p>
+        </footer>
+    </div>
+</body>
+</html>
