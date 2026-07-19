@@ -53,13 +53,13 @@
             --text-secondary: #C2C2C2;
             --text-tertiary: #929292;
 
-            --accent-main: #60A5FA;
-            --accent-hover: #93C5FD;
-            --accent-button: #3B82F6;
-            --accent-button-hover: #2563EB;
-            --accent-glow: rgba(59, 130, 246, 0.18);
-            --accent-soft: rgba(96, 165, 250, 0.10);
-            --accent-border: rgba(96, 165, 250, 0.42);
+            --accent-main: #D46A22;
+            --accent-hover: #DE7930;
+            --accent-button: #C45718;
+            --accent-button-hover: #A84714;
+            --accent-glow: rgba(212, 106, 34, 0.14);
+            --accent-soft: rgba(212, 106, 34, 0.075);
+            --accent-border: rgba(222, 121, 48, 0.30);
 
             --status-success: #34D399;
             --status-danger: #F87171;
@@ -90,7 +90,7 @@
             --shadow-lg: 0 22px 60px rgba(0, 0, 0, 0.32);
             
             /* Focus remains visible without relying on decorative elevation. */
-            --focus-ring: 0 0 0 3px rgba(96, 165, 250, 0.34);
+            --focus-ring: 0 0 0 3px rgba(212, 106, 34, 0.30);
         }
 
         /* Reset & Base */
@@ -202,6 +202,17 @@
         .section-header p {
             margin-top: 1rem;
             font-size: clamp(0.9375rem, 2vw, 1.0625rem);
+            font-style: italic;
+        }
+
+        .section-header h2::after {
+            content: '';
+            display: block;
+            width: 2.5rem;
+            height: 2px;
+            margin: 1rem auto 0;
+            border-radius: 999px;
+            background: var(--accent-main);
         }
 
         /* Layout */
@@ -344,11 +355,11 @@
         }
 
         .nav-links a:hover {
-            color: var(--text-primary);
+            color: var(--accent-hover);
         }
 
         .nav-links a.active {
-            color: var(--text-primary);
+            color: var(--accent-main);
         }
 
         .nav-links .tool-header-mobile-actions {
@@ -468,6 +479,12 @@
             text-wrap: balance;
         }
 
+        .hero-content h1 em {
+            color: var(--accent-main);
+            font-style: italic;
+            font-weight: inherit;
+        }
+
         .hero-content p {
             font-size: 1rem;
             margin-bottom: 2.25rem;
@@ -564,6 +581,7 @@
         .trust-badge svg {
             width: 16px;
             height: 16px;
+            color: var(--accent-main);
         }
 
         /* Grids */
@@ -758,7 +776,7 @@
         .price {
             font-size: clamp(2rem, 3vw, 2.5rem);
             font-weight: 600;
-            color: var(--text-primary);
+            color: var(--accent-main);
             font-family: var(--font-display);
             margin-top: 0.5rem;
         }
@@ -822,6 +840,7 @@
         .cta-content p {
             margin-bottom: 2rem;
             font-size: 1rem;
+            font-style: italic;
         }
 
         .cta-actions {
@@ -895,7 +914,7 @@
         }
 
         .footer-links ul li a:hover {
-            color: var(--text-primary);
+            color: var(--accent-hover);
         }
 
         .footer-bottom {
@@ -1200,7 +1219,7 @@
         <section class="hero">
             <div class="container hero-grid">
                 <div class="hero-content reveal">
-                    <h1>AI-assisted review for suspicious digital content.</h1>
+                    <h1>AI-assisted review for <em>suspicious digital content.</em></h1>
                     <p>Review face images, messages, emails, and URLs with model scores, rule-based indicators, and clear limitations. Sign in to run checks and save web scan results.</p>
                     <div class="hero-actions">
     <a href="gateway.html" class="btn btn-primary">Open Unified Gateway</a>
