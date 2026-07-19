@@ -22,7 +22,7 @@
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="assets/css/veritrust.css?v=20260716-final-theme2">
   <link rel="stylesheet" href="assets/css/graphite-orange-theme.css?v=20260719-reference7">
-  <link rel="stylesheet" href="assets/css/cli.css?v=20260719-cli3">
+  <link rel="stylesheet" href="assets/css/cli.css?v=20260719-cli4">
   <script src="assets/js/config.js?v=20260719-cli1" defer></script>
   <script src="assets/js/supabase-client.js?v=20260719-cli1" defer></script>
   <script src="assets/js/site.js?v=20260719-cli1" defer></script>
@@ -101,32 +101,41 @@
           </form>
         </section>
 
-        <aside class="cli-sidebar" aria-label="CLI command reference">
-          <section class="cli-side-card">
-            <p class="eyebrow">Start here</p>
-            <h2>Quick commands</h2>
-            <div class="cli-command-list">
-              <button class="cli-example-command" type="button" data-cli-command="help"><code>help</code> &mdash; All commands</button>
-              <button class="cli-example-command" type="button" data-cli-command="status"><code>status</code> &mdash; Workspace session</button>
-              <button class="cli-example-command" type="button" data-cli-command="models"><code>models</code> &mdash; Available engines</button>
-              <button class="cli-example-command" type="button" data-cli-command="history --limit 10"><code>history</code> &mdash; Recent scans</button>
+        <aside class="cli-reference" aria-labelledby="cli-reference-title">
+          <header class="cli-reference-header">
+            <div>
+              <p class="cli-section-label">Command library</p>
+              <h2 id="cli-reference-title">Ready-to-run examples</h2>
             </div>
-          </section>
+            <p>Select a row to place its command in the prompt.</p>
+          </header>
 
-          <section class="cli-side-card">
-            <p class="eyebrow">Scan examples</p>
-            <div class="cli-example-list">
-              <button class="cli-example-command" type="button" data-cli-command="scan link https://example.com">Link: <code>scan link &lt;url&gt;</code></button>
-              <button class="cli-example-command" type="button" data-cli-command="scan phishing &quot;Paste suspicious message here&quot;">Phishing: <code>scan phishing &quot;text&quot;</code></button>
-              <button class="cli-example-command" type="button" data-cli-command="attach">Image: <code>attach &rarr; scan image</code></button>
-              <button class="cli-example-command" type="button" data-cli-command="scan gateway --text &quot;Paste message here&quot; --url https://example.com">Unified: <code>scan gateway &hellip;</code></button>
-            </div>
-          </section>
+          <div class="cli-command-catalog">
+            <section class="cli-command-group" aria-labelledby="cli-workspace-commands">
+              <h3 id="cli-workspace-commands"><span>01</span> Workspace</h3>
+              <div class="cli-command-list">
+                <button class="cli-command-row" type="button" data-cli-command="help"><span><code>help</code><small>Open the complete command guide</small></span><b aria-hidden="true">Insert</b></button>
+                <button class="cli-command-row" type="button" data-cli-command="status"><span><code>status</code><small>Show the active workspace session</small></span><b aria-hidden="true">Insert</b></button>
+                <button class="cli-command-row" type="button" data-cli-command="models"><span><code>models</code><small>List available detection engines</small></span><b aria-hidden="true">Insert</b></button>
+                <button class="cli-command-row" type="button" data-cli-command="history --limit 10"><span><code>history --limit 10</code><small>Read ten recent saved scans</small></span><b aria-hidden="true">Insert</b></button>
+              </div>
+            </section>
 
-          <section class="cli-side-card cli-safety-note">
-            <strong>Safe by design</strong>
-            <p>This shell executes only documented VeriTrust commands. It cannot run operating-system commands, scripts, or arbitrary code.</p>
-          </section>
+            <section class="cli-command-group" aria-labelledby="cli-scan-commands">
+              <h3 id="cli-scan-commands"><span>02</span> Detection</h3>
+              <div class="cli-command-list">
+                <button class="cli-command-row" type="button" data-cli-command="scan link https://example.com"><span><code>scan link https://example.com</code><small>Analyze one complete HTTP or HTTPS URL</small></span><b aria-hidden="true">Insert</b></button>
+                <button class="cli-command-row" type="button" data-cli-command="scan phishing &quot;Review this suspicious message&quot;"><span><code>scan phishing &quot;Review this message&quot;</code><small>Score suspicious email or message text</small></span><b aria-hidden="true">Insert</b></button>
+                <button class="cli-command-row" type="button" data-cli-command="scan image --model pixel"><span><code>scan image --model pixel</code><small>Select an image, then run the image model</small></span><b aria-hidden="true">Insert</b></button>
+                <button class="cli-command-row" type="button" data-cli-command="scan gateway --text &quot;Review this message&quot; --url https://example.com"><span><code>scan gateway --text &quot;Review…&quot; --url https://example.com</code><small>Correlate message and URL evidence</small></span><b aria-hidden="true">Insert</b></button>
+              </div>
+            </section>
+          </div>
+
+          <footer class="cli-reference-footer">
+            <p><strong>Syntax:</strong> enter URLs without angle brackets. Use quotes around message text.</p>
+            <p><strong>Safe shell:</strong> only documented VeriTrust commands can run.</p>
+          </footer>
         </aside>
       </div>
     </div>
