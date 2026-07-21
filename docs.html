@@ -155,7 +155,8 @@
           <li>Use the Auth page for email/password sign-in, account creation, email confirmation, and password recovery.</li>
           <li>Use the Dashboard pages for workspace usage, saved scans, API keys, billing status, and profile settings.</li>
           <li>Completed web checks are recorded against the active workspace when persistence succeeds.</li>
-          <li>External API v1 calls record usage but do not create dashboard scan-history records in the current implementation.</li>
+          <li>Unified Gateway scans submitted through the GUI, Web CLI, Windows PowerShell, or an API integration are stored in the gateway audit tables and included in Dashboard scan history for the API key's organization.</li>
+          <li>Direct model-specific API v1 calls record usage but do not create legacy dashboard scan-history records.</li>
         </ul>
       </section>
 
