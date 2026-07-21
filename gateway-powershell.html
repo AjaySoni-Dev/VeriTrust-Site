@@ -520,9 +520,10 @@ $ReportResponse.report.decision | Format-List</code></pre>
     -ErrorAction Stop
 
 $History.scans |
-    Select-Object display_id, status, processing_mode, degraded, created_at |
+    Select-Object display_id, source, status, processing_mode, degraded, created_at |
     Format-Table -AutoSize</code></pre>
           </div>
+          <div class="ps-callout ps-callout-success"><strong>Dashboard persistence</strong><span>Every gateway scan is stored against the organization that owns the API key. After the request is accepted, it appears in <a href="scans.html">Dashboard &gt; Scans</a> as <code>Unified Gateway</code>, including scans submitted from Windows PowerShell. Refresh the scans page to load the latest status and final decision.</span></div>
         </section>
 
         <section id="results" class="ps-guide-section">
