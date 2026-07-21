@@ -25,6 +25,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (normalized === 'deepfake') return 'Deepfake Detection';
     if (normalized === 'phishing') return 'Phishing Detection';
     if (normalized === 'link') return 'Link Intelligence';
+    if (normalized === 'gateway') return 'Unified Gateway';
     return scanType || 'Detection';
   };
 
@@ -36,10 +37,10 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   const verdictTone = (label) => {
     const normalized = String(label || '').toLowerCase();
-    if (['phishing', 'deepfake', 'fake', 'suspicious', 'malicious'].includes(normalized)) {
+    if (['phishing', 'deepfake', 'fake', 'suspicious', 'malicious', 'high', 'critical', 'block', 'quarantine'].includes(normalized)) {
       return 'danger';
     }
-    if (['legitimate', 'real', 'safe', 'clean'].includes(normalized)) {
+    if (['legitimate', 'real', 'safe', 'clean', 'low', 'allow'].includes(normalized)) {
       return 'safe';
     }
     return 'neutral';
@@ -178,6 +179,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (normalized === 'prism') return 'VeriTrust Prism';
     if (normalized === 'mailguard') return 'VeriTrust MailGuard';
     if (normalized === 'cortex') return 'VeriTrust Cortex';
+    if (normalized === 'gateway') return 'VeriTrust Unified Gateway';
     return titleCase(key || 'unknown');
   };
 
@@ -195,6 +197,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     const type = scan.scan_type || 'scan';
     const isDeepfake = type === 'deepfake';
     const isLink = type === 'link';
+    const isGateway = type === 'gateway';
+    const gatewayMetadata = scan.metadata?.gateway || {};
     const inputRow = scanInput(scan);
     const inputMetadata = inputRow.metadata || {};
     const extractedUrl = inputMetadata.normalized_url || inputRow.text_preview || '';
@@ -221,7 +225,11 @@ document.addEventListener('DOMContentLoaded', async () => {
       }
     }
     return {
-      title: isLink ? 'VeriTrust Link Intelligence Report' : 'VeriTrust Scan Report',
+      title: isGateway
+        ? 'VeriTrust Unified Gateway Report'
+        : isLink
+          ? 'VeriTrust Link Intelligence Report'
+          : 'VeriTrust Scan Report',
       scan_id: scan.id,
       scan_type: type,
       created_at: scan.created_at,
@@ -239,20 +247,26 @@ document.addEventListener('DOMContentLoaded', async () => {
         indicators: resultRow.indicators || [],
         fake_score: isDeepfake ? primaryScore : undefined,
         real_score: isDeepfake ? secondaryScore : undefined,
-        phishing_score: !isDeepfake && !isLink ? primaryScore : undefined,
-        legitimate_score: !isDeepfake && !isLink ? secondaryScore : undefined,
+        phishing_score: !isDeepfake && !isLink && !isGateway ? primaryScore : undefined,
+        legitimate_score: !isDeepfake && !isLink && !isGateway ? secondaryScore : undefined,
         link_score: isLink ? primaryScore : undefined,
         model_score: isLink ? secondaryScore : undefined,
+        gateway_risk_score: isGateway ? primaryScore : undefined,
+        recommendation: isGateway ? gatewayMetadata.recommendation : undefined,
+        reason_codes: isGateway ? gatewayMetadata.reason_codes || [] : undefined,
+        degraded: isGateway ? Boolean(gatewayMetadata.degraded) : undefined,
         extracted,
         disclaimer: isDeepfake
           ? 'AI-assisted result. This is not legal, forensic, or final proof.'
+          : isGateway
+            ? 'Policy-correlated gateway result. Verify important findings with source context and human review.'
           : isLink
             ? 'AI-assisted result. Verify suspicious links through official channels before opening or submitting information.'
             : 'AI-assisted result. Verify suspicious messages through official channels before taking action.',
       },
       scores: resultRow.raw_scores || [],
       report: {
-        title: 'VeriTrust Scan Report',
+        title: isGateway ? 'VeriTrust Unified Gateway Report' : 'VeriTrust Scan Report',
         disclaimer: 'AI-assisted result. Manual review is recommended.',
         exportable: true,
       },
@@ -285,6 +299,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (activeScanFilter === 'deepfake') return scan.scan_type === 'deepfake';
     if (activeScanFilter === 'phishing') return scan.scan_type === 'phishing';
     if (activeScanFilter === 'link') return scan.scan_type === 'link';
+    if (activeScanFilter === 'gateway') return scan.scan_type === 'gateway';
     if (activeScanFilter === 'high') return ['high', 'critical'].includes(String(scan.risk_level || scanResult(scan).risk_level || '').toLowerCase());
     return true;
   });
@@ -297,6 +312,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       ['deepfake', 'Deepfake'],
       ['phishing', 'Phishing'],
       ['link', 'Link'],
+      ['gateway', 'Gateway'],
       ['high', 'High Risk'],
     ];
     filters.innerHTML = options.map(([value, label]) => `
@@ -317,7 +333,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     const deepfake = scans.filter((scan) => scan.scan_type === 'deepfake').length;
     const link = scans.filter((scan) => scan.scan_type === 'link').length;
     const phishing = scans.filter((scan) => scan.scan_type === 'phishing').length;
-    return { deepfake, highRisk, link, phishing, total };
+    const gateway = scans.filter((scan) => scan.scan_type === 'gateway').length;
+    return { deepfake, gateway, highRisk, link, phishing, total };
   };
 
   const usageFromKeys = (keys) => {
@@ -662,6 +679,10 @@ document.addEventListener('DOMContentLoaded', async () => {
     const risk = titleCase(result.risk_level || scan.risk_level || 'unknown');
     const confidence = Number(result.confidence || scan.confidence || 0);
     const indicators = Array.isArray(result.indicators) ? result.indicators : [];
+    const gateway = scan.scan_type === 'gateway' ? (scan.metadata?.gateway || {}) : null;
+    const detailIdentity = gateway
+      ? `Gateway ID: ${escapeHtml(gateway.display_id || scan.id)} &middot; Source: ${escapeHtml(titleCase(gateway.source || scan.source || 'api'))} &middot; Scan ID: ${escapeHtml(scan.id)}`
+      : `Scan ID: ${escapeHtml(scan.id)}`;
     return `
           <div class="scan-row scan-row-rich" role="row">
             <span data-label="Type">${escapeHtml(scanTypeLabel(scan.scan_type))}</span>
@@ -679,7 +700,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             <summary>View details</summary>
             <p>${escapeHtml(result.explanation || 'Saved scan result.')}</p>
             ${indicators.length ? `<div class="scan-detail-signals">${indicators.slice(0, 5).map((item) => `<span>${escapeHtml(item.title || item.description || item)}</span>`).join('')}</div>` : ''}
-            <p class="scan-detail-id">Scan ID: ${escapeHtml(scan.id)}</p>
+            <p class="scan-detail-id">${detailIdentity}</p>
           </details>
         `;
   }).join('')}
