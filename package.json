@@ -5,7 +5,7 @@
   "description": "VeriTrust landing site and Vercel API proxy",
   "scripts": {
     "check": "node scripts/check-js.js && node scripts/check-vercel-functions.js && node scripts/check-navigation.js",
-    "test": "node --test",
+    "test": "node --test \"test/unit/*.test.js\"",
     "verify:gateway": "npm run check && npm test",
     "worker": "node worker/index.js",
     "start": "vercel dev"
