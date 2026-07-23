@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=2">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#1A1A1A">
   <link rel="icon" href="/favicon.ico" type="image/x-icon">
   <link rel="icon" href="/favicon-32.png" type="image/png" sizes="32x32">
@@ -17,9 +17,9 @@
   <link rel="stylesheet" href="assets/css/graphite-orange-theme.css?v=20260719-reference7">
   <script src="assets/js/config.js?v=20260717-gateway" defer></script>
   <script src="assets/js/supabase-client.js?v=20260717-gateway" defer></script>
-  <script src="assets/js/site.js?v=20260723-unified-chrome2" defer></script>
+  <script src="assets/js/site.js?v=20260723-unified-chrome3" defer></script>
   <script src="assets/js/gateway-powershell.js?v=20260718-tabs2" defer></script>
-  <link rel="stylesheet" href="assets/css/glass-system.css?v=20260723-global2">
+  <link rel="stylesheet" href="assets/css/glass-system.css?v=20260723-global4">
 </head>
 <body class="vt-guide-page vt-graphite-theme">
   <header class="tool-header-shell vt-page-header">
@@ -64,7 +64,7 @@
         <div class="ps-terminal-top"><span></span><span></span><span></span><b>Windows PowerShell</b></div>
         <div class="ps-terminal-body">
           <p><i>PS</i> Submit-VeriTrustGateway</p>
-          <p class="ps-terminal-muted">Routing text and URL artifacts...</p>
+          <p class="ps-terminal-muted">Routing text, URL, and image artifacts...</p>
           <p><em>status</em> completed</p>
           <p><em>verdict</em> critical</p>
           <p><em>risk</em> 100%</p>
@@ -92,6 +92,7 @@
         <a href="#link" aria-label="Link-only detection">Link</a>
         <a href="#combined" aria-label="Combined scan">Combined</a>
         <a href="#deepfake" aria-label="Image deepfake detection">Deepfake</a>
+        <a href="#unified" aria-label="Unified text, URL, and image scan">Unified</a>
         <a href="#reports" aria-label="Reports and scan history">Reports</a>
         <a href="#results" aria-label="Read the result">Results</a>
         <a href="#troubleshooting">Troubleshoot</a>
@@ -482,9 +483,191 @@ $Result.evidence |
           <p class="ps-footnote">The current gateway performs model-backed deepfake classification for supported images. Audio and video uploads are accepted by the pipeline but remain on hold until dedicated models are enabled.</p>
         </section>
 
-        <section id="reports" class="ps-guide-section">
+        <section id="unified" class="ps-guide-section ps-featured-section">
           <div class="ps-section-heading">
             <span class="ps-step-number">07</span>
+            <div><p class="eyebrow">Complete gateway workflow</p><h2>Unified text, link, and image scan</h2></div>
+          </div>
+          <p class="ps-lead">Use this when one security event contains a suspicious message, one or more URLs, and an image. The gateway registers the image privately, evaluates every applicable artifact, and correlates phishing, link, and deepfake evidence into one policy decision.</p>
+          <div class="ps-callout ps-callout-info"><strong>One event, one decision.</strong><span>The text, URLs, and image are submitted in the same request. Do not submit the image separately if you need a genuinely unified result across all three signal types.</span></div>
+          <div class="ps-code-card">
+            <div class="ps-code-head"><div><span>PowerShell</span><strong>Upload, submit, and correlate all signals</strong></div><button type="button" data-copy-code>Copy block</button></div>
+            <pre><code>$MessageText = @"
+Your Microsoft 365 account has been locked.
+Verify your password immediately using the supplied link and QR image.
+"@
+
+$UrlsToCheck = @("https://example.com/security-verification")
+$ImagePath = "C:\SecurityTests\suspected-qr-image.jpg"
+
+if (-not (Test-Path -LiteralPath $ImagePath -PathType Leaf)) {
+    throw "Image not found: $ImagePath"
+}
+
+$ImageFile = Get-Item -LiteralPath $ImagePath
+$MimeTypes = @{
+    ".jpg"  = "image/jpeg"
+    ".jpeg" = "image/jpeg"
+    ".png"  = "image/png"
+    ".webp" = "image/webp"
+    ".bmp"  = "image/bmp"
+}
+
+$ImageMimeType = $MimeTypes[$ImageFile.Extension.ToLowerInvariant()]
+if ([string]::IsNullOrWhiteSpace($ImageMimeType)) {
+    throw "Use a JPG, JPEG, PNG, WEBP, or BMP image."
+}
+if ($ImageFile.Length -lt 1 -or $ImageFile.Length -gt 10MB) {
+    throw "The image must contain data and must not exceed 10 MB."
+}
+
+$RegisterPayload = @{
+    kind       = "image"
+    mime_type  = $ImageMimeType
+    size_bytes = $ImageFile.Length
+}
+
+$RegisteredUpload = Invoke-RestMethod `
+    -Method Post `
+    -Uri "$BaseUrl/api/v1/gateway/uploads" `
+    -Headers $AuthHeaders `
+    -ContentType "application/json" `
+    -Body ($RegisterPayload | ConvertTo-Json -Compress) `
+    -ErrorAction Stop
+
+if ([string]::IsNullOrWhiteSpace([string]$RegisteredUpload.upload_id)) {
+    throw "The gateway did not return an upload identifier."
+}
+
+$SignedUploadUrl = [string]$RegisteredUpload.signed_upload.url
+if ($SignedUploadUrl -notmatch '^https?://') {
+    $ClientConfig = Invoke-RestMethod `
+        -Method Get `
+        -Uri "$BaseUrl/api/client-config" `
+        -ErrorAction Stop
+
+    $SupabaseUrl = ([string]$ClientConfig.config.supabase.url).TrimEnd("/")
+    if ([string]::IsNullOrWhiteSpace($SupabaseUrl)) {
+        throw "The signed upload URL could not be resolved."
+    }
+    $SignedUploadUrl = "$SupabaseUrl/storage/v1$SignedUploadUrl"
+}
+
+$StorageResponse = Invoke-WebRequest `
+    -Method Put `
+    -Uri $SignedUploadUrl `
+    -InFile $ImageFile.FullName `
+    -ContentType $ImageMimeType `
+    -Headers @{ "x-upsert" = "false" } `
+    -UseBasicParsing `
+    -ErrorAction Stop
+
+if ($StorageResponse.StatusCode -lt 200 -or $StorageResponse.StatusCode -ge 300) {
+    throw "Private image upload failed with HTTP $($StorageResponse.StatusCode)."
+}
+
+$CompletedUpload = Invoke-RestMethod `
+    -Method Post `
+    -Uri "$BaseUrl/api/v1/gateway/uploads/$($RegisteredUpload.upload_id)/complete" `
+    -Headers $AuthHeaders `
+    -ErrorAction Stop
+
+if ($CompletedUpload.status -ne "uploaded") {
+    throw "The gateway did not confirm the private image upload."
+}
+
+$IdempotencyKey = [Guid]::NewGuid().ToString()
+$Headers = @{
+    Authorization     = "Bearer $ApiKey"
+    "Idempotency-Key" = $IdempotencyKey
+}
+
+$Payload = @{
+    source = @{
+        kind              = "powershell"
+        external_event_id = "unified-$([Guid]::NewGuid())"
+    }
+    content = @{
+        text  = $MessageText
+        urls  = $UrlsToCheck
+        media = @(
+            @{
+                upload_id = $RegisteredUpload.upload_id
+                kind      = "image"
+            }
+        )
+    }
+    processing_mode = "hybrid"
+    metadata = @{
+        client             = "windows-powershell"
+        context_categories = @("email", "credential", "qr-image")
+    }
+}
+
+$Submission = Invoke-RestMethod `
+    -Method Post `
+    -Uri "$BaseUrl/api/v1/gateway/scans" `
+    -Headers $Headers `
+    -ContentType "application/json" `
+    -Body ($Payload | ConvertTo-Json -Depth 20 -Compress) `
+    -ErrorAction Stop
+
+$ScanId = [string]$Submission.scan_id
+if ([string]::IsNullOrWhiteSpace($ScanId)) {
+    throw "The gateway accepted no scan identifier."
+}
+
+$Deadline = [DateTimeOffset]::UtcNow.AddMinutes(5)
+do {
+    $Result = Invoke-RestMethod `
+        -Method Get `
+        -Uri "$BaseUrl/api/v1/gateway/scans/$ScanId" `
+        -Headers $AuthHeaders `
+        -ErrorAction Stop
+
+    $CurrentVerdict = if ($null -ne $Result.decision) {
+        [string]$Result.decision.verdict
+    } else {
+        "pending"
+    }
+    Write-Host "Status: $($Result.status) | Verdict: $CurrentVerdict"
+
+    if (@("completed", "failed", "cancelled") -contains $Result.status) {
+        break
+    }
+    if ([DateTimeOffset]::UtcNow -ge $Deadline) {
+        throw "The scan is still processing after five minutes. Scan ID: $ScanId"
+    }
+    Start-Sleep -Seconds 4
+} while ($true)
+
+if ($Result.status -ne "completed") {
+    throw "The unified scan ended with status '$($Result.status)'. Scan ID: $ScanId"
+}
+if ($null -eq $Result.decision) {
+    throw "The unified scan completed without a policy decision. Scan ID: $ScanId"
+}
+
+Write-Host ""
+Write-Host "Unified decision" -ForegroundColor Cyan
+Write-Host "Verdict: $($Result.decision.verdict)"
+Write-Host "Recommendation: $($Result.decision.recommendation)"
+Write-Host "Risk: $([Math]::Round(([double]$Result.decision.risk * 100), 2))%"
+
+$Result.artifacts |
+    Select-Object type, status, mime_type, size_bytes |
+    Format-Table -AutoSize
+
+$Result.evidence |
+    Select-Object model, model_key, status, score, verdict, confidence, reason_codes |
+    Format-List</code></pre>
+          </div>
+          <p class="ps-footnote">The first response can contain a preliminary decision while the private image worker runs. This example waits for the completed result before displaying the final correlated outcome.</p>
+        </section>
+
+        <section id="reports" class="ps-guide-section">
+          <div class="ps-section-heading">
+            <span class="ps-step-number">08</span>
             <div><p class="eyebrow">Audit output</p><h2>Fetch reports and scan history</h2></div>
           </div>
           <p class="ps-lead">Every example above leaves the completed identifier in <code>$ScanId</code>. Use it to retrieve the unified report and save a JSON copy to the Desktop.</p>
@@ -524,7 +707,7 @@ $History.scans |
 
         <section id="results" class="ps-guide-section">
           <div class="ps-section-heading">
-            <span class="ps-step-number">08</span>
+            <span class="ps-step-number">09</span>
             <div><p class="eyebrow">Interpretation</p><h2>Understand the response</h2></div>
           </div>
           <div class="ps-response-grid">
@@ -544,7 +727,7 @@ $History.scans |
 
         <section id="troubleshooting" class="ps-guide-section">
           <div class="ps-section-heading">
-            <span class="ps-step-number">09</span>
+            <span class="ps-step-number">10</span>
             <div><p class="eyebrow">Recovery</p><h2>Common errors</h2></div>
           </div>
           <div class="ps-accordion-list">
@@ -558,7 +741,7 @@ $History.scans |
 
         <section id="security" class="ps-guide-section">
           <div class="ps-section-heading">
-            <span class="ps-step-number">10</span>
+            <span class="ps-step-number">11</span>
             <div><p class="eyebrow">Operational safety</p><h2>Finish securely</h2></div>
           </div>
           <div class="ps-security-grid">
