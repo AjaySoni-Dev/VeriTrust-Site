@@ -10,15 +10,15 @@
   <link rel="icon" href="/favicon-192.png" type="image/png" sizes="192x192">
   <link rel="apple-touch-icon" href="/apple-touch-icon.png" sizes="180x180">
   <title>Model Performance | VeriTrust</title>
-  <meta name="description" content="Current VeriTrust evaluation status, implemented model paths, scoring limitations and the benchmark evidence that has not yet been published.">
+  <meta name="description" content="Current VeriTrust evaluation status, scoring limitations, and the benchmark evidence that has not yet been published.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@500;600&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="assets/css/veritrust.css?v=20260716-final-theme2">
+  <link rel="stylesheet" href="assets/css/veritrust.css?v=20260723-unified-chrome2">
   <link rel="stylesheet" href="assets/css/graphite-orange-theme.css?v=20260719-reference7">
   <script src="assets/js/config.js?v=20260712-supabase3" defer></script>
   <script src="assets/js/supabase-client.js?v=20260712-supabase3" defer></script>
-  <script src="assets/js/site.js?v=20260712-unified-header2" defer></script>
+  <script src="assets/js/site.js?v=20260723-unified-chrome2" defer></script>
 </head>
 <body class="vt-graphite-theme">
     <header class="tool-header-shell vt-page-header">
@@ -69,7 +69,7 @@
 
       <section id="deepfake" class="doc-section">
         <h2>Deepfake model evaluation</h2>
-        <p>The current image paths are VeriTrust Pixel (<code>Wvolf/ViT_Deepfake_Detection</code>) and VeriTrust Prism (<code>dima806/deepfake_vs_real_image_detection</code>) through hosted Hugging Face inference. VeriTrust has not established that one is more accurate than the other.</p>
+        <p>VeriTrust Pixel and VeriTrust Prism use server-configured hosted inference paths. Provider repository identifiers are intentionally kept out of client responses and public pages. VeriTrust has not established that one is more accurate than the other.</p>
         <ul>
           <li>A valid evaluation would separate real-image and synthetic-image classes on held-out labeled data.</li>
           <li>It would document image quality, face visibility, optional crop preprocessing, and dataset source limits.</li>
@@ -89,11 +89,11 @@
 
       <section id="link" class="doc-section">
         <h2>Link Intelligence evaluation</h2>
-        <p>The available link path uses VeriTrust Swift (<code>kmack/malicious-url-detection</code>) plus deterministic URL-string indicators. If hosted inference fails, the route returns a disclosed local URL-pattern fallback. It does not fetch pages, resolve redirects, query WHOIS, or use live reputation feeds.</p>
+        <p>The available link path uses a server-configured VeriTrust Swift classifier plus deterministic URL-string indicators. If hosted inference fails, the route returns a disclosed local URL-pattern fallback. It does not fetch pages, resolve redirects, query WHOIS, or use live reputation feeds.</p>
         <ul>
           <li>No VeriTrust link-classification benchmark is currently published.</li>
           <li>Classifier output and deterministic URL indicators would need separate evaluation.</li>
-          <li>VeriTrust Sentinel is unavailable and is not part of the current evaluation surface.</li>
+          <li>Fallback frequency and URL-pattern-only outcomes must be measured separately from hosted-classifier results.</li>
         </ul>
       </section>
 

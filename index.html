@@ -27,12 +27,11 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@500;600&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <script>
-        document.documentElement.classList.add('js');
-    </script>
+    <link rel="stylesheet" href="assets/css/veritrust.css?v=20260723-unified-chrome2">
     <script src="assets/js/config.js?v=20260712-supabase3" defer></script>
     <script src="assets/js/supabase-client.js?v=20260713-auth-flow1" defer></script>
-    <script src="assets/js/site.js?v=20260713-auth-guard2" defer></script>
+    <script src="assets/js/site.js?v=20260723-unified-chrome2" defer></script>
+    <script src="assets/js/home.js?v=20260723-security1" defer></script>
     <style>
         :root {
             color-scheme: dark;
@@ -1262,8 +1261,8 @@
                             <line x1="80" y1="120" x2="120" y2="140" stroke="var(--status-danger)" stroke-width="0.5" opacity="0.5"/>
 
                             <rect x="200" y="80" width="180" height="60" rx="2" fill="var(--console-panel)" stroke="var(--console-border)" stroke-width="1"/>
-                            <text x="215" y="105" font-family="var(--font-mono)" font-size="9" fill="var(--text-secondary)">EXAMPLE MODEL SCORE</text>
-                            <text x="215" y="125" font-family="var(--font-display)" font-size="20" font-weight="600" fill="var(--console-text)">72.0%</text>
+                            <text x="215" y="105" font-family="var(--font-mono)" font-size="9" fill="var(--text-secondary)">MODEL OUTPUT PREVIEW</text>
+                            <text x="215" y="125" font-family="var(--font-display)" font-size="16" font-weight="600" fill="var(--console-text)">SIGNAL READY</text>
                             
                             <rect x="200" y="150" width="180" height="50" rx="2" fill="var(--danger-soft)" stroke="var(--status-danger)" stroke-width="1"/>
                             <path d="M215 170l4 4 8-8" stroke="var(--status-danger)" stroke-width="1.5" stroke-linecap="round" fill="none"/>
@@ -1591,61 +1590,5 @@
         </div>
     </footer>
 
-    <script>
-        const header = document.getElementById('header');
-        const menuToggle = document.querySelector('.menu-toggle');
-        const navLinks = document.querySelector('.nav-links');
-        const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
-
-        const updateScrollState = () => {
-            header?.classList.toggle('is-scrolled', window.scrollY > 10);
-        };
-
-        updateScrollState();
-        window.addEventListener('scroll', updateScrollState, { passive: true });
-
-        const revealElements = document.querySelectorAll('.reveal');
-
-        if (reduceMotion.matches || !('IntersectionObserver' in window)) {
-            revealElements.forEach((element) => element.classList.add('active'));
-        } else {
-            const revealOnScroll = new IntersectionObserver((entries, observer) => {
-                entries.forEach((entry) => {
-                    if (!entry.isIntersecting) return;
-                    entry.target.classList.add('active');
-                    observer.unobserve(entry.target);
-                });
-            }, { threshold: 0.1, rootMargin: '0px 0px -30px 0px' });
-
-            revealElements.forEach((element) => revealOnScroll.observe(element));
-        }
-
-        const closeMenu = () => {
-            navLinks?.classList.remove('is-open');
-            menuToggle?.setAttribute('aria-expanded', 'false');
-            menuToggle?.setAttribute('aria-label', 'Open navigation menu');
-            document.body.classList.remove('menu-open');
-        };
-
-        menuToggle?.addEventListener('click', () => {
-            const isOpen = navLinks?.classList.toggle('is-open') ?? false;
-            menuToggle.setAttribute('aria-expanded', String(isOpen));
-            menuToggle.setAttribute('aria-label', isOpen ? 'Close navigation menu' : 'Open navigation menu');
-            document.body.classList.toggle('menu-open', isOpen);
-        });
-
-        navLinks?.querySelectorAll('a').forEach((link) => link.addEventListener('click', closeMenu));
-
-        document.addEventListener('keydown', (event) => {
-            if (event.key === 'Escape') {
-                closeMenu();
-                menuToggle?.focus();
-            }
-        });
-
-        window.addEventListener('resize', () => {
-            if (window.innerWidth > 1024) closeMenu();
-        });
-    </script>
 </body>
 </html>

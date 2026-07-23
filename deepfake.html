@@ -9,8 +9,11 @@
   <link rel="icon" href="/favicon-96.png" type="image/png" sizes="96x96">
   <link rel="icon" href="/favicon-192.png" type="image/png" sizes="192x192">
   <link rel="apple-touch-icon" href="/apple-touch-icon.png" sizes="180x180">
-  <title>Phishing Detection | VeriTrust</title>
-  <meta name="description" content="Review suspicious email, SMS, URL, or message text with hosted phishing scoring and deterministic risk indicators.">
+  <meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
+  <title>Deepfake Detection | VeriTrust</title>
+  <meta name="description" content="Upload a supported face image for AI-assisted real-versus-synthetic model scoring, optional face preparation, and exportable results.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@500;600&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -55,53 +58,101 @@
   <main class="tool-shell">
     <section class="tool-topbar">
       <div class="tool-title">
-        <p class="eyebrow">Message check</p>
-        <h1>Review a message for phishing risk.</h1>
-        <p>Paste 8 to 12,000 characters of email, SMS, URL, or message text for model scoring and rule-based indicators.</p>
+        <p class="eyebrow">Image check</p>
+        <h1>Review an image for synthetic-media risk.</h1>
+        <p>Upload a supported face image to compare real and synthetic model scores. The result is not forensic proof.</p>
       </div>
     </section>
 
-    <section class="tool-grid phishing-grid">
-      <form id="phishingForm" class="tool-panel">
+    <section class="tool-grid deepfake-grid">
+      <form id="deepfakeForm" class="tool-panel">
         <div class="panel-title">
           <div>
-            <h2>Paste message</h2>
-            <p>Include the full message or link if you have it.</p>
+            <h2>Upload image</h2>
+            <p>Use a clear face image that you are authorized to process.</p>
           </div>
-          <span class="hint">Email, SMS, URL</span>
+          <span class="hint">JPG, PNG, WEBP, BMP</span>
         </div>
 
-        <textarea id="phishingText" class="textarea tool-textarea" placeholder="Paste the message or link here..."></textarea>
+        <label class="dropzone tool-dropzone" for="deepfakeImage">
+          <input id="deepfakeImage" type="file" accept="image/*">
+          <span class="drop-content">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="M17 8l-5-5-5 5"/><path d="M12 3v12"/></svg>
+            <span>
+              <strong>Choose image</strong>
+              <span id="imageFileName" class="hint">No image selected</span>
+            </span>
+          </span>
+        </label>
 
-        <div class="action-row">
+        <div id="imagePreviewBox" class="preview-box tool-preview">
+          <img id="imagePreview" alt="Uploaded image preview">
+        </div>
+
+        <div class="field-row">
           <div class="field model-field">
-            <label for="phishingModel">Model</label>
-            <select id="phishingModel" class="select native-model-select" aria-label="Model" tabindex="-1">
-              <option value="mailguard" selected>VeriTrust MailGuard</option>
-              <option value="cortex">VeriTrust Cortex</option>
+            <label for="deepfakeModel">Model</label>
+            <select id="deepfakeModel" class="select native-model-select" aria-label="Model" tabindex="-1">
+              <option value="prism" selected>VeriTrust Prism</option>
+              <option value="pixel">VeriTrust Pixel</option>
             </select>
-            <div class="model-select" data-model-select="phishingModel">
+            <div class="model-select" data-model-select="deepfakeModel">
               <button class="model-select-trigger" type="button" aria-haspopup="listbox" aria-expanded="false">
                 <span class="model-trigger-text">
-                  <strong data-model-label>VeriTrust MailGuard</strong>
-                  <em data-model-desc>Hosted text classifier</em>
+                  <strong data-model-label>VeriTrust Prism</strong>
+                  <em data-model-desc>Alternate image classifier</em>
                 </span>
                 <span class="model-badge" data-model-badge>Classifier</span>
                 <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 14l5-5 5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
               </button>
-              <div class="model-options" role="listbox" aria-label="Phishing model">
-                <button class="model-option active" type="button" role="option" aria-selected="true" data-value="mailguard" data-label="VeriTrust MailGuard" data-desc="Hosted text classifier" data-badge="Classifier">
-                  <span><strong>VeriTrust MailGuard</strong><em>Hosted text classifier</em></span>
+              <div class="model-options" role="listbox" aria-label="Deepfake model">
+                <button class="model-option active" type="button" role="option" aria-selected="true" data-value="prism" data-label="VeriTrust Prism" data-desc="Alternate image classifier" data-badge="Classifier">
+                  <span><strong>VeriTrust Prism</strong><em>Alternate image classifier</em></span>
                   <span class="model-badge">Classifier</span>
                 </button>
-                <button class="model-option" type="button" role="option" aria-selected="false" data-value="cortex" data-label="VeriTrust Cortex" data-desc="Hosted instruction model" data-badge="Instruction model">
-                  <span><strong>VeriTrust Cortex</strong><em>Hosted instruction model</em></span>
-                  <span class="model-badge">Instruction model</span>
+                <button class="model-option" type="button" role="option" aria-selected="false" data-value="pixel" data-label="VeriTrust Pixel" data-desc="Image classifier">
+                  <span><strong>VeriTrust Pixel</strong><em>Image classifier</em></span>
                 </button>
               </div>
             </div>
           </div>
-          <button id="phishingSubmit" class="btn btn-primary" type="submit">Check Message</button>
+          <label class="toggle-row tool-toggle">
+            <input id="autoCropToggle" type="checkbox" checked>
+            <span>Crop Face</span>
+          </label>
+        </div>
+
+        <details class="quiet-details tool-details">
+          <summary>Crop settings</summary>
+          <div class="form-grid">
+            <div class="field">
+              <label for="processingSize">Detector</label>
+              <select id="processingSize" class="select">
+                <option value="768" selected>768 px</option>
+                <option value="512">512 px</option>
+                <option value="1024">1024 px</option>
+                <option value="256">256 px</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="cropSize">Crop</label>
+              <select id="cropSize" class="select">
+                <option value="256" selected>256 px</option>
+                <option value="224">224 px</option>
+                <option value="384">384 px</option>
+                <option value="512">512 px</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="cropMargin">Margin</label>
+              <input id="cropMargin" class="input" type="number" min="0" max="0.45" step="0.05" value="0.15">
+            </div>
+          </div>
+        </details>
+
+        <div class="action-row">
+          <button id="cropButton" class="btn btn-secondary" type="button">Prepare Face</button>
+          <button id="deepfakeSubmit" class="btn btn-primary" type="submit">Check Image</button>
         </div>
       </form>
 
@@ -109,18 +160,19 @@
         <div class="panel-title">
           <div>
             <h2>Analysis status</h2>
-            <p id="activityLog">Waiting for a message</p>
+            <p id="activityLog">Waiting for an image</p>
           </div>
         </div>
+        <div id="cropResults" class="crop-output-panel">Face preview will appear here after preparation.</div>
       </aside>
     </section>
-    <dialog id="phishingResultDialog" class="result-dialog" aria-labelledby="phishingResultTitle">
+    <dialog id="deepfakeResultDialog" class="result-dialog" aria-labelledby="deepfakeResultTitle">
       <div class="result-dialog-shell">
         <header class="result-dialog-header">
-          <div><span>Analysis complete</span><h2 id="phishingResultTitle">Phishing detection result</h2></div>
+          <div><span>Analysis complete</span><h2 id="deepfakeResultTitle">Deepfake detection result</h2></div>
           <button type="button" class="result-dialog-close" data-result-dialog-close aria-label="Close result dialog">&times;</button>
         </header>
-        <div class="result-dialog-body"><div id="phishingResult" class="result-empty tool-result-empty">Your message result will appear here.</div></div>
+        <div class="result-dialog-body"><div id="deepfakeResult" class="result-empty tool-result-empty">Your image result will appear here.</div></div>
       </div>
     </dialog>
   </main>
