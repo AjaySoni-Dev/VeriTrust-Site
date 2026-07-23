@@ -38,7 +38,7 @@ for (const file of htmlFiles) {
   if (!/assets\/js\/site\.js/i.test(html)) failures.push(`${file}: missing the shared site chrome script`);
   if (!/assets\/js\/config\.js/i.test(html)) failures.push(`${file}: missing runtime configuration`);
   if (!/assets\/js\/supabase-client\.js/i.test(html)) failures.push(`${file}: missing the shared session client`);
-  if (!/assets\/css\/glass-system\.css\?v=20260723-global2/i.test(html)) {
+  if (!/assets\/css\/glass-system\.css\?v=20260723-global3/i.test(html)) {
     failures.push(`${file}: missing the shared responsive glass system`);
   }
   if (/<footer\b[^>]*class=["'][^"']*doc-section/i.test(html)) {
@@ -99,6 +99,9 @@ if (!/"@type"\s*:\s*"WebSite"[\s\S]*?"name"\s*:\s*"VeriTrust"/i.test(homeHtml)) 
 if (/"name"\s*:\s*"VeriTrustLab"/i.test(homeHtml)) {
   failures.push('index.html: legacy VeriTrustLab structured-data name must not be used');
 }
+if (!/textLength=["']128["'][^>]*>Model score, not forensic proof</i.test(homeHtml)) {
+  failures.push('index.html: console limitation text must be constrained inside its result card');
+}
 const webManifest = fs.readFileSync(path.join(root, 'site.webmanifest'), 'utf8');
 if (!/"name"\s*:\s*"VeriTrust"/i.test(webManifest)) {
   failures.push('site.webmanifest: application name must be VeriTrust');
@@ -120,6 +123,21 @@ if (!structuredDataMatch) {
 }
 
 const siteScript = fs.readFileSync(path.join(root, 'assets', 'js', 'site.js'), 'utf8');
+if (!/const\s+shouldBlockForAuth\s*=\s*isAuth\s*\|\|\s*!isPublic/i.test(siteScript)) {
+  failures.push('assets/js/site.js: public content must not be hidden behind session verification');
+}
+const glassStyles = fs.readFileSync(path.join(root, 'assets', 'css', 'glass-system.css'), 'utf8');
+if (!/--vt-ambient-blue:\s*rgba\(37,\s*99,\s*235,/i.test(glassStyles)) {
+  failures.push('assets/css/glass-system.css: shared blue ambient lighting is missing');
+}
+if (!/\.tool-menu-toggle[\s\S]*?background:\s*transparent\s*!important/i.test(glassStyles)) {
+  failures.push('assets/css/glass-system.css: mobile menu trigger must remain background-free');
+}
+const gatewayHtml = fs.readFileSync(path.join(root, 'gateway.html'), 'utf8');
+if (!/<h1>\s*Unified signal review\.\s*<\/h1>/i.test(gatewayHtml)
+  || /Review multiple signals together/i.test(gatewayHtml)) {
+  failures.push('gateway.html: gateway heading must use the compact professional title');
+}
 const sharedChromeTargets = [
   'index.html',
   'auth.html',
