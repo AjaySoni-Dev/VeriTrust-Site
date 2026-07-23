@@ -68,16 +68,31 @@ body.vt-graphite-theme :where(.tool-header-links a:hover, .tool-header-links a.a
   color: var(--accent-main) !important;
 }
 
-body.vt-graphite-theme :where(.tool-menu-toggle, .tool-header-login, .tool-header-dashboard) {
+body.vt-graphite-theme :where(.tool-header-login, .tool-header-dashboard) {
   border: 1px solid var(--border-subtle) !important;
   border-radius: var(--radius-sm) !important;
   background: var(--bg-surface-light) !important;
   color: var(--text-primary) !important;
 }
 
-body.vt-graphite-theme :where(.tool-menu-toggle, .tool-header-login, .tool-header-dashboard):hover {
+body.vt-graphite-theme :where(.tool-header-login, .tool-header-dashboard):hover {
   border-color: var(--border-hover) !important;
   background: var(--bg-surface-hover) !important;
+}
+
+body.vt-graphite-theme .tool-menu-toggle {
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+body.vt-graphite-theme .tool-menu-toggle:hover,
+body.vt-graphite-theme .tool-menu-toggle:active,
+body.vt-graphite-theme .tool-menu-toggle[aria-expanded="true"] {
+  border: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
 }
 
 body.vt-graphite-theme .btn {

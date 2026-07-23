@@ -207,6 +207,18 @@ body:not(.vt-graphite-theme) :where(.tool-menu-toggle, .menu-toggle):focus-visib
   outline-offset: 2px;
 }
 
+/* Use the same three-line SVG trigger on every generated site header. */
+body .vt-site-header .tool-menu-toggle svg {
+  width: 24px;
+  height: 24px;
+  display: block !important;
+}
+
+body .vt-site-header .tool-menu-toggle::before {
+  content: none !important;
+  display: none !important;
+}
+
 /* Primary surfaces: one glass layer per functional region. */
 body.vt-graphite-theme :where(
   .hero-illustration,
