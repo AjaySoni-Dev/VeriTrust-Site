@@ -21,6 +21,7 @@
   <script src="assets/js/supabase-client.js?v=20260712-supabase3" defer></script>
   <script src="assets/js/reporting.dark-onepage-v6.js" defer></script>
   <script src="assets/js/site.js?v=20260723-unified-chrome2" defer></script>
+  <link rel="stylesheet" href="assets/css/glass-system.css?v=20260723-global2">
 </head>
 <body class="vt-graphite-theme vt-detection-page">
     <header class="tool-header-shell vt-page-header">
@@ -59,7 +60,7 @@
     <section class="choice-grid" aria-label="Detection modules">
       <a class="choice-card" href="gateway.html">
         <span class="module-icon">G</span>
-        <span><h2>Unified Security Gateway</h2><p>Combine message, URL, and supported media signals into one policy-backed decision.</p></span>
+        <span><h2>Unified Security Gateway</h2><p>Combine message, URL, and media checks into one decision.</p></span>
         <span class="choice-footer"><span>Multimodal gateway</span><span class="choice-action">Open</span></span>
       </a>
       <a class="choice-card" href="deepfake.html">
@@ -68,7 +69,7 @@
         </span>
         <span>
           <h2>Image Deepfake Review</h2>
-          <p>Upload a supported face image and review real-versus-synthetic model scores.</p>
+          <p>Review real-versus-synthetic model scores for a supported image.</p>
         </span>
         <span class="choice-footer"><span>Image check</span><span class="choice-action">Open</span></span>
       </a>
@@ -79,7 +80,7 @@
         </span>
         <span>
           <h2>Phishing Message Review</h2>
-          <p>Paste an email, SMS, URL, or message for model scoring and deterministic risk indicators.</p>
+          <p>Score suspicious messages with model and rule-based signals.</p>
         </span>
         <span class="choice-footer"><span>Message check</span><span class="choice-action">Open</span></span>
       </a>
@@ -90,9 +91,9 @@
         </span>
         <span>
           <h2>Link Intelligence</h2>
-          <p>Analyze a URL string and optional context for classifier and URL-pattern signals without fetching the page.</p>
+          <p>Review a URL and optional context without opening the destination.</p>
         </span>
-        <span class="choice-footer"><span>URL check</span><span class="choice-action">Analyze Link</span></span>
+        <span class="choice-footer"><span>URL check</span><span class="choice-action">Open</span></span>
       </a>
     </section>
   </main>
