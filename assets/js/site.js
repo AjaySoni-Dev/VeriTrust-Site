@@ -138,7 +138,9 @@ const VeriTrustSiteChrome = (() => {
           <a href="auth.html" class="tool-header-login">Log in</a>
           <a href="dashboard.html" class="tool-header-dashboard">Dashboard</a>
           <button class="tool-menu-toggle" aria-label="Open page menu" aria-expanded="false" type="button">
-            <span aria-hidden="true"></span><span aria-hidden="true"></span><span aria-hidden="true"></span>
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+              <path d="M4 6h16M4 12h16M4 18h16" stroke-linecap="round"/>
+            </svg>
           </button>
         </div>
       </div>
@@ -286,6 +288,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       toggle.type = 'button';
       toggle.setAttribute('aria-label', 'Open page menu');
       toggle.setAttribute('aria-expanded', 'false');
+      toggle.innerHTML = '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16" stroke-linecap="round"/></svg>';
       actions.appendChild(toggle);
     }
   };
