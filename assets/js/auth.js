@@ -28,6 +28,8 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   if (pageAccess?.callbackError) {
     showMessage(pageAccess.callbackError.message || 'The authentication link is invalid or has expired.', 'error');
+  } else if (pageAccess?.sessionError) {
+    showMessage('Your existing session could not be verified right now. It has not been cleared; refresh shortly or sign in again.', 'error');
   }
 
   if (pageAccess?.callback?.type === 'recovery') {

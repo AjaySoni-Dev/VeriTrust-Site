@@ -43,12 +43,17 @@ const VeriTrustPageAccess = (() => {
     let session = null;
     let callback = null;
     let callbackError = null;
+    let sessionError = null;
     if (client?.isConfigured()) {
       try {
         callback = await client.consumeAuthCallback?.() || null;
-        session = await client.getSession();
       } catch (error) {
         callbackError = error;
+      }
+      try {
+        session = await client.getSession();
+      } catch (error) {
+        sessionError = error;
         session = null;
       }
     }
@@ -61,6 +66,13 @@ const VeriTrustPageAccess = (() => {
     }
 
     if (!isPublic && !session) {
+      if (sessionError) {
+        if (shouldBlockForAuth) {
+          document.documentElement.classList.remove('vt-auth-checking');
+          document.documentElement.removeAttribute('aria-busy');
+        }
+        return { allowed: true, callback, callbackError, isAuth, isLanding, session: null, sessionError };
+      }
       const redirect = encodeURIComponent(currentDestination());
       window.location.replace(`auth.html?redirect=${redirect}`);
       return { allowed: false, session: null };
@@ -70,7 +82,7 @@ const VeriTrustPageAccess = (() => {
       document.documentElement.classList.remove('vt-auth-checking');
       document.documentElement.removeAttribute('aria-busy');
     }
-    return { allowed: true, callback, callbackError, isAuth, isLanding, session };
+    return { allowed: true, callback, callbackError, isAuth, isLanding, session, sessionError };
   };
 
   window.VeriTrustAuthFlow = { safeRedirect };
@@ -409,6 +421,10 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
       });
       ensureMobileMenuActions(true);
+    } else if (access.sessionError) {
+      document.body.classList.remove('vt-authenticated', 'vt-signed-out');
+      document.body.classList.add('vt-session-unavailable');
+      ensureMobileMenuActions(false);
     } else {
       document.body.classList.remove('vt-authenticated');
       document.body.classList.add('vt-signed-out');

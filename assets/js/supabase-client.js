@@ -116,7 +116,18 @@
   async function getSession(options = {}) {
     if (currentSession && !options.refresh) return currentSession;
     if (sessionRequest) return sessionRequest;
-    sessionRequest = browserAuth('session')
+    const verifySession = async () => {
+      try {
+        return await browserAuth('session');
+      } catch (error) {
+        const status = Number(error?.status || 0);
+        const transient = !status || status === 408 || status === 425 || status === 429 || status >= 500;
+        if (!transient) throw error;
+        await new Promise((resolve) => global.setTimeout(resolve, 250));
+        return browserAuth('session');
+      }
+    };
+    sessionRequest = verifySession()
       .then((data) => {
         currentSession = { authenticated: true, user: data.user || null };
         return currentSession;
