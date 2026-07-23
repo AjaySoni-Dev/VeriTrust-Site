@@ -539,3 +539,160 @@
     align-items: flex-start;
   }
 }
+
+/* Landing-page-inspired glass treatment, scoped to Unified Gateway only. */
+body.vt-gateway-page.vt-graphite-theme {
+  background-color: #161616 !important;
+  background-image:
+    radial-gradient(circle at 12% 2%, rgba(222, 145, 56, 0.14), transparent 31rem),
+    radial-gradient(circle at 88% 22%, rgba(255, 255, 255, 0.055), transparent 27rem) !important;
+  background-attachment: fixed !important;
+}
+
+body.vt-tool-page.vt-gateway-page.vt-graphite-theme .gateway-shell {
+  width: min(1140px, calc(100% - 32px));
+}
+
+body.vt-tool-page.vt-gateway-page.vt-graphite-theme :where(
+  .gateway-heading,
+  .gateway-powershell-feature,
+  .gateway-form,
+  .gateway-result,
+  .gateway-history
+) {
+  border: 1px solid rgba(255, 255, 255, 0.105) !important;
+  background: rgba(31, 31, 31, 0.74) !important;
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.045) inset,
+    0 20px 60px rgba(0, 0, 0, 0.22) !important;
+  backdrop-filter: blur(18px) saturate(116%);
+  -webkit-backdrop-filter: blur(18px) saturate(116%);
+}
+
+body.vt-tool-page.vt-gateway-page.vt-graphite-theme .gateway-heading {
+  display: block;
+  margin-bottom: 14px;
+  padding: clamp(24px, 4vw, 38px);
+}
+
+body.vt-tool-page.vt-gateway-page.vt-graphite-theme .gateway-heading-copy {
+  max-width: 760px;
+}
+
+body.vt-tool-page.vt-gateway-page.vt-graphite-theme .gateway-heading-meta {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+body.vt-tool-page.vt-gateway-page.vt-graphite-theme .gateway-heading-meta .eyebrow {
+  margin: 0;
+}
+
+body.vt-tool-page.vt-gateway-page.vt-graphite-theme .gateway-heading h1 {
+  max-width: 680px;
+  font-size: clamp(32px, 4.3vw, 48px);
+  line-height: 1.06;
+}
+
+body.vt-tool-page.vt-gateway-page.vt-graphite-theme .gateway-heading p:not(.eyebrow) {
+  max-width: 620px;
+  margin-top: 13px;
+  font-style: normal !important;
+  line-height: 1.58;
+}
+
+body.vt-tool-page.vt-gateway-page.vt-graphite-theme .gateway-mode {
+  padding: 5px 8px;
+  border: 1px solid var(--accent-border);
+  border-radius: 999px;
+  font-size: 9px;
+  letter-spacing: 0.055em;
+}
+
+body.vt-tool-page.vt-gateway-page.vt-graphite-theme .gateway-powershell-feature {
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 24px;
+  margin-bottom: 14px;
+  padding: 19px 22px;
+  border-left-width: 1px !important;
+}
+
+body.vt-tool-page.vt-gateway-page.vt-graphite-theme .gateway-powershell-feature::after {
+  content: none;
+}
+
+body.vt-tool-page.vt-gateway-page.vt-graphite-theme .gateway-powershell-copy .eyebrow {
+  margin-bottom: 4px;
+}
+
+body.vt-tool-page.vt-gateway-page.vt-graphite-theme .gateway-powershell-copy h2 {
+  font-size: clamp(18px, 2vw, 22px);
+}
+
+body.vt-tool-page.vt-gateway-page.vt-graphite-theme .gateway-powershell-copy > p:not(.eyebrow) {
+  margin-top: 5px;
+  font-style: normal !important;
+  line-height: 1.5;
+}
+
+body.vt-tool-page.vt-gateway-page.vt-graphite-theme .gateway-powershell-action {
+  min-width: 132px;
+  min-height: 40px;
+}
+
+body.vt-tool-page.vt-gateway-page.vt-graphite-theme .gateway-layout {
+  gap: 14px;
+}
+
+body.vt-tool-page.vt-gateway-page.vt-graphite-theme .gateway-form,
+body.vt-tool-page.vt-gateway-page.vt-graphite-theme .gateway-result,
+body.vt-tool-page.vt-gateway-page.vt-graphite-theme .gateway-history {
+  padding: clamp(19px, 2.4vw, 25px);
+}
+
+body.vt-tool-page.vt-gateway-page.vt-graphite-theme .gateway-history {
+  margin-top: 14px;
+}
+
+body.vt-tool-page.vt-gateway-page.vt-graphite-theme :where(.gateway-upload, .gateway-decision > div, .gateway-evidence article, .gateway-history-list article) {
+  border: 1px solid rgba(255, 255, 255, 0.075);
+  background: rgba(43, 43, 43, 0.68) !important;
+}
+
+@media (max-width: 900px) {
+  body.vt-tool-page.vt-gateway-page.vt-graphite-theme .gateway-powershell-feature {
+    grid-template-columns: minmax(0, 1fr) auto;
+  }
+
+  body.vt-tool-page.vt-gateway-page.vt-graphite-theme .gateway-powershell-action {
+    grid-column: auto;
+  }
+}
+
+@media (max-width: 600px) {
+  body.vt-tool-page.vt-gateway-page.vt-graphite-theme .gateway-shell {
+    width: min(100% - 20px, 1140px);
+  }
+
+  body.vt-tool-page.vt-gateway-page.vt-graphite-theme .gateway-heading {
+    padding: 22px 18px;
+  }
+
+  body.vt-tool-page.vt-gateway-page.vt-graphite-theme .gateway-heading-meta {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  body.vt-tool-page.vt-gateway-page.vt-graphite-theme .gateway-powershell-feature {
+    grid-template-columns: 1fr;
+    gap: 15px;
+    padding: 18px;
+  }
+
+  body.vt-tool-page.vt-gateway-page.vt-graphite-theme .gateway-powershell-action {
+    width: 100%;
+  }
+}
