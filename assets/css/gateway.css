@@ -547,19 +547,19 @@ body.vt-tool-page.vt-gateway-page.vt-graphite-theme .gateway-shell {
 
 body.vt-tool-page.vt-gateway-page.vt-graphite-theme .gateway-heading {
   display: block;
-  margin-bottom: 14px;
-  padding: clamp(24px, 4vw, 38px);
+  margin-bottom: 12px;
+  padding: clamp(19px, 3vw, 28px);
 }
 
 body.vt-tool-page.vt-gateway-page.vt-graphite-theme .gateway-heading-copy {
-  max-width: 760px;
+  max-width: 700px;
 }
 
 body.vt-tool-page.vt-gateway-page.vt-graphite-theme .gateway-heading-meta {
   display: flex;
   align-items: center;
   gap: 12px;
-  margin-bottom: 12px;
+  margin-bottom: 8px;
 }
 
 body.vt-tool-page.vt-gateway-page.vt-graphite-theme .gateway-heading-meta .eyebrow {
@@ -567,16 +567,16 @@ body.vt-tool-page.vt-gateway-page.vt-graphite-theme .gateway-heading-meta .eyebr
 }
 
 body.vt-tool-page.vt-gateway-page.vt-graphite-theme .gateway-heading h1 {
-  max-width: 680px;
-  font-size: clamp(32px, 4.3vw, 48px);
-  line-height: 1.06;
+  max-width: 620px;
+  font-size: clamp(27px, 3.4vw, 38px);
+  line-height: 1.08;
 }
 
 body.vt-tool-page.vt-gateway-page.vt-graphite-theme .gateway-heading p:not(.eyebrow) {
   max-width: 620px;
-  margin-top: 13px;
+  margin-top: 9px;
   font-style: normal !important;
-  line-height: 1.58;
+  line-height: 1.5;
 }
 
 body.vt-tool-page.vt-gateway-page.vt-graphite-theme .gateway-mode {
@@ -653,13 +653,13 @@ body.vt-tool-page.vt-gateway-page.vt-graphite-theme :where(.gateway-upload, .gat
   }
 
   body.vt-tool-page.vt-gateway-page.vt-graphite-theme .gateway-heading {
-    padding: 22px 18px;
+    padding: 18px 16px;
   }
 
   body.vt-tool-page.vt-gateway-page.vt-graphite-theme .gateway-heading-meta {
     align-items: flex-start;
     flex-direction: column;
-    gap: 8px;
+    gap: 6px;
   }
 
   body.vt-tool-page.vt-gateway-page.vt-graphite-theme .gateway-powershell-feature {
