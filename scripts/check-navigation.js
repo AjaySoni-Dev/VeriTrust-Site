@@ -38,6 +38,9 @@ for (const file of htmlFiles) {
   if (!/assets\/js\/site\.js/i.test(html)) failures.push(`${file}: missing the shared site chrome script`);
   if (!/assets\/js\/config\.js/i.test(html)) failures.push(`${file}: missing runtime configuration`);
   if (!/assets\/js\/supabase-client\.js/i.test(html)) failures.push(`${file}: missing the shared session client`);
+  if (!/assets\/css\/glass-system\.css\?v=20260723-global2/i.test(html)) {
+    failures.push(`${file}: missing the shared responsive glass system`);
+  }
   if (/<footer\b[^>]*class=["'][^"']*doc-section/i.test(html)) {
     failures.push(`${file}: article-level footer must use the shared site footer`);
   }
