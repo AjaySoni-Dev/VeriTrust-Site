@@ -540,33 +540,9 @@
   }
 }
 
-/* Landing-page-inspired glass treatment, scoped to Unified Gateway only. */
-body.vt-gateway-page.vt-graphite-theme {
-  background-color: #161616 !important;
-  background-image:
-    radial-gradient(circle at 12% 2%, rgba(222, 145, 56, 0.14), transparent 31rem),
-    radial-gradient(circle at 88% 22%, rgba(255, 255, 255, 0.055), transparent 27rem) !important;
-  background-attachment: fixed !important;
-}
-
+/* Unified Gateway hierarchy refinements. Shared glass comes from glass-system.css. */
 body.vt-tool-page.vt-gateway-page.vt-graphite-theme .gateway-shell {
   width: min(1140px, calc(100% - 32px));
-}
-
-body.vt-tool-page.vt-gateway-page.vt-graphite-theme :where(
-  .gateway-heading,
-  .gateway-powershell-feature,
-  .gateway-form,
-  .gateway-result,
-  .gateway-history
-) {
-  border: 1px solid rgba(255, 255, 255, 0.105) !important;
-  background: rgba(31, 31, 31, 0.74) !important;
-  box-shadow:
-    0 1px 0 rgba(255, 255, 255, 0.045) inset,
-    0 20px 60px rgba(0, 0, 0, 0.22) !important;
-  backdrop-filter: blur(18px) saturate(116%);
-  -webkit-backdrop-filter: blur(18px) saturate(116%);
 }
 
 body.vt-tool-page.vt-gateway-page.vt-graphite-theme .gateway-heading {
