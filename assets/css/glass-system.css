@@ -34,6 +34,7 @@ body.vt-graphite-theme {
     radial-gradient(circle at 12% 2%, var(--vt-ambient-blue), transparent 31rem),
     radial-gradient(circle at 88% 22%, var(--vt-ambient-blue-soft), transparent 27rem),
     linear-gradient(180deg, rgba(14, 35, 72, 0.18), transparent 38rem) !important;
+  background-size: auto !important;
   background-attachment: fixed !important;
 }
 
@@ -98,6 +99,7 @@ html body.vt-dashboard-page.vt-graphite-theme {
     radial-gradient(circle at 12% 2%, var(--vt-ambient-blue), transparent 31rem),
     radial-gradient(circle at 88% 22%, var(--vt-ambient-blue-soft), transparent 27rem),
     linear-gradient(180deg, rgba(14, 35, 72, 0.18), transparent 38rem) !important;
+  background-size: auto !important;
   background-attachment: fixed !important;
 }
 
