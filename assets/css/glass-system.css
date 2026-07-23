@@ -10,8 +10,8 @@
   --vt-glass-surface-soft: rgba(43, 43, 43, 0.64);
   --vt-glass-border: rgba(255, 255, 255, 0.105);
   --vt-glass-border-soft: rgba(255, 255, 255, 0.072);
-  --vt-ambient-blue: rgba(37, 99, 235, 0.17);
-  --vt-ambient-blue-soft: rgba(96, 165, 250, 0.055);
+  --vt-ambient-blue: rgba(37, 99, 235, 0.23);
+  --vt-ambient-blue-soft: rgba(96, 165, 250, 0.085);
   --vt-glass-shadow:
     0 1px 0 rgba(255, 255, 255, 0.045) inset,
     0 20px 60px rgba(0, 0, 0, 0.22);
@@ -21,7 +21,7 @@
 html {
   max-width: 100%;
   overflow-x: clip;
-  background: #161616;
+  background: #10141d;
 }
 
 body,
@@ -29,11 +29,11 @@ body.vt-graphite-theme {
   min-width: 0;
   max-width: 100%;
   overflow-x: clip;
-  background-color: #161616 !important;
+  background-color: #10141d !important;
   background-image:
     radial-gradient(circle at 12% 2%, var(--vt-ambient-blue), transparent 31rem),
     radial-gradient(circle at 88% 22%, var(--vt-ambient-blue-soft), transparent 27rem),
-    linear-gradient(180deg, rgba(255, 255, 255, 0.012), transparent 38rem) !important;
+    linear-gradient(180deg, rgba(14, 35, 72, 0.18), transparent 38rem) !important;
   background-attachment: fixed !important;
 }
 
@@ -44,7 +44,7 @@ body::before {
   inset: 0;
   pointer-events: none;
   background:
-    radial-gradient(circle at 76% 78%, rgba(59, 130, 246, 0.05), transparent 24rem),
+    radial-gradient(circle at 76% 78%, rgba(59, 130, 246, 0.075), transparent 24rem),
     linear-gradient(rgba(255, 255, 255, 0.012) 1px, transparent 1px),
     linear-gradient(90deg, rgba(255, 255, 255, 0.012) 1px, transparent 1px);
   background-size: auto, 48px 48px, 48px 48px;
@@ -88,10 +88,123 @@ body:not(.vt-graphite-theme) :where(.legal-footer, .site-footer, .vt-site-footer
   -webkit-backdrop-filter: blur(18px) saturate(112%);
 }
 
+/*
+ * Workspace pages historically carried their own chrome and canvas rules.
+ * These explicit selectors keep every authenticated page on the shared system.
+ */
+html body.vt-dashboard-page.vt-graphite-theme {
+  background-color: #10141d !important;
+  background-image:
+    radial-gradient(circle at 12% 2%, var(--vt-ambient-blue), transparent 31rem),
+    radial-gradient(circle at 88% 22%, var(--vt-ambient-blue-soft), transparent 27rem),
+    linear-gradient(180deg, rgba(14, 35, 72, 0.18), transparent 38rem) !important;
+  background-attachment: fixed !important;
+}
+
+html body.vt-dashboard-page.vt-graphite-theme .vt-site-header {
+  height: var(--header-height);
+  border-bottom-color: rgba(255, 255, 255, 0.09) !important;
+  background: rgba(22, 22, 22, 0.78) !important;
+  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.18) !important;
+  backdrop-filter: blur(20px) saturate(118%) !important;
+  -webkit-backdrop-filter: blur(20px) saturate(118%) !important;
+}
+
+html body.vt-dashboard-page.vt-graphite-theme .vt-site-header .tool-header-inner {
+  width: 100% !important;
+  max-width: 1240px !important;
+  margin-inline: auto !important;
+  padding-inline: clamp(16px, 3vw, 28px) !important;
+  gap: clamp(1.5rem, 3vw, 3rem) !important;
+}
+
+html body.vt-dashboard-page.vt-graphite-theme .vt-site-header .tool-header-brand-group {
+  flex: 0 1 auto;
+  gap: 14px;
+}
+
+html body.vt-dashboard-page.vt-graphite-theme .vt-site-header .tool-header-brand {
+  width: auto !important;
+  max-width: 198px !important;
+}
+
+html body.vt-dashboard-page.vt-graphite-theme .vt-site-header .tool-header-mark {
+  max-width: 36px !important;
+  height: 32px !important;
+}
+
+html body.vt-dashboard-page.vt-graphite-theme .vt-site-header .tool-header-word {
+  max-width: 160px !important;
+  height: 19.5px !important;
+}
+
+html body.vt-dashboard-page.vt-graphite-theme .vt-site-header .tool-header-links {
+  gap: clamp(1.25rem, 2.2vw, 2.25rem) !important;
+  margin-left: auto;
+}
+
+html body.vt-dashboard-page.vt-graphite-theme .vt-site-header .tool-header-actions {
+  flex: 0 0 auto;
+  gap: 12px !important;
+}
+
+html body.vt-dashboard-page.vt-graphite-theme .vt-site-header :where(
+  .tool-header-dashboard,
+  .tool-header-login.is-logout
+) {
+  min-height: 38px;
+  padding: 0.5rem 1rem;
+  border: 1px solid var(--border-hover) !important;
+  border-radius: 6px !important;
+  background: var(--bg-surface-hover) !important;
+  color: var(--text-primary) !important;
+}
+
+html body.vt-dashboard-page.vt-graphite-theme .vt-site-header .tool-header-dashboard.active {
+  border-color: var(--border-hover) !important;
+  background: var(--bg-surface-hover) !important;
+  color: var(--text-primary) !important;
+}
+
+body .vt-site-footer :where(.vt-site-footer-brand, .vt-site-footer-groups section) {
+  min-height: 0;
+  margin: 0;
+  padding: 0 !important;
+}
+
 body :where(.nav-links, .vt-account-menu, .vt-mobile-menu) {
   background-color: rgba(26, 26, 26, 0.9);
   backdrop-filter: blur(18px) saturate(115%);
   -webkit-backdrop-filter: blur(18px) saturate(115%);
+}
+
+/* Keep the mobile trigger visually identical across every page: icon only. */
+body.vt-graphite-theme .tool-menu-toggle,
+body:not(.vt-graphite-theme) :where(.tool-menu-toggle, .menu-toggle) {
+  min-width: 44px;
+  min-height: 44px;
+  padding: 10px !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+body.vt-graphite-theme .tool-menu-toggle:hover,
+body.vt-graphite-theme .tool-menu-toggle:active,
+body.vt-graphite-theme .tool-menu-toggle[aria-expanded="true"],
+body:not(.vt-graphite-theme) :where(.tool-menu-toggle, .menu-toggle):hover,
+body:not(.vt-graphite-theme) :where(.tool-menu-toggle, .menu-toggle):active,
+body:not(.vt-graphite-theme) :where(.tool-menu-toggle, .menu-toggle)[aria-expanded="true"] {
+  border: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+body.vt-graphite-theme .tool-menu-toggle:focus-visible,
+body:not(.vt-graphite-theme) :where(.tool-menu-toggle, .menu-toggle):focus-visible {
+  outline: 2px solid rgba(96, 165, 250, 0.88);
+  outline-offset: 2px;
 }
 
 /* Primary surfaces: one glass layer per functional region. */
@@ -170,6 +283,21 @@ body:not(.vt-graphite-theme) :where(
 }
 
 body.vt-dashboard-page.vt-graphite-theme :where(
+  .dashboard-head,
+  .workspace-card,
+  .connection-card,
+  .dashboard-panel,
+  .workspace-nav
+) {
+  border-color: var(--vt-glass-border) !important;
+  background-color: var(--vt-glass-surface) !important;
+  background-image: none !important;
+  box-shadow: var(--vt-glass-shadow) !important;
+  backdrop-filter: var(--vt-glass-blur);
+  -webkit-backdrop-filter: var(--vt-glass-blur);
+}
+
+html body.vt-dashboard-page.vt-graphite-theme :is(
   .dashboard-head,
   .workspace-card,
   .connection-card,
@@ -319,10 +447,17 @@ body.vt-cli-page .cli-reference {
 
 /* Responsive safety across every document. */
 @media (max-width: 900px) {
-  body {
+  body,
+  body.vt-graphite-theme {
     background-image:
-      radial-gradient(circle at 4% 1%, rgba(37, 99, 235, 0.15), transparent 24rem),
-      radial-gradient(circle at 100% 20%, rgba(96, 165, 250, 0.045), transparent 20rem) !important;
+      radial-gradient(circle at 4% 1%, rgba(37, 99, 235, 0.2), transparent 24rem),
+      radial-gradient(circle at 100% 20%, rgba(96, 165, 250, 0.07), transparent 20rem) !important;
+  }
+
+  html body.vt-dashboard-page.vt-graphite-theme {
+    background-image:
+      radial-gradient(circle at 4% 1%, rgba(37, 99, 235, 0.2), transparent 24rem),
+      radial-gradient(circle at 100% 20%, rgba(96, 165, 250, 0.07), transparent 20rem) !important;
   }
 
   body.vt-graphite-theme .docs-layout {
@@ -377,6 +512,42 @@ body.vt-cli-page .cli-reference {
     overflow-x: auto;
     overscroll-behavior-inline: contain;
   }
+
+  body .vt-site-footer,
+  body[data-page] > .vt-site-footer {
+    margin-top: 34px;
+    padding: 28px 18px 18px;
+  }
+
+  body .vt-site-footer-inner {
+    gap: 20px;
+  }
+
+  body .vt-site-footer-brand {
+    gap: 8px;
+  }
+
+  body .vt-site-footer-brand p {
+    max-width: 34ch;
+    line-height: 1.5;
+  }
+
+  body .vt-site-footer-groups {
+    row-gap: 20px;
+  }
+
+  body .vt-site-footer-groups section {
+    gap: 7px;
+  }
+
+  body .vt-site-footer-groups h2 {
+    margin-bottom: 2px;
+  }
+
+  body .vt-site-footer-bottom {
+    margin-top: 24px;
+    padding-top: 14px;
+  }
 }
 
 @media (max-width: 600px) {
@@ -391,6 +562,19 @@ body.vt-cli-page .cli-reference {
   body .container,
   body :where(.tool-hub, .gateway-shell, .ps-shell, .dashboard-shell, .cli-shell) {
     width: min(100% - 20px, 1180px) !important;
+  }
+
+  html body.vt-dashboard-page.vt-graphite-theme .vt-site-header .tool-header-inner {
+    padding-inline: 16px !important;
+  }
+
+  html body.vt-dashboard-page.vt-graphite-theme .vt-site-header .tool-header-brand {
+    width: auto !important;
+    max-width: calc(100vw - 188px) !important;
+  }
+
+  html body.vt-dashboard-page.vt-graphite-theme .vt-site-header .tool-header-word {
+    max-width: 126px !important;
   }
 
   body :where(.btn, button, input, select, textarea) {
@@ -428,6 +612,15 @@ body.vt-cli-page .cli-reference {
   body :where(.eyebrow, .status-pill, .badge) {
     max-width: 100%;
     white-space: normal;
+  }
+
+  body .vt-site-footer-inner {
+    gap: 16px;
+  }
+
+  body .vt-site-footer-groups {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    row-gap: 16px;
   }
 }
 
