@@ -1,0 +1,439 @@
+/*
+ * VeriTrust shared ambient glass system
+ * Loaded last on every document so the public site, tools, guides, auth,
+ * and signed-in workspace share one visual language.
+ */
+
+:root {
+  --vt-glass-surface: rgba(31, 31, 31, 0.76);
+  --vt-glass-surface-strong: rgba(35, 35, 35, 0.88);
+  --vt-glass-surface-soft: rgba(43, 43, 43, 0.64);
+  --vt-glass-border: rgba(255, 255, 255, 0.105);
+  --vt-glass-border-soft: rgba(255, 255, 255, 0.072);
+  --vt-ambient-blue: rgba(37, 99, 235, 0.17);
+  --vt-ambient-blue-soft: rgba(96, 165, 250, 0.055);
+  --vt-glass-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.045) inset,
+    0 20px 60px rgba(0, 0, 0, 0.22);
+  --vt-glass-blur: blur(18px) saturate(116%);
+}
+
+html {
+  max-width: 100%;
+  overflow-x: clip;
+  background: #161616;
+}
+
+body,
+body.vt-graphite-theme {
+  min-width: 0;
+  max-width: 100%;
+  overflow-x: clip;
+  background-color: #161616 !important;
+  background-image:
+    radial-gradient(circle at 12% 2%, var(--vt-ambient-blue), transparent 31rem),
+    radial-gradient(circle at 88% 22%, var(--vt-ambient-blue-soft), transparent 27rem),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.012), transparent 38rem) !important;
+  background-attachment: fixed !important;
+}
+
+body::before {
+  content: "";
+  position: fixed;
+  z-index: -1;
+  inset: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(circle at 76% 78%, rgba(59, 130, 246, 0.05), transparent 24rem),
+    linear-gradient(rgba(255, 255, 255, 0.012) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.012) 1px, transparent 1px);
+  background-size: auto, 48px 48px, 48px 48px;
+  mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.42), transparent 92%);
+}
+
+body :where(main, section, article, aside, div, form, nav) {
+  min-width: 0;
+}
+
+body :where(img, svg, video, canvas, iframe) {
+  max-width: 100%;
+}
+
+body :where(p, li, a, code, pre, td, th, label, legend) {
+  overflow-wrap: anywhere;
+}
+
+body :where(pre, .code-block, .terminal-content, .ps-code) {
+  max-width: 100%;
+  overflow-x: auto;
+  overscroll-behavior-inline: contain;
+}
+
+/* Shared site chrome */
+body.vt-graphite-theme :where(.site-header, .tool-header-shell, .vt-page-header, .vt-site-header),
+body:not(.vt-graphite-theme) :where(.site-header, .tool-header-shell, .vt-page-header, .vt-site-header) {
+  border-bottom-color: rgba(255, 255, 255, 0.09) !important;
+  background: rgba(22, 22, 22, 0.78) !important;
+  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.18) !important;
+  backdrop-filter: blur(20px) saturate(118%) !important;
+  -webkit-backdrop-filter: blur(20px) saturate(118%) !important;
+}
+
+body.vt-graphite-theme :where(.legal-footer, .site-footer, .vt-site-footer),
+body:not(.vt-graphite-theme) :where(.legal-footer, .site-footer, .vt-site-footer) {
+  border-top-color: rgba(255, 255, 255, 0.085) !important;
+  background:
+    linear-gradient(180deg, rgba(30, 30, 30, 0.74), rgba(19, 19, 19, 0.92)) !important;
+  backdrop-filter: blur(18px) saturate(112%);
+  -webkit-backdrop-filter: blur(18px) saturate(112%);
+}
+
+body :where(.nav-links, .vt-account-menu, .vt-mobile-menu) {
+  background-color: rgba(26, 26, 26, 0.9);
+  backdrop-filter: blur(18px) saturate(115%);
+  -webkit-backdrop-filter: blur(18px) saturate(115%);
+}
+
+/* Primary surfaces: one glass layer per functional region. */
+body.vt-graphite-theme :where(
+  .hero-illustration,
+  .trust-section,
+  .card,
+  .stats-section,
+  .cta-container,
+  .toc,
+  .doc-content,
+  .auth-card,
+  .choice-card,
+  .tool-panel,
+  .result-panel,
+  .result-panel-v2,
+  .gateway-heading,
+  .gateway-powershell-feature,
+  .gateway-form,
+  .gateway-result,
+  .gateway-history,
+  .ps-hero,
+  .ps-flow,
+  .ps-guide-nav,
+  .ps-guide-section,
+  .ps-terminal-card,
+  .ps-code-card,
+  .cli-terminal,
+  .cli-reference,
+  .cli-mobile-block,
+  .dashboard-head,
+  .workspace-card,
+  .connection-card,
+  .dashboard-panel,
+  .workspace-nav
+),
+body:not(.vt-graphite-theme) :where(
+  .hero-illustration,
+  .trust-section,
+  .card,
+  .stats-section,
+  .cta-container,
+  .toc,
+  .doc-content,
+  .auth-card,
+  .choice-card,
+  .tool-panel,
+  .result-panel,
+  .result-panel-v2,
+  .gateway-heading,
+  .gateway-powershell-feature,
+  .gateway-form,
+  .gateway-result,
+  .gateway-history,
+  .ps-hero,
+  .ps-flow,
+  .ps-guide-nav,
+  .ps-guide-section,
+  .ps-terminal-card,
+  .ps-code-card,
+  .cli-terminal,
+  .cli-reference,
+  .cli-mobile-block,
+  .dashboard-head,
+  .workspace-card,
+  .connection-card,
+  .dashboard-panel,
+  .workspace-nav
+) {
+  border-color: var(--vt-glass-border) !important;
+  background-color: var(--vt-glass-surface) !important;
+  background-image: none !important;
+  box-shadow: var(--vt-glass-shadow) !important;
+  backdrop-filter: var(--vt-glass-blur);
+  -webkit-backdrop-filter: var(--vt-glass-blur);
+}
+
+body.vt-dashboard-page.vt-graphite-theme :where(
+  .dashboard-head,
+  .workspace-card,
+  .connection-card,
+  .dashboard-panel,
+  .workspace-nav
+) {
+  border-color: var(--vt-glass-border) !important;
+  background-color: var(--vt-glass-surface) !important;
+  background-image: none !important;
+  box-shadow: var(--vt-glass-shadow) !important;
+  backdrop-filter: var(--vt-glass-blur);
+  -webkit-backdrop-filter: var(--vt-glass-blur);
+}
+
+body.vt-detection-page.vt-graphite-theme .choice-card,
+body.vt-auth-page.vt-graphite-theme .auth-card {
+  border-color: var(--vt-glass-border) !important;
+  background-color: var(--vt-glass-surface) !important;
+  background-image: none !important;
+  box-shadow: var(--vt-glass-shadow) !important;
+  backdrop-filter: var(--vt-glass-blur);
+  -webkit-backdrop-filter: var(--vt-glass-blur);
+}
+
+body.vt-graphite-theme :where(
+  input,
+  textarea,
+  select,
+  .upload-area,
+  .gateway-upload,
+  .gateway-decision > div,
+  .gateway-evidence article,
+  .gateway-history-list article,
+  .result-card,
+  .signal-card,
+  .metric-card,
+  .report-row,
+  .usage-card,
+  .api-key-row,
+  .ps-prerequisite-grid article
+),
+body:not(.vt-graphite-theme) :where(
+  input,
+  textarea,
+  select,
+  .upload-area,
+  .gateway-upload,
+  .gateway-decision > div,
+  .gateway-evidence article,
+  .gateway-history-list article,
+  .result-card,
+  .signal-card,
+  .metric-card,
+  .report-row,
+  .usage-card,
+  .api-key-row,
+  .ps-prerequisite-grid article
+) {
+  border-color: var(--vt-glass-border-soft) !important;
+  background-color: var(--vt-glass-surface-soft) !important;
+}
+
+body :where(input, textarea, select):focus {
+  border-color: rgba(222, 145, 56, 0.7) !important;
+  box-shadow: 0 0 0 3px rgba(222, 145, 56, 0.13) !important;
+}
+
+/* Landing page: retain visual rhythm while matching the product surfaces. */
+body:not(.vt-graphite-theme) :where(.card, .hero-illustration, .cta-container) {
+  border: 1px solid var(--vt-glass-border);
+}
+
+body:not(.vt-graphite-theme) .trust-section,
+body:not(.vt-graphite-theme) .stats-section {
+  border-block: 1px solid rgba(255, 255, 255, 0.065);
+  border-radius: 0;
+}
+
+body:not(.vt-graphite-theme) .pricing-card.popular {
+  border-color: rgba(222, 145, 56, 0.62) !important;
+}
+
+/* Reading pages: calm measure, clear section hierarchy, usable table of contents. */
+body.vt-graphite-theme .docs-layout {
+  align-items: start;
+  gap: clamp(24px, 4vw, 52px);
+}
+
+body.vt-graphite-theme .toc {
+  padding: 18px;
+}
+
+body.vt-graphite-theme .doc-content {
+  padding: clamp(24px, 4vw, 48px);
+}
+
+body.vt-graphite-theme .doc-content > * {
+  max-width: 76ch;
+}
+
+body.vt-graphite-theme .doc-content :where(p, li) {
+  line-height: 1.72;
+}
+
+body.vt-graphite-theme .doc-section + .doc-section {
+  margin-top: clamp(34px, 5vw, 58px);
+  padding-top: clamp(28px, 4vw, 44px);
+  border-top-color: rgba(255, 255, 255, 0.075);
+}
+
+/* Tool and workspace pages: reduce nested visual noise without hiding data. */
+body.vt-tool-page :where(.tool-panel, .result-panel-v2),
+body.vt-dashboard-page :where(.dashboard-panel, .workspace-card),
+body.vt-guide-page :where(.ps-guide-section, .ps-terminal-card, .ps-code-card) {
+  border-radius: 8px;
+}
+
+body.vt-detection-page .choice-card {
+  min-height: 0;
+}
+
+body.vt-detection-page .choice-card p {
+  max-width: 42ch;
+}
+
+body.vt-dashboard-page .dashboard-head .lead,
+body.vt-tool-page .tool-hub > .lead,
+body.vt-guide-page .ps-lead {
+  max-width: 68ch;
+}
+
+body.vt-graphite-theme :where(
+  .tool-hub > .lead,
+  .gateway-heading p:not(.eyebrow),
+  .ps-hero-copy > p,
+  .ps-lead,
+  .auth-header p,
+  .dashboard-head .lead
+) {
+  font-style: normal !important;
+}
+
+body.vt-cli-page .cli-terminal,
+body.vt-cli-page .cli-reference {
+  overflow: hidden;
+}
+
+/* Responsive safety across every document. */
+@media (max-width: 900px) {
+  body {
+    background-image:
+      radial-gradient(circle at 4% 1%, rgba(37, 99, 235, 0.15), transparent 24rem),
+      radial-gradient(circle at 100% 20%, rgba(96, 165, 250, 0.045), transparent 20rem) !important;
+  }
+
+  body.vt-graphite-theme .docs-layout {
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
+
+  body.vt-graphite-theme .toc {
+    position: static !important;
+    display: flex;
+    max-width: 100%;
+    gap: 8px;
+    padding: 10px;
+    overflow-x: auto;
+    scrollbar-width: thin;
+  }
+
+  body.vt-graphite-theme .toc a {
+    flex: 0 0 auto;
+    width: auto;
+    min-height: 38px;
+    padding: 9px 12px;
+    border: 1px solid var(--vt-glass-border-soft);
+    border-radius: 999px;
+    white-space: nowrap;
+  }
+
+  body :where(.grid-4, .features-grid, .dashboard-grid, .workspace-grid) {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+}
+
+@media (max-width: 760px) {
+  body :where(h1, .hero h1, .tool-hub h1, .dashboard-head h1, .ps-hero h1) {
+    font-size: clamp(31px, 9vw, 44px) !important;
+    line-height: 1.08;
+  }
+
+  body :where(.grid-3, .grid-4, .features-grid, .choice-grid, .tool-grid, .link-grid, .phishing-grid, .dashboard-grid, .workspace-grid) {
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
+
+  body :where(.doc-content, .auth-card, .tool-panel, .result-panel-v2, .dashboard-panel, .dashboard-head, .ps-hero, .ps-guide-section) {
+    padding: 22px 18px !important;
+  }
+
+  body :where(table) {
+    min-width: 620px;
+  }
+
+  body :where(.table-wrap, .usage-table-wrap, .history-table-wrap) {
+    max-width: 100%;
+    overflow-x: auto;
+    overscroll-behavior-inline: contain;
+  }
+}
+
+@media (max-width: 600px) {
+  body {
+    background-attachment: scroll !important;
+  }
+
+  body::before {
+    background-size: auto, 36px 36px, 36px 36px;
+  }
+
+  body .container,
+  body :where(.tool-hub, .gateway-shell, .ps-shell, .dashboard-shell, .cli-shell) {
+    width: min(100% - 20px, 1180px) !important;
+  }
+
+  body :where(.btn, button, input, select, textarea) {
+    max-width: 100%;
+  }
+
+  body :where(.hero-actions, .auth-actions, .form-actions, .gateway-actions, .ps-hero-actions) {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  body :where(.hero-actions, .auth-actions, .form-actions, .gateway-actions, .ps-hero-actions) > :where(.btn, button, a) {
+    width: 100%;
+    justify-content: center;
+  }
+
+  body .doc-content {
+    border-radius: 8px;
+  }
+
+  body .doc-content > * {
+    max-width: 100%;
+  }
+
+  body.vt-cli-page :where(.cli-terminal, .cli-reference, .cli-mobile-block) {
+    border-radius: 8px;
+  }
+}
+
+@media (max-width: 420px) {
+  body :where(.doc-content, .auth-card, .tool-panel, .result-panel-v2, .dashboard-panel, .dashboard-head, .ps-hero, .ps-guide-section) {
+    padding: 19px 15px !important;
+  }
+
+  body :where(.eyebrow, .status-pill, .badge) {
+    max-width: 100%;
+    white-space: normal;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body,
+  body::before {
+    background-attachment: scroll !important;
+  }
+}
