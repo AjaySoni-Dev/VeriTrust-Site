@@ -18,6 +18,7 @@ const {
   sendJson,
 } = require('../lib/veritrust-api');
 const { validateJsonContentType } = require('../lib/validators');
+const { enforceRateLimit } = require('../lib/rate-limit');
 
 function actionName(req) {
   return new URL(req.url || '/', 'http://localhost').searchParams.get('action') || 'session';
@@ -35,6 +36,14 @@ function validateCredentials(body, signup = false) {
   return { email, password };
 }
 
+function isAccessTokenRejection(error) {
+  return [401, 403].includes(Number(error?.status || 0));
+}
+
+function isInvalidRefreshCredential(error) {
+  return [400, 401, 403].includes(Number(error?.status || 0));
+}
+
 async function refreshBrowserSession(req, res) {
   const token = refreshCookie(req);
   if (!token) return null;
@@ -45,9 +54,12 @@ async function refreshBrowserSession(req, res) {
     });
     setSessionCookies(res, session);
     return session;
-  } catch {
-    clearSessionCookies(res);
-    return null;
+  } catch (error) {
+    if (isInvalidRefreshCredential(error)) {
+      clearSessionCookies(res);
+      return null;
+    }
+    throw error;
   }
 }
 
@@ -56,7 +68,7 @@ async function verifiedBrowserSession(req, res) {
     const auth = await getUserFromRequest(req);
     return { authenticated: true, user: auth.user };
   } catch (error) {
-    if (Number(error.status || 0) !== 401) throw error;
+    if (!isAccessTokenRejection(error)) throw error;
   }
   const refreshed = await refreshBrowserSession(req, res);
   if (!refreshed?.access_token) return null;
@@ -81,6 +93,18 @@ module.exports = async function handler(req, res) {
       validateJsonContentType(req);
       const body = await parseJsonBody(req, 16384);
       const credentials = validateCredentials(body, action === 'signup');
+      await enforceRateLimit({
+        req,
+        endpoint: `auth:${action}:network`,
+        limit: 300,
+      });
+      await enforceRateLimit({
+        req,
+        endpoint: `auth:${action}:account`,
+        limit: action === 'signin' ? 30 : 5,
+        identityType: 'ip',
+        identityValue: credentials.email,
+      });
       const session = action === 'signin'
         ? await supabaseFetch('/auth/v1/token?grant_type=password', { method: 'POST', body: credentials })
         : await supabaseFetch(`/auth/v1/signup?redirect_to=${encodeURIComponent(`${trustedSiteOrigin(req)}/auth`)}`, {
@@ -144,3 +168,6 @@ module.exports = async function handler(req, res) {
     handleApiError(res, error, 'Authentication request failed.');
   }
 };
+
+module.exports.isAccessTokenRejection = isAccessTokenRejection;
+module.exports.isInvalidRefreshCredential = isInvalidRefreshCredential;
