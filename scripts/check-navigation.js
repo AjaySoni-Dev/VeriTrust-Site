@@ -133,6 +133,12 @@ if (!/--vt-ambient-blue:\s*rgba\(37,\s*99,\s*235,/i.test(glassStyles)) {
 if (!/\.tool-menu-toggle[\s\S]*?background:\s*transparent\s*!important/i.test(glassStyles)) {
   failures.push('assets/css/glass-system.css: mobile menu trigger must remain background-free');
 }
+if (!/body\.vt-auth-page\s+\.auth-header\s+h1\s*\{[\s\S]*?font-size:\s*clamp\(17px,\s*4\.8vw,\s*20px\)\s*!important[\s\S]*?white-space:\s*nowrap/i.test(glassStyles)) {
+  failures.push('assets/css/glass-system.css: mobile authentication heading must remain compact and single-line');
+}
+if (!/body\s+\.vt-site-footer-groups\s*\{[\s\S]*?row-gap:\s*34px[\s\S]*?\}[\s\S]*?body\s+\.vt-site-footer-groups\s+section\s*\{[\s\S]*?gap:\s*10px/i.test(glassStyles)) {
+  failures.push('assets/css/glass-system.css: mobile footer groups must retain readable row and link spacing');
+}
 if (!/html\s+body\.vt-dashboard-page\.vt-graphite-theme\s*\{[\s\S]*?background-image:[\s\S]*?background-size:\s*auto\s*!important/i.test(glassStyles)) {
   failures.push('assets/css/glass-system.css: workspace pages must retain the exact shared blue ambient background composition');
 }
