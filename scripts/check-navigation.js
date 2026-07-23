@@ -1,5 +1,6 @@
 const fs = require('fs');
 const path = require('path');
+const crypto = require('crypto');
 
 const root = path.resolve(__dirname, '..');
 const htmlFiles = fs.readdirSync(root)
@@ -83,6 +84,36 @@ for (const file of htmlFiles) {
 const authHtml = fs.readFileSync(path.join(root, 'auth.html'), 'utf8');
 if (/<[^>]+data-auth-provider|<div[^>]+social-logins|>Or continue with<|Google and GitHub sign-in/i.test(authHtml)) {
   failures.push('auth.html: inactive social authentication controls must not be rendered');
+}
+
+const homeHtml = fs.readFileSync(path.join(root, 'index.html'), 'utf8');
+if (!/<meta\s+property=["']og:site_name["']\s+content=["']VeriTrust["']/i.test(homeHtml)) {
+  failures.push('index.html: og:site_name must identify the site as VeriTrust');
+}
+if (!/"@type"\s*:\s*"WebSite"[\s\S]*?"name"\s*:\s*"VeriTrust"/i.test(homeHtml)) {
+  failures.push('index.html: WebSite structured data must identify the site as VeriTrust');
+}
+if (/"name"\s*:\s*"VeriTrustLab"/i.test(homeHtml)) {
+  failures.push('index.html: legacy VeriTrustLab structured-data name must not be used');
+}
+const webManifest = fs.readFileSync(path.join(root, 'site.webmanifest'), 'utf8');
+if (!/"name"\s*:\s*"VeriTrust"/i.test(webManifest)) {
+  failures.push('site.webmanifest: application name must be VeriTrust');
+}
+const structuredDataMatch = homeHtml.match(/<script type=["']application\/ld\+json["']>([\s\S]*?)<\/script>/i);
+if (!structuredDataMatch) {
+  failures.push('index.html: homepage structured data is missing');
+} else {
+  try {
+    JSON.parse(structuredDataMatch[1]);
+  } catch {
+    failures.push('index.html: homepage structured data is not valid JSON');
+  }
+  const structuredDataHash = `sha256-${crypto.createHash('sha256').update(structuredDataMatch[1]).digest('base64')}`;
+  const vercelConfig = fs.readFileSync(path.join(root, 'vercel.json'), 'utf8');
+  if (!vercelConfig.includes(structuredDataHash)) {
+    failures.push('vercel.json: Content Security Policy does not allow the current homepage structured data');
+  }
 }
 
 const siteScript = fs.readFileSync(path.join(root, 'assets', 'js', 'site.js'), 'utf8');
