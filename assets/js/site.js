@@ -32,8 +32,11 @@ const VeriTrustPageAccess = (() => {
   };
 
   const currentDestination = () => `${pathname}${window.location.search}${window.location.hash}`;
-  document.documentElement.classList.add('vt-auth-checking');
-  document.documentElement.setAttribute('aria-busy', 'true');
+  const shouldBlockForAuth = isAuth || !isPublic;
+  if (shouldBlockForAuth) {
+    document.documentElement.classList.add('vt-auth-checking');
+    document.documentElement.setAttribute('aria-busy', 'true');
+  }
 
   const resolve = async () => {
     const client = window.VeriTrustSupabase;
@@ -63,8 +66,10 @@ const VeriTrustPageAccess = (() => {
       return { allowed: false, session: null };
     }
 
-    document.documentElement.classList.remove('vt-auth-checking');
-    document.documentElement.removeAttribute('aria-busy');
+    if (shouldBlockForAuth) {
+      document.documentElement.classList.remove('vt-auth-checking');
+      document.documentElement.removeAttribute('aria-busy');
+    }
     return { allowed: true, callback, callbackError, isAuth, isLanding, session };
   };
 
