@@ -133,8 +133,8 @@ if (!/--vt-ambient-blue:\s*rgba\(37,\s*99,\s*235,/i.test(glassStyles)) {
 if (!/\.tool-menu-toggle[\s\S]*?background:\s*transparent\s*!important/i.test(glassStyles)) {
   failures.push('assets/css/glass-system.css: mobile menu trigger must remain background-free');
 }
-if (!/html\s+body\.vt-dashboard-page\.vt-graphite-theme\s*\{[\s\S]*?background-image:/i.test(glassStyles)) {
-  failures.push('assets/css/glass-system.css: workspace pages must retain the shared blue ambient background');
+if (!/html\s+body\.vt-dashboard-page\.vt-graphite-theme\s*\{[\s\S]*?background-image:[\s\S]*?background-size:\s*auto\s*!important/i.test(glassStyles)) {
+  failures.push('assets/css/glass-system.css: workspace pages must retain the exact shared blue ambient background composition');
 }
 if (!/body\.vt-dashboard-page\.vt-graphite-theme\s+\.vt-site-header\s+\.tool-header-inner\s*\{[\s\S]*?max-width:\s*1240px\s*!important/i.test(glassStyles)) {
   failures.push('assets/css/glass-system.css: workspace header must use the shared header geometry');
@@ -143,6 +143,13 @@ const gatewayHtml = fs.readFileSync(path.join(root, 'gateway.html'), 'utf8');
 if (!/<h1>\s*Unified signal review\.\s*<\/h1>/i.test(gatewayHtml)
   || /Review multiple signals together/i.test(gatewayHtml)) {
   failures.push('gateway.html: gateway heading must use the compact professional title');
+}
+const gatewayPowerShellHtml = fs.readFileSync(path.join(root, 'gateway-powershell.html'), 'utf8');
+if (!/<section\s+id=["']unified["'][^>]*>[\s\S]*?Unified text, link, and image scan[\s\S]*?text\s*=\s*\$MessageText[\s\S]*?urls\s*=\s*\$UrlsToCheck[\s\S]*?media\s*=\s*@\(/i.test(gatewayPowerShellHtml)) {
+  failures.push('gateway-powershell.html: unified PowerShell workflow must submit text, URLs, and private image media in one scan');
+}
+if (!/id=["']deepfake["'][\s\S]*?Upload and analyze one image/i.test(gatewayPowerShellHtml)) {
+  failures.push('gateway-powershell.html: focused PowerShell deepfake workflow is missing');
 }
 const sharedChromeTargets = [
   'index.html',
