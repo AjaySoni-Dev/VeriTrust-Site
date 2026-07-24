@@ -397,39 +397,35 @@
     },
     {
       "source": "/learn/courses/:slug/lessons/:lessonSlug",
-      "destination": "/lesson.html"
+      "destination": "/lesson"
     },
     {
       "source": "/learn/courses/:slug",
-      "destination": "/course.html"
+      "destination": "/course"
     },
     {
       "source": "/learn/assessments/:assessmentId",
-      "destination": "/assessment.html"
+      "destination": "/assessment"
     },
     {
       "source": "/learn/my-learning",
-      "destination": "/learning.html"
+      "destination": "/learning"
     },
     {
       "source": "/learn/catalog",
-      "destination": "/learning.html"
+      "destination": "/learning"
     },
     {
       "source": "/learn",
-      "destination": "/learning.html"
+      "destination": "/learning"
     },
     {
       "source": "/certificates/:publicCode",
-      "destination": "/certificate.html"
+      "destination": "/certificate"
     },
     {
       "source": "/certificates",
-      "destination": "/certificate.html"
-    },
-    {
-      "source": "/learning-admin",
-      "destination": "/learning-admin.html"
+      "destination": "/certificate"
     }
   ]
 }
