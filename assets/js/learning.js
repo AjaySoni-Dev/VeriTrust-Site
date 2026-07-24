@@ -3,6 +3,7 @@
 
   const api = global.VeriTrustLearningApi;
   const $ = (selector) => document.querySelector(selector);
+  const $$ = (selector) => [...document.querySelectorAll(selector)];
 
   function text(node, value) {
     if (node) node.textContent = String(value ?? '');
@@ -118,8 +119,10 @@
     await global.VeriTrustPageAccess;
     const mine = /^\/learn\/my-learning\/?$/i.test(global.location.pathname);
     document.body.classList.toggle('learning-my-page', mine);
-    $('[data-catalog-view]')?.toggleAttribute('hidden', mine);
-    $('[data-my-view]')?.toggleAttribute('hidden', !mine);
+    $$('[data-catalog-view]').forEach((node) => node.toggleAttribute('hidden', mine));
+    $$('[data-my-view]').forEach((node) => node.toggleAttribute('hidden', !mine));
+    text($('#learning-section-kicker'), mine ? 'Enrolled courses' : 'Course catalog');
+    text($('#learning-heading'), mine ? 'Continue learning' : 'Available courses');
     if (mine) {
       await loadMyLearning();
       return;
