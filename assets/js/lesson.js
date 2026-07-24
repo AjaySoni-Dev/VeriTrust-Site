@@ -44,10 +44,17 @@
     });
   }
 
+  function showMessage(message, text, tone) {
+    message.hidden = false;
+    message.textContent = text;
+    message.dataset.tone = tone;
+  }
+
   document.addEventListener('DOMContentLoaded', async () => {
     const access = await global.VeriTrustPageAccess;
     if (!access.allowed) return;
     const message = $('#lesson-message');
+    const layout = $('#lesson-layout');
     try {
       const enrollmentResponse = await api.enrollment(enrollmentId);
       const modules = enrollmentResponse.data?.learning_course_versions?.learning_modules || [];
@@ -59,12 +66,24 @@
       $('#lesson-summary').textContent = lesson.summary || '';
       $('#lesson-duration').textContent = `${lesson.estimated_minutes || 0} min`;
       $('#lesson-blocks').replaceChildren(...(lesson.learning_lesson_blocks || []).map(blockNode));
+      layout.hidden = false;
       message.hidden = true;
-      await record('lesson_started');
+      try {
+        await record('lesson_started');
+      } catch (error) {
+        showMessage(
+          message,
+          error?.code === 'LEARNING_PROGRESS_SCHEMA_REQUIRED'
+            ? 'Lesson loaded, but progress tracking is not configured yet. Apply the learning progress migration before marking lessons complete.'
+            : 'Lesson loaded, but progress could not be synchronized. You can continue reading and try again shortly.',
+          'warning',
+        );
+      }
     } catch (error) {
       $('#lesson-title').textContent = 'Lesson unavailable';
-      message.textContent = error.message;
-      message.dataset.tone = 'error';
+      $('#lesson-summary').textContent = 'The requested lesson could not be loaded.';
+      layout.hidden = true;
+      showMessage(message, error.message, 'error');
     }
     $('#lesson-complete')?.addEventListener('click', async (event) => {
       const button = event.currentTarget;
@@ -73,10 +92,15 @@
       try {
         await record('lesson_completed');
         button.textContent = 'Completed';
+        message.hidden = true;
       } catch (error) {
-        message.hidden = false;
-        message.textContent = error.message;
-        message.dataset.tone = 'error';
+        showMessage(
+          message,
+          error?.code === 'LEARNING_PROGRESS_SCHEMA_REQUIRED'
+            ? 'Completion could not be saved because progress tracking is not configured yet. Apply the learning progress migration, then try again.'
+            : error.message,
+          'error',
+        );
         button.disabled = false;
         button.textContent = 'Mark complete';
       }
