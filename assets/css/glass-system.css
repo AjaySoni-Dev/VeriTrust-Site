@@ -345,6 +345,7 @@ body.vt-graphite-theme :where(
   .gateway-decision > div,
   .gateway-evidence article,
   .gateway-history-list article,
+  .gateway-history-list .gateway-history-item,
   .result-card,
   .signal-card,
   .metric-card,
@@ -362,6 +363,7 @@ body:not(.vt-graphite-theme) :where(
   .gateway-decision > div,
   .gateway-evidence article,
   .gateway-history-list article,
+  .gateway-history-list .gateway-history-item,
   .result-card,
   .signal-card,
   .metric-card,
@@ -677,4 +679,3 @@ body.vt-cli-page .cli-reference {
     background-attachment: scroll !important;
   }
 }
-

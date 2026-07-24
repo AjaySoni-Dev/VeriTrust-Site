@@ -251,8 +251,17 @@
 .gateway-actions {
   display: flex;
   flex-wrap: wrap;
+  align-items: center;
   gap: 10px;
   padding-top: 2px;
+}
+
+body.vt-tool-page.vt-gateway-page.vt-graphite-theme .gateway-actions .btn {
+  width: auto;
+  min-height: 36px;
+  padding: 8px 13px;
+  font-size: 11px;
+  line-height: 1.2;
 }
 
 .gateway-privacy {
@@ -396,33 +405,115 @@
   margin-top: 20px;
 }
 
+.gateway-history .panel-title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+}
+
+.gateway-history .panel-title h2 {
+  font-size: 18px;
+}
+
+.gateway-history .panel-title p {
+  margin-top: 3px;
+  font-size: 11px;
+  line-height: 1.45;
+}
+
+body.vt-tool-page.vt-gateway-page.vt-graphite-theme .gateway-history .panel-title .btn {
+  flex: 0 0 auto;
+  align-self: center;
+  width: auto;
+  min-height: 34px;
+  padding: 7px 11px;
+  font-size: 10.5px;
+  line-height: 1.2;
+}
+
 .gateway-history-list {
   display: grid;
   gap: 8px;
 }
 
-.gateway-history-list article {
+.gateway-history-list article,
+.gateway-history-list .gateway-history-item {
+  position: relative;
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto auto;
-  gap: 16px;
+  gap: 12px;
   align-items: center;
-  padding: 13px 14px;
+  width: 100%;
+  min-height: 42px;
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
   background: var(--surface-2);
+  color: var(--text);
+  font: inherit;
+  text-align: left;
+}
+
+.gateway-history-list .gateway-history-item {
+  appearance: none;
+  cursor: pointer;
+  transition: border-color 160ms ease, background-color 160ms ease;
+}
+
+.gateway-history-list .gateway-history-item:hover {
+  border-color: var(--border-strong);
+  background: var(--surface-3);
+}
+
+.gateway-history-list .gateway-history-item:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.gateway-history-list .gateway-history-item:disabled {
+  cursor: wait;
+  opacity: 1;
 }
 
 .gateway-history-list strong {
   overflow-wrap: anywhere;
-  font: 600 12px var(--mono);
+  font: 600 11px var(--mono);
 }
 
 .gateway-history-list span {
   color: var(--muted);
-  font-size: 12px;
+  font-size: 11px;
 }
 
 .gateway-history-list em {
+  padding: 4px 7px;
+  border-radius: 999px;
+  background: rgba(96, 165, 250, 0.1);
+  color: #bfdbfe;
+  font: 600 9px var(--mono);
+  letter-spacing: 0.035em;
   font-style: normal;
   text-transform: capitalize;
+}
+
+.gateway-history-list .gateway-history-item.is-loading {
+  padding-right: 44px;
+  border-color: rgba(96, 165, 250, 0.5);
+}
+
+.gateway-history-list .gateway-history-item.is-loading::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  right: 14px;
+  width: 16px;
+  height: 16px;
+  margin-top: -8px;
+  border: 2px solid rgba(148, 163, 184, 0.35);
+  border-top-color: #60a5fa;
+  border-radius: 50%;
+  animation: vt-spin 0.75s linear infinite;
 }
 
 .gateway-result .tool-result-empty {
@@ -522,17 +613,32 @@
   }
 
   .gateway-history .panel-title {
-    align-items: stretch;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-direction: row;
   }
 
-  .gateway-history-list article {
-    grid-template-columns: 1fr;
-    gap: 7px;
+  .gateway-history-list article,
+  .gateway-history-list .gateway-history-item {
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 6px 10px;
+    padding: 10px 12px;
   }
 
-  .gateway-actions .btn,
-  .gateway-history .btn {
-    width: 100%;
+  .gateway-history-list span {
+    grid-column: 1 / -1;
+  }
+
+  body.vt-tool-page.vt-gateway-page.vt-graphite-theme .gateway-actions {
+    align-items: center;
+    flex-direction: row;
+    gap: 8px;
+  }
+
+  body.vt-tool-page.vt-gateway-page.vt-graphite-theme .gateway-actions .btn,
+  body.vt-tool-page.vt-gateway-page.vt-graphite-theme .gateway-history .btn {
+    width: auto;
   }
 
   .gateway-evidence-head {
@@ -632,7 +738,7 @@ body.vt-tool-page.vt-gateway-page.vt-graphite-theme .gateway-history {
   margin-top: 14px;
 }
 
-body.vt-tool-page.vt-gateway-page.vt-graphite-theme :where(.gateway-upload, .gateway-decision > div, .gateway-evidence article, .gateway-history-list article) {
+body.vt-tool-page.vt-gateway-page.vt-graphite-theme :where(.gateway-upload, .gateway-decision > div, .gateway-evidence article, .gateway-history-list article, .gateway-history-list .gateway-history-item) {
   border: 1px solid rgba(255, 255, 255, 0.075);
   background: rgba(43, 43, 43, 0.68) !important;
 }

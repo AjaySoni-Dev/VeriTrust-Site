@@ -39,9 +39,61 @@
     catch(error){setError(error.message);setBusy(false);}
   }
 
+  async function openHistoryScan(scan, item) {
+    if (item.classList.contains('is-loading')) return;
+    setError('');
+    clearTimeout(polling);
+    const historyItems = [...elements['history-list'].querySelectorAll('.gateway-history-item')];
+    historyItems.forEach((historyItem) => { historyItem.disabled = true; });
+    item.classList.add('is-loading');
+    item.setAttribute('aria-busy', 'true');
+    elements['history-list'].setAttribute('aria-busy', 'true');
+    elements['status-copy'].textContent = `Loading ${scan.display_id || 'selected scan'}…`;
+
+    try {
+      const data = await request(`/api/v1/gateway/scans/${scan.id}`, { cache: 'no-store' });
+      render(data);
+    } catch (error) {
+      setError(error.message);
+      elements['status-copy'].textContent = 'The selected scan could not be loaded.';
+    } finally {
+      historyItems.forEach((historyItem) => { historyItem.disabled = false; });
+      item.classList.remove('is-loading');
+      item.removeAttribute('aria-busy');
+      elements['history-list'].removeAttribute('aria-busy');
+    }
+  }
+
   async function refreshHistory() {
-    try { const data=await request('/api/v1/gateway/scans?limit=12',{cache:'no-store'}); const rows=data.scans||[]; elements['history-list'].replaceChildren(...rows.map((scan)=>{const article=document.createElement('article');const id=document.createElement('strong');id.textContent=scan.display_id;const state=document.createElement('em');state.textContent=scan.status;const time=document.createElement('span');time.textContent=new Date(scan.created_at).toLocaleString();article.append(id,state,time);article.tabIndex=0;article.addEventListener('click',async()=>render(await request(`/api/v1/gateway/scans/${scan.id}`)));return article;})); if(!rows.length)elements['history-list'].textContent='No gateway scans yet.'; }
-    catch(error){elements['history-list'].textContent=error.message;}
+    elements.refresh.disabled = true;
+    elements.refresh.classList.add('is-loading');
+    try {
+      const data = await request('/api/v1/gateway/scans?limit=12', { cache: 'no-store' });
+      const rows = data.scans || [];
+      elements['history-list'].replaceChildren(...rows.map((scan) => {
+        const item = document.createElement('button');
+        item.type = 'button';
+        item.className = 'gateway-history-item';
+        item.setAttribute('aria-label', `Open scan ${scan.display_id || scan.id}, ${scan.status || 'unknown status'}`);
+
+        const id = document.createElement('strong');
+        id.textContent = scan.display_id || scan.id;
+        const state = document.createElement('em');
+        state.textContent = scan.status || 'unknown';
+        const time = document.createElement('span');
+        time.textContent = new Date(scan.created_at).toLocaleString();
+
+        item.append(id, state, time);
+        item.addEventListener('click', () => openHistoryScan(scan, item));
+        return item;
+      }));
+      if (!rows.length) elements['history-list'].textContent = 'No gateway scans yet.';
+    } catch (error) {
+      elements['history-list'].textContent = error.message;
+    } finally {
+      elements.refresh.disabled = false;
+      elements.refresh.classList.remove('is-loading');
+    }
   }
 
   form.addEventListener('submit', async (event) => {

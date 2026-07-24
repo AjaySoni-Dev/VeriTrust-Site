@@ -289,7 +289,7 @@ body.vt-tool-page .gateway-error {
 }
 
 body.vt-tool-page .gateway-upload,
-body.vt-tool-page :where(.gateway-decision > div, .gateway-evidence article, .gateway-history-list article) {
+body.vt-tool-page :where(.gateway-decision > div, .gateway-evidence article, .gateway-history-list article, .gateway-history-list .gateway-history-item) {
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-sm);
   background: var(--bg-surface-light) !important;
