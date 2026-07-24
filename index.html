@@ -530,8 +530,15 @@
 
         .hero-actions {
             display: flex;
-            gap: 1rem;
-            flex-wrap: wrap;
+            gap: 0.65rem;
+            flex-wrap: nowrap;
+        }
+
+        .hero-actions .btn {
+            min-width: 0;
+            padding-inline: 1rem;
+            font-size: 0.86rem;
+            white-space: nowrap;
         }
 
         /* Hero Illustration - Console Style */
@@ -1155,18 +1162,22 @@
             }
 
             .hero-actions {
-                grid-template-columns: repeat(2, minmax(0, 1fr));
-                gap: 0.65rem;
+                grid-template-columns: repeat(3, minmax(0, 1fr));
+                gap: 0.4rem;
             }
 
             .hero-actions .btn:first-child {
-                grid-column: 1 / -1;
+                grid-column: auto;
             }
 
             .hero-actions .btn {
-                min-height: 44px;
-                padding-inline: 0.6rem;
-                font-size: 0.78rem;
+                height: 60px;
+                min-height: 60px;
+                padding: 0 0.3rem;
+                font-size: clamp(0.63rem, 3vw, 0.72rem);
+                line-height: 1.2;
+                white-space: normal;
+                text-align: center;
             }
 
             .console-body {
