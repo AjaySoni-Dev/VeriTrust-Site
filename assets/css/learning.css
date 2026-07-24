@@ -855,6 +855,357 @@ body.vt-learning-page .credential-details dd {
   }
 }
 
+.learning-data-loading #credential-message {
+  display: none;
+}
+
+.learning-data-loading .assessment-card :is(.learning-status, .assessment-timer, .assessment-actions > *) {
+  position: relative;
+  overflow: hidden;
+  color: transparent !important;
+  border-color: transparent !important;
+  background: var(--learning-skeleton-base) !important;
+  text-shadow: none !important;
+  contain: paint;
+}
+
+.learning-data-loading .assessment-card :is(.learning-status, .assessment-timer, .assessment-actions > *)::after {
+  content: '';
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 34%;
+  background: linear-gradient(100deg, var(--learning-skeleton-edge), var(--learning-skeleton-highlight), var(--learning-skeleton-edge));
+  animation: vt-dashboard-shimmer-slide 1.85s ease-in-out infinite;
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .learning-data-loading .assessment-card :is(.learning-status, .assessment-timer, .assessment-actions > *)::after {
+    animation: none;
+  }
+}
+
+/* Production learning layout: gateway-aligned geometry and restrained loading. */
+body.vt-learning-page {
+  --learning-surface: rgba(24, 29, 37, 0.9);
+  --learning-surface-soft: rgba(27, 32, 40, 0.76);
+  --learning-skeleton-base: #20252c;
+  --learning-skeleton-edge: #20252c;
+  --learning-skeleton-highlight: #282e36;
+}
+
+body.vt-learning-page .learning-shell {
+  width: min(1140px, calc(100% - 32px));
+  padding: calc(var(--header-height) + 34px) 0 48px;
+}
+
+body.vt-learning-page .learning-hero,
+body.vt-learning-page .learning-page-title {
+  padding: clamp(20px, 3vw, 28px);
+  border: 1px solid rgba(255, 255, 255, 0.075);
+  border-radius: 3px;
+  background: var(--learning-surface);
+  box-shadow: none;
+}
+
+body.vt-learning-page .learning-hero-main {
+  max-width: 760px;
+}
+
+body.vt-learning-page .learning-hero h1,
+body.vt-learning-page .learning-page-title h1 {
+  font-size: clamp(1.7rem, 3vw, 2.15rem);
+  line-height: 1.12;
+}
+
+body.vt-learning-page .learning-section {
+  margin-top: 18px;
+}
+
+body.vt-learning-page .learning-catalog-panel {
+  padding: clamp(18px, 2.5vw, 24px);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: 3px;
+  background: rgba(17, 22, 30, 0.72);
+  box-shadow: none;
+}
+
+body.vt-learning-page .learning-section-heading {
+  margin-bottom: 14px;
+}
+
+body.vt-learning-page .learning-filter {
+  grid-template-columns: minmax(220px, 1fr) 190px 132px;
+  align-items: end;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+body.vt-learning-page .learning-filter label {
+  display: grid;
+  gap: 7px;
+  min-width: 0;
+}
+
+body.vt-learning-page .learning-filter .learning-input,
+body.vt-learning-page .learning-filter .learning-select,
+body.vt-learning-page .learning-filter > .learning-btn {
+  width: 100%;
+  height: 42px;
+  min-height: 42px;
+  margin: 0;
+}
+
+body.vt-learning-page .learning-grid {
+  gap: 12px;
+}
+
+body.vt-learning-page .learning-card,
+body.vt-learning-page .learning-grid.is-featured .learning-course-card,
+body.vt-learning-page .learning-panel,
+body.vt-learning-page .lesson-sidebar,
+body.vt-learning-page .assessment-card,
+body.vt-learning-page .credential-card {
+  padding: 20px;
+  border-color: rgba(255, 255, 255, 0.075);
+  border-radius: 3px;
+  background: var(--learning-surface-soft);
+  box-shadow: none;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+
+body.vt-learning-page .learning-grid.is-featured .learning-course-card {
+  min-height: 132px;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+}
+
+body.vt-learning-page .learning-grid.is-featured .learning-course-card .learning-card-main {
+  flex: 1 1 auto;
+}
+
+body.vt-learning-page .learning-grid.is-featured .learning-course-card .learning-card-actions {
+  flex: 0 0 auto;
+  margin: 0 0 0 auto;
+}
+
+body.vt-learning-page .learning-card h2,
+body.vt-learning-page .learning-panel h2,
+body.vt-learning-page .lesson-sidebar h2,
+body.vt-learning-page .assessment-card h2,
+body.vt-learning-page .credential-card h2 {
+  font-size: 1rem;
+  line-height: 1.3;
+}
+
+body.vt-learning-page .learning-card p {
+  margin: 9px 0 0;
+}
+
+body.vt-learning-page .learning-message {
+  margin: 12px 0 0;
+  box-shadow: none;
+}
+
+body.vt-learning-page .learning-message[data-tone="warning"] {
+  border-color: rgba(251, 191, 36, 0.25);
+  background: rgba(120, 83, 10, 0.12);
+  color: #fde68a;
+}
+
+body.vt-learning-page .learning-btn.is-complete,
+body.vt-learning-page .learning-btn.is-complete:hover {
+  border-color: rgba(52, 211, 153, 0.28);
+  background: rgba(6, 95, 70, 0.22);
+  color: #a7f3d0;
+  cursor: default;
+  opacity: 1;
+}
+
+.learning-skeleton-line {
+  display: block;
+  position: relative;
+  width: var(--skeleton-width, 100%);
+  max-width: 100%;
+  height: 10px;
+  overflow: hidden;
+  border-radius: 2px;
+  background: var(--learning-skeleton-base);
+  contain: paint;
+}
+
+.learning-skeleton-line + .learning-skeleton-line {
+  margin-top: 10px;
+}
+
+.learning-skeleton-line::after,
+.learning-data-loading :is(#course-title, #course-summary, #course-level, #course-duration, #course-count)::after,
+.lesson-layout.is-loading .lesson-sidebar :is(.learning-kicker, h2, p, button, a)::after,
+.credential-card.is-loading :is(.credential-mark, .learning-kicker, h2, p, .credential-details)::after {
+  content: '';
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 34%;
+  border-radius: inherit;
+  background: linear-gradient(100deg, var(--learning-skeleton-edge), var(--learning-skeleton-highlight), var(--learning-skeleton-edge));
+  animation: vt-dashboard-shimmer-slide 1.85s ease-in-out infinite;
+  pointer-events: none;
+}
+
+.learning-skeleton-line.is-title {
+  height: 18px;
+  margin-bottom: 15px;
+}
+
+.learning-skeleton-line.is-chip {
+  display: inline-block;
+  height: 24px;
+  margin: 0;
+}
+
+.learning-skeleton-line.is-button {
+  height: 36px;
+}
+
+.learning-skeleton-line.is-progress {
+  height: 5px;
+  margin-top: 16px;
+}
+
+.learning-skeleton-line.is-option {
+  height: 36px;
+}
+
+.learning-skeleton-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 14px;
+}
+
+body.vt-learning-page .learning-skeleton-card,
+body.vt-learning-page .learning-metric-skeleton {
+  background: rgba(24, 29, 36, 0.72);
+  box-shadow: none;
+}
+
+.learning-module-skeleton,
+.learning-block-skeleton,
+.learning-question-skeleton,
+.learning-metric-skeleton {
+  display: block;
+}
+
+.learning-module-skeleton .learning-skeleton-line,
+.learning-block-skeleton .learning-skeleton-line,
+.learning-question-skeleton .learning-skeleton-line,
+.learning-metric-skeleton .learning-skeleton-line {
+  margin-top: 10px;
+}
+
+.learning-data-loading :is(#course-title, #course-summary, #course-level, #course-duration, #course-count),
+.lesson-layout.is-loading .lesson-sidebar :is(.learning-kicker, h2, p, button, a),
+.credential-card.is-loading :is(.credential-mark, .learning-kicker, h2, p, .credential-details) {
+  position: relative;
+  overflow: hidden;
+  color: transparent !important;
+  border-color: transparent !important;
+  background: var(--learning-skeleton-base) !important;
+  text-shadow: none !important;
+  contain: paint;
+}
+
+.learning-data-loading #course-title {
+  width: min(460px, 76%);
+  min-height: 2.3rem;
+}
+
+.learning-data-loading #course-summary {
+  width: min(650px, 92%);
+  min-height: 1.2rem;
+}
+
+.lesson-layout.is-loading .lesson-sidebar :is(.learning-kicker, h2, p) {
+  display: block;
+  width: 82%;
+  min-height: 12px;
+}
+
+.lesson-layout.is-loading .lesson-sidebar h2 {
+  width: 68%;
+  min-height: 20px;
+}
+
+.lesson-layout.is-loading .lesson-sidebar p {
+  width: 94%;
+  min-height: 42px;
+}
+
+.lesson-layout.is-loading .lesson-sidebar :is(button, a) {
+  min-width: 108px;
+}
+
+.credential-card.is-loading {
+  min-height: 310px;
+}
+
+@media (max-width: 680px) {
+  body.vt-learning-page .learning-shell {
+    width: min(100% - 20px, 1140px);
+    padding: calc(var(--header-height) + 22px) 0 38px;
+  }
+
+  body.vt-learning-page .learning-hero,
+  body.vt-learning-page .learning-page-title,
+  body.vt-learning-page .learning-catalog-panel {
+    padding: 17px;
+  }
+
+  body.vt-learning-page .learning-hero h1,
+  body.vt-learning-page .learning-page-title h1 {
+    font-size: 1.5rem !important;
+  }
+
+  body.vt-learning-page .learning-section {
+    margin-top: 14px;
+  }
+
+  body.vt-learning-page .learning-filter {
+    grid-template-columns: 1fr;
+    gap: 11px;
+  }
+
+  body.vt-learning-page .learning-grid.is-featured .learning-course-card {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 16px;
+  }
+
+  body.vt-learning-page .learning-grid.is-featured .learning-course-card .learning-card-actions {
+    margin-left: 0;
+  }
+
+  body.vt-learning-page .learning-grid.is-featured .learning-course-card .learning-card-actions .learning-btn {
+    width: 100%;
+  }
+
+  .learning-skeleton-meta .learning-skeleton-line.is-chip:nth-child(2) {
+    width: 112px !important;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .learning-skeleton-line::after,
+  .learning-data-loading :is(#course-title, #course-summary, #course-level, #course-duration, #course-count)::after,
+  .lesson-layout.is-loading .lesson-sidebar :is(.learning-kicker, h2, p, button, a)::after,
+  .credential-card.is-loading :is(.credential-mark, .learning-kicker, h2, p, .credential-details)::after {
+    animation: none;
+  }
+}
+
 @media (max-width: 680px) {
   body.vt-learning-page .learning-shell {
     width: min(100% - 22px, 1160px);
@@ -902,5 +1253,31 @@ body.vt-learning-page .credential-details dd {
 
   body.vt-learning-page .credential-details {
     grid-template-columns: 1fr;
+  }
+}
+
+/* Keep the compact gateway geometry authoritative at the mobile breakpoint. */
+@media (max-width: 680px) {
+  body.vt-learning-page .learning-shell {
+    width: min(100% - 20px, 1140px);
+    padding: calc(var(--header-height) + 22px) 0 38px;
+  }
+
+  body.vt-learning-page .learning-hero h1,
+  body.vt-learning-page .learning-page-title h1 {
+    font-size: 1.5rem !important;
+  }
+
+  body.vt-learning-page .learning-section {
+    margin-top: 14px;
+  }
+
+  body.vt-learning-page .learning-card,
+  body.vt-learning-page .learning-grid.is-featured .learning-course-card,
+  body.vt-learning-page .learning-panel,
+  body.vt-learning-page .lesson-sidebar,
+  body.vt-learning-page .assessment-card,
+  body.vt-learning-page .credential-card {
+    border-radius: 3px;
   }
 }

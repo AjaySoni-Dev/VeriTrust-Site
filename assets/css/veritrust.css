@@ -4001,3 +4001,70 @@ header,
     animation: none;
   }
 }
+
+/* Session verification is a distinct blocking phase; data skeletons begin after it. */
+html.vt-auth-checking::before {
+  top: calc(50% - 30px);
+  left: calc(50% - 15px);
+  width: 30px;
+  height: 30px;
+  border: 3px solid rgba(148, 163, 184, 0.25);
+  border-top-color: #60a5fa;
+  border-radius: 50%;
+  background: transparent;
+  transform: none;
+  clip-path: none;
+  animation: vt-session-spin 0.8s linear infinite;
+}
+
+html.vt-auth-checking::after {
+  content: 'Verifying session';
+  top: calc(50% + 18px);
+  left: 50%;
+  width: auto;
+  height: auto;
+  border-radius: 0;
+  background: transparent;
+  color: #aab4c3;
+  font: 600 12px/1.4 var(--mono);
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  transform: translateX(-50%);
+  animation: none;
+}
+
+@keyframes vt-session-spin {
+  to { transform: rotate(360deg); }
+}
+
+/* Loading surfaces stay close to their final graphite panels without glare. */
+.dashboard-is-loading {
+  --shimmer-base: #1c222a;
+  --shimmer-edge: #1c222a;
+  --shimmer-highlight: #242b34;
+}
+
+.dashboard-is-loading .dashboard-grid .dashboard-panel {
+  background: rgba(18, 26, 38, 0.9);
+  box-shadow: none;
+}
+
+.dashboard-is-loading .dashboard-grid .dashboard-panel::before {
+  background: #20262e;
+}
+
+.dashboard-is-loading .dashboard-grid .dashboard-panel::after {
+  background: #1c222a;
+}
+
+.dashboard-is-loading .dashboard-loading-state {
+  background: rgba(23, 34, 53, 0.68);
+  box-shadow: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html.vt-auth-checking::before {
+    animation-duration: 1.6s;
+  }
+}

@@ -28,6 +28,48 @@
     return list;
   }
 
+  function skeletonLine(width, variant = '') {
+    const line = document.createElement('span');
+    line.className = `learning-skeleton-line${variant ? ` ${variant}` : ''}`;
+    line.style.setProperty('--skeleton-width', width);
+    return line;
+  }
+
+  function loadingCard({ progress = false } = {}) {
+    const article = document.createElement('article');
+    article.className = 'learning-card learning-course-card learning-skeleton-card';
+    article.setAttribute('aria-hidden', 'true');
+
+    const main = document.createElement('div');
+    main.className = 'learning-card-main';
+    const metaRow = document.createElement('div');
+    metaRow.className = 'learning-skeleton-meta';
+    metaRow.append(skeletonLine('72px', 'is-chip'), skeletonLine('142px', 'is-chip'), skeletonLine('86px', 'is-chip'));
+    main.append(metaRow, skeletonLine('min(360px, 72%)', 'is-title'), skeletonLine('min(720px, 92%)'), skeletonLine('min(520px, 68%)'));
+    if (progress) main.appendChild(skeletonLine('100%', 'is-progress'));
+
+    const actions = document.createElement('div');
+    actions.className = 'learning-card-actions';
+    actions.appendChild(skeletonLine('112px', 'is-button'));
+    article.append(main, actions);
+    return article;
+  }
+
+  function beginGridLoading({ progress = false } = {}) {
+    const grid = $('#learning-grid');
+    if (!grid) return;
+    document.body.classList.add('learning-data-loading');
+    grid.setAttribute('aria-busy', 'true');
+    grid.classList.add('is-featured');
+    grid.replaceChildren(loadingCard({ progress }));
+    message('');
+  }
+
+  function finishGridLoading() {
+    document.body.classList.remove('learning-data-loading');
+    $('#learning-grid')?.removeAttribute('aria-busy');
+  }
+
   function courseCard(course) {
     const article = document.createElement('article');
     article.className = 'learning-card learning-course-card';
@@ -84,8 +126,7 @@
   async function loadCatalog() {
     const grid = $('#learning-grid');
     if (!grid) return;
-    grid.replaceChildren();
-    message('Loading the published catalog…');
+    beginGridLoading();
     try {
       const response = await api.catalog({
         search: $('#learning-search')?.value.trim(),
@@ -96,27 +137,35 @@
       grid.replaceChildren(...courses.map(courseCard));
       message(courses.length ? '' : 'No published courses match this filter.');
     } catch (error) {
+      grid.replaceChildren();
       message(error.message, 'error');
+    } finally {
+      finishGridLoading();
     }
   }
 
   async function loadMyLearning() {
     const grid = $('#learning-grid');
     if (!grid) return;
-    message('Loading your learning workspace…');
+    beginGridLoading({ progress: true });
     try {
       const response = await api.me();
       const enrollments = response.data?.enrollments || [];
       text($('#learning-name'), response.data?.user?.display_name || 'Learner');
+      grid.classList.toggle('is-featured', enrollments.length === 1);
       grid.replaceChildren(...enrollments.map(enrollmentCard));
       message(enrollments.length ? '' : 'You have no active courses yet. Open the catalog to enroll.');
     } catch (error) {
+      grid.replaceChildren();
       message(error.message, 'error');
+    } finally {
+      finishGridLoading();
     }
   }
 
   document.addEventListener('DOMContentLoaded', async () => {
-    await global.VeriTrustPageAccess;
+    const access = await global.VeriTrustPageAccess;
+    if (!access.allowed) return;
     const mine = /^\/learn\/my-learning\/?$/i.test(global.location.pathname);
     document.body.classList.toggle('learning-my-page', mine);
     $$('[data-catalog-view]').forEach((node) => node.toggleAttribute('hidden', mine));

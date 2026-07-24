@@ -66,6 +66,25 @@
     return section;
   }
 
+  function renderAssessmentSkeleton() {
+    const container = $('#assessment-questions');
+    if (!container) return;
+    const fragment = document.createDocumentFragment();
+    [1, 2].forEach(() => {
+      const section = document.createElement('section');
+      section.className = 'assessment-question learning-question-skeleton';
+      section.setAttribute('aria-hidden', 'true');
+      ['68%', '94%', '88%', '72%'].forEach((width, index) => {
+        const line = document.createElement('span');
+        line.className = `learning-skeleton-line${index === 0 ? ' is-title' : ' is-option'}`;
+        line.style.setProperty('--skeleton-width', width);
+        section.appendChild(line);
+      });
+      fragment.appendChild(section);
+    });
+    container.replaceChildren(fragment);
+  }
+
   function startTimer(expiresAt) {
     const timer = $('#assessment-timer');
     const update = () => {
@@ -100,12 +119,16 @@
   document.addEventListener('DOMContentLoaded', async () => {
     const access = await global.VeriTrustPageAccess;
     if (!access.allowed) return;
+    renderAssessmentSkeleton();
+    message('');
     try {
       await load();
       message('');
     } catch (error) {
       $('#assessment-title').textContent = 'Assessment unavailable';
       message(error.message, 'error');
+    } finally {
+      document.body.classList.remove('learning-data-loading');
     }
     $('#assessment-submit')?.addEventListener('click', async (event) => {
       const button = event.currentTarget;

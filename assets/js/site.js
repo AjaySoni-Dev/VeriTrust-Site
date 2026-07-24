@@ -52,7 +52,8 @@ const VeriTrustPageAccess = (() => {
 
   const currentDestination = () => `${pathname}${window.location.search}${window.location.hash}`;
   const shouldBlockForAuth = isAuth || !isPublic;
-  if (shouldBlockForAuth) {
+  const shouldVerifyBeforePaint = shouldBlockForAuth || ['learning', 'course'].includes(page);
+  if (shouldVerifyBeforePaint) {
     document.documentElement.classList.add('vt-auth-checking');
     document.documentElement.setAttribute('aria-busy', 'true');
   }
@@ -86,7 +87,7 @@ const VeriTrustPageAccess = (() => {
 
     if (!isPublic && !session) {
       if (sessionError) {
-        if (shouldBlockForAuth) {
+        if (shouldVerifyBeforePaint) {
           document.documentElement.classList.remove('vt-auth-checking');
           document.documentElement.removeAttribute('aria-busy');
         }
@@ -97,7 +98,7 @@ const VeriTrustPageAccess = (() => {
       return { allowed: false, session: null };
     }
 
-    if (shouldBlockForAuth) {
+    if (shouldVerifyBeforePaint) {
       document.documentElement.classList.remove('vt-auth-checking');
       document.documentElement.removeAttribute('aria-busy');
     }
@@ -126,6 +127,7 @@ const VeriTrustLoadingShimmer = (() => {
 
   const isLoading = (node) => {
     if (!(node instanceof HTMLElement) || node.hidden) return false;
+    if (node.classList.contains('learning-message')) return false;
     if (node.classList.contains('result-loading')) return true;
     if (node.classList.contains('loading-state')) {
       return !node.parentElement?.classList.contains('result-loading');

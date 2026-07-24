@@ -30,25 +30,35 @@
   }
 
   document.addEventListener('DOMContentLoaded', async () => {
-    await global.VeriTrustPageAccess;
+    const access = await global.VeriTrustPageAccess;
+    if (!access.allowed) return;
     const code = decodeURIComponent(global.location.pathname.match(/\/certificates\/([^/]+)/i)?.[1] || '');
     const message = $('#credential-message');
+    const card = $('#credential-card');
+    card.hidden = false;
+    card.classList.add('is-loading');
+    message.hidden = true;
     try {
       if (code) {
         const response = await api.verify(code);
         render(response.data);
-        $('#credential-card').hidden = false;
+        card.hidden = false;
       } else {
         const response = await api.credentials();
         const records = response.data || [];
         if (records[0]) render(records[0]);
-        $('#credential-card').hidden = !records.length;
+        card.hidden = !records.length;
         if (!records.length) message.textContent = 'No credentials have been issued to this account yet.';
       }
       if (!message.textContent) message.hidden = true;
     } catch (error) {
       message.textContent = error.message;
       message.dataset.tone = 'error';
+      message.hidden = false;
+      card.hidden = true;
+    } finally {
+      card.classList.remove('is-loading');
+      document.body.classList.remove('learning-data-loading');
     }
   });
 })(window);

@@ -14,10 +14,25 @@
     return article;
   }
 
+  function metricSkeleton() {
+    const article = document.createElement('article');
+    article.className = 'learning-card learning-metric-skeleton';
+    article.setAttribute('aria-hidden', 'true');
+    ['34%', '64%'].forEach((width, index) => {
+      const line = document.createElement('span');
+      line.className = `learning-skeleton-line${index === 0 ? ' is-title' : ''}`;
+      line.style.setProperty('--skeleton-width', width);
+      article.appendChild(line);
+    });
+    return article;
+  }
+
   document.addEventListener('DOMContentLoaded', async () => {
     const access = await global.VeriTrustPageAccess;
     if (!access.allowed) return;
     const message = $('#admin-message');
+    $('#admin-metrics').replaceChildren(...Array.from({ length: 6 }, metricSkeleton));
+    message.hidden = true;
     try {
       const response = await global.VeriTrustLearningApi.adminSummary();
       const data = response.data || {};
@@ -33,6 +48,9 @@
     } catch (error) {
       message.textContent = error.message;
       message.dataset.tone = 'error';
+      message.hidden = false;
+    } finally {
+      document.body.classList.remove('learning-data-loading');
     }
   });
 })(window);

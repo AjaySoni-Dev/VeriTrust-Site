@@ -42,6 +42,25 @@
     container.replaceChildren(fragment);
   }
 
+  function renderModulesSkeleton() {
+    const container = $('#course-modules');
+    if (!container) return;
+    const fragment = document.createDocumentFragment();
+    [1, 2].forEach(() => {
+      const section = document.createElement('section');
+      section.className = 'course-module learning-module-skeleton';
+      section.setAttribute('aria-hidden', 'true');
+      ['34%', '76%', '58%'].forEach((width, index) => {
+        const line = document.createElement('span');
+        line.className = `learning-skeleton-line${index === 0 ? ' is-title' : ''}`;
+        line.style.setProperty('--skeleton-width', width);
+        section.appendChild(line);
+      });
+      fragment.appendChild(section);
+    });
+    container.replaceChildren(fragment);
+  }
+
   async function enroll() {
     const button = $('#course-enroll');
     button.disabled = true;
@@ -58,7 +77,10 @@
   }
 
   document.addEventListener('DOMContentLoaded', async () => {
-    await global.VeriTrustPageAccess;
+    const access = await global.VeriTrustPageAccess;
+    if (!access.allowed) return;
+    renderModulesSkeleton();
+    setMessage('');
     try {
       const response = await api.course(slug);
       course = response.data;
@@ -89,6 +111,8 @@
     } catch (error) {
       $('#course-title').textContent = 'Course unavailable';
       setMessage(error.message, 'error');
+    } finally {
+      document.body.classList.remove('learning-data-loading');
     }
     $('#course-enroll')?.addEventListener('click', enroll);
   });
