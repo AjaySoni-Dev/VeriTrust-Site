@@ -1,6 +1,17 @@
+function veritrustPageId(pathname = window.location.pathname) {
+  const path = String(pathname || '/').replace(/\/+$/, '') || '/';
+  if (/^\/learn\/courses\/[^/]+\/lessons\/[^/]+$/i.test(path)) return 'lesson';
+  if (/^\/learn\/courses\/[^/]+$/i.test(path)) return 'course';
+  if (/^\/learn\/assessments\/[^/]+$/i.test(path)) return 'assessment';
+  if (/^\/learn(?:\/catalog|\/my-learning)?$/i.test(path)) return 'learning';
+  if (/^\/certificates(?:\/[^/]+)?$/i.test(path)) return 'certificate';
+  if (/^\/learning-admin$/i.test(path)) return 'learning-admin';
+  return path.split('/').filter(Boolean).pop()?.replace(/\.html$/i, '').toLowerCase() || 'index';
+}
+
 const VeriTrustPageAccess = (() => {
   const pathname = window.location.pathname;
-  const page = pathname.split('/').filter(Boolean).pop()?.replace(/\.html$/i, '').toLowerCase() || 'index';
+  const page = veritrustPageId(pathname);
   const isLanding = page === 'index';
   const isAuth = page === 'auth';
   const publicPages = new Set([
@@ -15,8 +26,16 @@ const VeriTrustPageAccess = (() => {
     'terms',
     'security',
     'disclaimer',
+    'learning',
+    'course',
+    'certificate',
   ]);
-  const isPublic = publicPages.has(page);
+  const isPublicCertificate = /^\/certificates\/[^/]+\/?$/i.test(pathname);
+  const isProtectedLearningRoute = /^\/learn\/(?:my-learning|assessments\/|courses\/[^/]+\/lessons\/)/i.test(pathname)
+    || /^\/certificates\/?$/i.test(pathname)
+    || /^\/learning-admin\/?$/i.test(pathname);
+  const isPublic = publicPages.has(page) && !isProtectedLearningRoute
+    || isPublicCertificate;
 
   const safeRedirect = (value, fallback = 'dashboard.html') => {
     if (!value) return fallback;
@@ -114,14 +133,15 @@ const VeriTrustSiteChrome = (() => {
     terms: 'Terms',
     security: 'Security',
     disclaimer: 'Disclaimer',
+    learning: 'Learning',
+    course: 'Course overview',
+    lesson: 'Course lesson',
+    assessment: 'Assessment',
+    certificate: 'Credentials',
+    'learning-admin': 'Learning administration',
   });
 
-  const currentPage = () => window.location.pathname
-    .split('/')
-    .filter(Boolean)
-    .pop()
-    ?.replace(/\.html$/i, '')
-    .toLowerCase() || 'index';
+  const currentPage = () => veritrustPageId(window.location.pathname);
 
   const directChild = (tagName) => [...document.body.children]
     .find((node) => node.tagName === tagName.toUpperCase()) || null;
@@ -143,6 +163,7 @@ const VeriTrustSiteChrome = (() => {
           <a href="index.html">Home</a>
           <a href="detection.html">Detection</a>
           <a href="gateway.html">Gateway</a>
+          <a href="/learn">Learn</a>
           <a href="developers.html">Developers</a>
           <a href="docs.html">Docs</a>
         </nav>
@@ -158,7 +179,7 @@ const VeriTrustSiteChrome = (() => {
       </div>
     `;
     header.querySelector('.tool-header-context').textContent = PAGE_CONTEXT[page] || 'Platform';
-    if (['dashboard', 'scans', 'api-access', 'billing', 'account'].includes(page)) {
+    if (['dashboard', 'scans', 'api-access', 'billing', 'account', 'learning-admin'].includes(page)) {
       header.querySelector('.tool-header-dashboard')?.classList.add('active');
       header.querySelector('.tool-header-dashboard')?.setAttribute('aria-current', 'page');
     }
@@ -185,6 +206,7 @@ const VeriTrustSiteChrome = (() => {
         <nav class="vt-site-footer-groups" aria-label="Footer navigation">
           <section><h2>Review</h2><a href="detection.html">Detection modules</a><a href="deepfake.html">Image review</a><a href="phishing.html">Message review</a><a href="link-check.html">Link intelligence</a><a href="gateway.html">Unified gateway</a></section>
           <section><h2>Workspace</h2><a href="dashboard.html">Overview</a><a href="scans.html">Scan history</a><a href="api-access.html">API access</a><a href="billing.html">Billing</a><a href="account.html">Account</a></section>
+          <section><h2>Learning</h2><a href="/learn">Catalog</a><a href="/learn/my-learning">My learning</a><a href="/certificates">Certificates</a><a href="/learning-admin">Administration</a></section>
           <section><h2>Resources</h2><a href="docs.html">Documentation</a><a href="developers.html">Developer API</a><a href="cli.html">Web CLI</a><a href="gateway-powershell.html">PowerShell guide</a><a href="model-performance.html">Model performance</a></section>
           <section><h2>Trust</h2><a href="security.html">Security</a><a href="privacy.html">Privacy</a><a href="terms.html">Terms</a><a href="disclaimer.html">Disclaimer</a></section>
         </nav>
@@ -247,12 +269,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     const nav = document.querySelector('.tool-header-links');
     if (!nav) return;
 
-    const currentPage = window.location.pathname
-      .split('/')
-      .filter(Boolean)
-      .pop()
-      ?.replace(/\.html$/i, '')
-      .toLowerCase() || 'index';
+    const currentPage = veritrustPageId(window.location.pathname);
     const activeSection = {
       index: 'index',
       detection: 'detection',
@@ -261,6 +278,12 @@ document.addEventListener('DOMContentLoaded', async () => {
       'link-check': 'detection',
       cli: 'detection',
       gateway: 'gateway',
+      learning: 'learning',
+      course: 'learning',
+      lesson: 'learning',
+      assessment: 'learning',
+      certificate: 'learning',
+      'learning-admin': 'learning',
       'gateway-powershell': 'developers',
       developers: 'developers',
       'model-performance': 'developers',
@@ -274,6 +297,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       ['index.html', 'Home', 'index'],
       ['detection.html', 'Detection', 'detection'],
       ['gateway.html', 'Gateway', 'gateway'],
+      ['/learn', 'Learn', 'learning'],
       ['developers.html', 'Developers', 'developers'],
       ['docs.html', 'Docs', 'docs']
     ];

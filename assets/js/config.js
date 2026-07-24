@@ -35,7 +35,8 @@ const runtimeConfigValue = {
     scans: '/api/scans',
     apiKeys: '/api/api-keys',
     authSession: '/api/auth-session',
-    profile: '/api/profile'
+    profile: '/api/profile',
+    learning: '/api/learning'
   },
   storage: {
     scanUploadsBucket: 'scan-uploads',
@@ -62,6 +63,7 @@ const runtimeConfigValue = {
     apiKeys: '/api/api-keys',
     authSession: '/api/auth-session',
     profile: '/api/profile',
+    learning: '/api/learning',
     ...(serverRuntimeConfig.api || {}),
     ...(injectedConfig.api || {})
   },

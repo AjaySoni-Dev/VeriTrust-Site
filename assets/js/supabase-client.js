@@ -265,6 +265,12 @@
     return data.path;
   }
 
+  function learningApi(path, options = {}) {
+    const root = String(apiConfig.learning || '/api/learning').replace(/\/$/, '');
+    const suffix = String(path || '').replace(/^\//, '');
+    return callAppApi(`${root}/${suffix}`, options);
+  }
+
   global.VeriTrustSupabase = {
     isConfigured,
     getStoredSession,
@@ -282,5 +288,6 @@
     consumeAuthCallback,
     updatePassword,
     callAppApi,
+    learningApi,
   };
 })(window);
