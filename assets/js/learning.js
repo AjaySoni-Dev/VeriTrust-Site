@@ -29,10 +29,13 @@
 
   function courseCard(course) {
     const article = document.createElement('article');
-    article.className = 'learning-card';
-    article.appendChild(meta([
+    article.className = 'learning-card learning-course-card';
+    const main = document.createElement('div');
+    main.className = 'learning-card-main';
+    main.appendChild(meta([
       course.level,
       `${course.module_count || 0} modules`,
+      `${course.lesson_count || 0} lessons`,
       `${course.estimated_minutes || 0} min`,
       course.certification_available ? 'Certificate' : '',
     ]));
@@ -47,7 +50,8 @@
     link.href = `/learn/courses/${encodeURIComponent(course.slug)}`;
     link.textContent = 'View course';
     actions.appendChild(link);
-    article.append(title, summary, actions);
+    main.append(title, summary);
+    article.append(main, actions);
     return article;
   }
 
@@ -89,6 +93,7 @@
         level: $('#learning-level')?.value,
       });
       const courses = response.data || [];
+      grid.classList.toggle('is-featured', courses.length === 1);
       grid.replaceChildren(...courses.map(courseCard));
       message(courses.length ? '' : 'No published courses match this filter.');
     } catch (error) {
