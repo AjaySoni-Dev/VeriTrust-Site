@@ -382,8 +382,7 @@ Never hardcode production API keys in public notebooks, frontend JavaScript, rep
 
 ### Supabase Schema Setup
 
-Apply `docs/supabase-production-schema.sql` before production use. Existing projects should also run the Prompt 3 developer API upgrade block at the bottom of that file. It adds `masked_key`, `usage_limit_daily`, `revoked_at`, `user_id`, and `api_usage_events` without dropping existing rows.
-For Link Intelligence upgrades, the same schema file adds the `link` scan type, VeriTrust Swift and VeriTrust Sentinel model rows, `link_count`, and the default `link:scan` API key scope.
+Apply the version-controlled production schema used by your deployed Supabase project before production use. The historical bootstrap schema referenced by older revisions is not present in this checkout, so export the live schema into version control before making structural changes. After the schema is installed, run `docs/supabase-security-hardening.sql`, then run the read-only `docs/supabase-security-audit.sql` and review every non-empty result set.
 
 ### Legal And Trust Pages
 
@@ -442,11 +441,13 @@ A correctly configured runtime should return a JSON response with:
 
 The production gateway foundation is available under `/api/v1/gateway`. It uses the verified gateway schema, tenant-scoped Supabase or API-key authentication, atomic idempotency, normalized evidence, deterministic correlation, and advisory-first policy enforcement.
 
-- `POST /api/v1/gateway/scans` submits text and URL content. `Idempotency-Key` is required.
+- `POST /api/v1/gateway/scans` submits text, URLs, and registered private media in focused or unified combinations. `Idempotency-Key` is required.
 - `GET /api/v1/gateway/scans` lists tenant-scoped gateway scans.
 - `GET /api/v1/gateway/scans/{id}` returns status, artifacts, evidence, and the current decision.
 - `POST /api/v1/gateway/scans/{id}/cancel` requests idempotent cancellation.
 - `GET /api/v1/gateway/reports/{id}` returns the unified audit report.
+
+The browser guide at `/gateway-powershell.html` includes copy-ready Windows PowerShell workflows for phishing, link, image deepfake, message-plus-link, and unified message-plus-link-plus-image scans. Unified submissions place all applicable artifacts in one request so the gateway returns one correlated policy decision.
 
 The machine-readable alpha contract is in `openapi/veritrust-gateway-v1.yaml`. Private signed media uploads, durable PGMQ jobs, bounded Vercel media/webhook/retention workers, immediate `pg_net` dispatch, and one-minute Supabase Cron recovery are implemented. Enforcement remains advisory-first and organization activation should still be limited to approved pilots.
 
@@ -668,13 +669,13 @@ Gateway serverless deployment order:
 
 1. Generate one random 32+ character dispatch secret and set it as `DISPATCH` in Vercel for Production and Preview as appropriate.
 2. Deploy the repository so `https://YOUR-DOMAIN/api/gateway-worker` exists.
-3. Edit only the worker URL and worker secret at the top of `docs/migrations/003_gateway_serverless_dispatch_forward.sql`, then run the complete migration in the Supabase SQL Editor.
-4. Run `docs/migrations/003_gateway_serverless_dispatch_verify.sql`; every row, including `OVERALL VERDICT`, must be `PASS`.
-5. Run the optional live dispatch query printed at the bottom of the verification file and confirm the corresponding `net._http_response.status_code` is `200`.
+3. Restore the deployed gateway dispatch migration and its verification SQL into version control; those historical migration files are not present in this checkout.
+4. Confirm the worker secret is stored in Supabase Vault, dispatch signatures use the five-minute timestamp and nonce envelope implemented by `lib/gateway/worker-auth.js`, and persistent replay protection exists in the deployed migration.
+5. Run the restored verification SQL and a live dispatch check before enabling the gateway for production traffic.
 
-Migration 003 keeps the Vercel endpoint private, stores its signing key only in Supabase Vault, authenticates each request with a five-minute timestamped HMAC and unique nonce, dispatches new queue jobs asynchronously after commit, and schedules a one-minute recovery invocation. PGMQ leases and dedupe keys remain the durability and concurrency authority, so duplicate HTTP invocations cannot claim the same active job.
+Do not enable the serverless gateway worker from this checkout alone until the missing dispatch migration has been recovered and reviewed. PGMQ leases and dedupe keys reduce duplicate job execution, but they do not replace persistent dispatch replay protection.
 
-When `ADMIN` is set, `/api/health` accepts `X-VeriTrust-Admin-Secret` for private diagnostics. Without that header, health returns only public operational status. Apply `docs/supabase-production-schema.sql` in Supabase before production use so the `api_rate_limits` table and `consume_api_rate_limit` RPC exist.
+When `ADMIN` is set, `/api/health` accepts `X-VeriTrust-Admin-Secret` for private diagnostics. Without that header, health returns only public operational status. The deployed Supabase schema must include the `api_rate_limits` table and `consume_api_rate_limit` RPC. Apply `docs/supabase-security-hardening.sql` after the full schema and verify it with `docs/supabase-security-audit.sql`.
 
 Configure secrets only in Vercel Environment Variables or local ignored `.env` files. Never store Hugging Face, Supabase service-role, or admin secret values in repository files.
 
@@ -730,7 +731,8 @@ Current limitations include:
 
 - Supabase authentication and scan persistence require the production schema and Vercel environment variables
 - the free-tier serverless worker is intended for an MVP workload; capacity, invocation, bandwidth, and external-model quotas still require monitoring
-- serverless rate limiting requires the `api_rate_limits` table and `consume_api_rate_limit` RPC from the production schema
+- serverless rate limiting requires the `api_rate_limits` table and `consume_api_rate_limit` RPC in the deployed Supabase schema
+- the historical Supabase bootstrap and gateway migration files are not present in this checkout; export the deployed schema and migrations into version control before the next database change
 - existing Supabase projects created before Critical risk support must run: `alter type public.risk_level add value if not exists 'critical';`
 - billing and paid-plan enforcement are not implemented beyond basic plan-aware daily limits
 - AI results depend on external Hugging Face model availability and latency

@@ -1,0 +1,17 @@
+127.0.0.1 - - [23/Jul/2026 22:41:50] "GET /index.html HTTP/1.1" 200 -
+127.0.0.1 - - [23/Jul/2026 22:41:50] "GET /assets/css/veritrust.css?v=20260723-unified-chrome2 HTTP/1.1" 200 -
+127.0.0.1 - - [23/Jul/2026 22:41:50] "GET /assets/css/glass-system.css?v=20260723-global4 HTTP/1.1" 200 -
+127.0.0.1 - - [23/Jul/2026 22:41:50] "GET /logo.png HTTP/1.1" 304 -
+127.0.0.1 - - [23/Jul/2026 22:41:50] "GET /brand.png HTTP/1.1" 304 -
+127.0.0.1 - - [23/Jul/2026 22:41:50] "GET /assets/js/supabase-client.js?v=20260713-auth-flow1 HTTP/1.1" 200 -
+127.0.0.1 - - [23/Jul/2026 22:41:50] "GET /assets/js/site.js?v=20260723-unified-chrome3 HTTP/1.1" 200 -
+127.0.0.1 - - [23/Jul/2026 22:41:50] "GET /assets/js/config.js?v=20260712-supabase3 HTTP/1.1" 200 -
+127.0.0.1 - - [23/Jul/2026 22:41:50] "GET /assets/js/home.js?v=20260723-security1 HTTP/1.1" 200 -
+127.0.0.1 - - [23/Jul/2026 22:41:50] code 404, message File not found
+127.0.0.1 - - [23/Jul/2026 22:41:50] "GET /api/client-config HTTP/1.1" 404 -
+127.0.0.1 - - [23/Jul/2026 22:41:50] "GET /favicon.ico HTTP/1.1" 304 -
+127.0.0.1 - - [23/Jul/2026 22:42:11] "GET /index.html HTTP/1.1" 304 -
+127.0.0.1 - - [23/Jul/2026 22:42:11] "GET /assets/css/glass-system.css?v=20260723-global4 HTTP/1.1" 304 -
+127.0.0.1 - - [23/Jul/2026 22:42:11] code 404, message File not found
+127.0.0.1 - - [23/Jul/2026 22:42:11] "GET /api/client-config HTTP/1.1" 404 -
+127.0.0.1 - - [23/Jul/2026 22:42:11] "GET /favicon-32.png HTTP/1.1" 304 -

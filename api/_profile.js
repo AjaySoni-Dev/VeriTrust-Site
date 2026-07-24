@@ -75,6 +75,7 @@ async function uploadAvatar(req, res) {
       'x-upsert': 'true',
     },
     body: upload.buffer,
+    signal: AbortSignal.timeout(30000),
   });
   if (!response.ok) throw new HttpError(502, 'Unable to store the profile photo.', { code: 'AVATAR_UPLOAD_FAILED' });
   await supabaseFetch('/rest/v1/rpc/update_my_profile', {
@@ -118,6 +119,7 @@ async function serveAvatar(req, res) {
   const response = await fetch(avatarUrl(path, 'authenticated'), {
     headers: storageHeaders(context.token),
     cache: 'no-store',
+    signal: AbortSignal.timeout(30000),
   });
   if (!response.ok) throw new HttpError(404, 'Profile photo was not found.', { code: 'AVATAR_NOT_FOUND' });
   const declaredSize = Number(response.headers.get('content-length') || 0);

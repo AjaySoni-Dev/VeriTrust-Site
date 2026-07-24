@@ -13,6 +13,7 @@ const {
   parseJsonBody,
   sendJson,
 } = require('../lib/veritrust-api');
+const { validateJsonContentType } = require('../lib/validators');
 
 module.exports = async function handler(req, res) {
   if (handleOptions(req, res)) return;
@@ -27,6 +28,7 @@ module.exports = async function handler(req, res) {
     }
 
     if (req.method === 'POST') {
+      validateJsonContentType(req);
       const body = await parseJsonBody(req, 4096);
       const apiKey = await createApiKey(context, {
         name: body.name,

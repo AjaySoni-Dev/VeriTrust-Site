@@ -20,6 +20,9 @@
     },
     "api/system.js": {
       "maxDuration": 60
+    },
+    "api/learning.js": {
+      "maxDuration": 60
     }
   },
   "headers": [
@@ -82,7 +85,7 @@
       "headers": [
         {
           "key": "Content-Security-Policy",
-          "value": "default-src 'self'; base-uri 'none'; object-src 'none'; frame-src 'none'; frame-ancestors 'none'; form-action 'self'; script-src 'self' 'sha256-NxF1MD3j89FDVujFES5VEXOVpX49NF05bNxWLGnteD8='; script-src-attr 'none'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data: blob: https://*.supabase.co https://*.hf.space; media-src 'self' data: blob: https://*.supabase.co https://*.hf.space; connect-src 'self' https://*.supabase.co https://*.hf.space; worker-src 'self' blob:; manifest-src 'self'; upgrade-insecure-requests"
+          "value": "default-src 'self'; base-uri 'none'; object-src 'none'; frame-src 'none'; frame-ancestors 'none'; form-action 'self'; script-src 'self' 'sha256-NxF1MD3j89FDVujFES5VEXOVpX49NF05bNxWLGnteD8='; script-src-attr 'none'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data: blob: https://*.supabase.co https://ajaysoni-dev-deepfakefusion.hf.space; media-src 'self' data: blob: https://*.supabase.co; connect-src 'self' https://*.supabase.co https://ajaysoni-dev-deepfakefusion.hf.space; worker-src 'self' blob:; manifest-src 'self'; upgrade-insecure-requests"
         },
         {
           "key": "Strict-Transport-Security",
@@ -124,6 +127,62 @@
     }
   ],
   "rewrites": [
+    {
+      "source": "/api/learning/verify/:code",
+      "destination": "/api/learning?resource=verify&code=:code"
+    },
+    {
+      "source": "/api/learning/courses/:slug",
+      "destination": "/api/learning?resource=courses&slug=:slug"
+    },
+    {
+      "source": "/api/learning/catalog",
+      "destination": "/api/learning?resource=catalog"
+    },
+    {
+      "source": "/api/learning/me",
+      "destination": "/api/learning?resource=me"
+    },
+    {
+      "source": "/api/learning/enrollments/:id",
+      "destination": "/api/learning?resource=enrollments&id=:id"
+    },
+    {
+      "source": "/api/learning/enrollments",
+      "destination": "/api/learning?resource=enrollments"
+    },
+    {
+      "source": "/api/learning/lessons/:id",
+      "destination": "/api/learning?resource=lessons&id=:id"
+    },
+    {
+      "source": "/api/learning/events",
+      "destination": "/api/learning?resource=events"
+    },
+    {
+      "source": "/api/learning/assessments/:id/start",
+      "destination": "/api/learning?resource=assessments&id=:id&action=start"
+    },
+    {
+      "source": "/api/learning/attempts/:id/response",
+      "destination": "/api/learning?resource=attempts&id=:id&action=response"
+    },
+    {
+      "source": "/api/learning/attempts/:id/submit",
+      "destination": "/api/learning?resource=attempts&id=:id&action=submit"
+    },
+    {
+      "source": "/api/learning/attempts/:id",
+      "destination": "/api/learning?resource=attempts&id=:id"
+    },
+    {
+      "source": "/api/learning/certificates",
+      "destination": "/api/learning?resource=certificates"
+    },
+    {
+      "source": "/api/learning/admin",
+      "destination": "/api/learning?resource=admin"
+    },
     {
       "source": "/api/gateway-worker",
       "destination": "/api/gateway?resource=worker"
@@ -335,6 +394,42 @@
     {
       "source": "/gateway-powershell",
       "destination": "/gateway-powershell.html"
+    },
+    {
+      "source": "/learn/courses/:slug/lessons/:lessonSlug",
+      "destination": "/lesson.html"
+    },
+    {
+      "source": "/learn/courses/:slug",
+      "destination": "/course.html"
+    },
+    {
+      "source": "/learn/assessments/:assessmentId",
+      "destination": "/assessment.html"
+    },
+    {
+      "source": "/learn/my-learning",
+      "destination": "/learning.html"
+    },
+    {
+      "source": "/learn/catalog",
+      "destination": "/learning.html"
+    },
+    {
+      "source": "/learn",
+      "destination": "/learning.html"
+    },
+    {
+      "source": "/certificates/:publicCode",
+      "destination": "/certificate.html"
+    },
+    {
+      "source": "/certificates",
+      "destination": "/certificate.html"
+    },
+    {
+      "source": "/learning-admin",
+      "destination": "/learning-admin.html"
     }
   ]
 }

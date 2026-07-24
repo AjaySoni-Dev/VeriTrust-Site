@@ -251,8 +251,16 @@
             width: 100%;
         }
 
-        section {
+        main > section {
             padding: var(--section-pad-y) 0;
+        }
+
+        /* The shared site footer uses semantic sections for its link groups.
+           Keep landing-page section spacing scoped to main content only. */
+        .vt-site-footer section {
+            min-height: 0;
+            margin: 0;
+            padding: 0;
         }
 
         /* Buttons */
@@ -1215,7 +1223,7 @@
             }
         }
     </style>
-  <link rel="stylesheet" href="assets/css/glass-system.css?v=20260723-global3">
+  <link rel="stylesheet" href="assets/css/glass-system.css?v=20260723-global4">
 </head>
 <body>
 
@@ -1252,6 +1260,7 @@
                     <p>Review face images, messages, emails, and URLs with model scores, rule-based indicators, and clear limitations. Sign in to run checks and save web scan results.</p>
                     <div class="hero-actions">
     <a href="gateway.html" class="btn btn-primary">Open Unified Gateway</a>
+    <a href="learning.html" class="btn btn-secondary">Explore Learning</a>
     <a href="cli.html" class="btn btn-secondary">Web CLI</a>
     <a href="dashboard.html" class="btn btn-secondary">Open Dashboard</a>
 </div>
