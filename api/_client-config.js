@@ -35,12 +35,6 @@ module.exports = async function handler(req, res) {
           authSession: '/api/auth-session',
           profile: '/api/profile',
         },
-        storage: {
-          scanUploadsBucket: 'scan-uploads',
-          scanCropsBucket: 'scan-crops',
-          avatarsBucket: 'avatars',
-          exportsBucket: 'exports',
-        },
       },
     });
   } catch (error) {
