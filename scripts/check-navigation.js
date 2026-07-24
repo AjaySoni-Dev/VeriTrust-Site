@@ -156,6 +156,17 @@ if (!/html\s+body\.vt-dashboard-page\.vt-graphite-theme\s*\{[\s\S]*?background-i
 if (!/body\.vt-dashboard-page\.vt-graphite-theme\s+\.vt-site-header\s+\.tool-header-inner\s*\{[\s\S]*?max-width:\s*1240px\s*!important/i.test(glassStyles)) {
   failures.push('assets/css/glass-system.css: workspace header must use the shared header geometry');
 }
+const learningStyles = fs.readFileSync(path.join(root, 'assets', 'css', 'learning.css'), 'utf8');
+const learningScript = fs.readFileSync(path.join(root, 'assets', 'js', 'learning.js'), 'utf8');
+if (!/body\.vt-learning-page\s+\[hidden\]\s*\{[\s\S]*?display:\s*none\s*!important/i.test(learningStyles)) {
+  failures.push('assets/css/learning.css: route-specific learning sections must respect the hidden attribute');
+}
+if (!/\.learning-grid\.is-featured\s*\{[\s\S]*?grid-template-columns:\s*minmax\(0,\s*1fr\)/i.test(learningStyles)) {
+  failures.push('assets/css/learning.css: a single featured course must use the available content width');
+}
+if (!/querySelectorAll\(selector\)[\s\S]*?\$\$\('\[data-catalog-view\]'\)[\s\S]*?\$\$\('\[data-my-view\]'\)/i.test(learningScript)) {
+  failures.push('assets/js/learning.js: catalog and My Learning visibility must update every route-specific element');
+}
 const gatewayHtml = fs.readFileSync(path.join(root, 'gateway.html'), 'utf8');
 if (!/<h1>\s*Unified signal review\.\s*<\/h1>/i.test(gatewayHtml)
   || /Review multiple signals together/i.test(gatewayHtml)) {
