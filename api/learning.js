@@ -47,7 +47,8 @@ function result(res, status, data, requestIdValue, meta = undefined) {
 function learningError(res, error, requestIdValue) {
   const status = Math.max(400, Math.min(599, Number(error?.status || 500)));
   const code = error?.code || error?.extra?.code || (status >= 500 ? 'INTERNAL_ERROR' : 'LEARNING_REQUEST_FAILED');
-  const message = status >= 500 && code !== 'LEARNING_SCHEMA_REQUIRED'
+  const safeOperationalCodes = new Set(['LEARNING_SCHEMA_REQUIRED', 'LEARNING_PROGRESS_SCHEMA_REQUIRED']);
+  const message = status >= 500 && !safeOperationalCodes.has(code)
     ? 'The learning request could not be completed.'
     : String(error?.message || 'The learning request could not be completed.');
   if (status >= 500) console.error('VeriTrust learning API error', { request_id: requestIdValue, status, code, name: error?.name });
@@ -126,10 +127,22 @@ module.exports = async function handler(req, res) {
       requireMethods(req, ['POST']);
       validateJsonContentType(req);
       const body = eventPayload(await parseJsonBody(req, 16384));
-      const data = await repo.rpc('learning_record_event', {
-        ...body,
-        target_idempotency_key: idempotencyKey(req),
-      }, context);
+      let data;
+      try {
+        data = await repo.rpc('learning_record_event', {
+          target_enrollment_id: body.enrollment_id,
+          target_lesson_id: body.lesson_id,
+          target_event_type: body.event_type,
+          target_occurred_at: body.occurred_at,
+          target_payload: body.payload,
+          target_idempotency_key: idempotencyKey(req),
+        }, context);
+      } catch (error) {
+        if (error?.code !== 'LEARNING_SCHEMA_REQUIRED' && error?.extra?.code !== 'LEARNING_SCHEMA_REQUIRED') throw error;
+        throw new HttpError(503, 'Learning progress tracking is not configured. Apply the supplied progress migration, then redeploy.', {
+          code: 'LEARNING_PROGRESS_SCHEMA_REQUIRED',
+        });
+      }
       result(res, 202, Array.isArray(data) ? data[0] : data, rid);
       return;
     }
