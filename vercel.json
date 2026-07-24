@@ -1,4 +1,5 @@
 {
+  "$schema": "https://openapi.vercel.sh/vercel.json",
   "version": 2,
   "cleanUrls": true,
   "trailingSlash": false,
@@ -127,6 +128,34 @@
     }
   ],
   "rewrites": [
+    {
+      "source": "/lib/(.*)",
+      "destination": "/api/system?route=not-found"
+    },
+    {
+      "source": "/docs/(.*)",
+      "destination": "/api/system?route=not-found"
+    },
+    {
+      "source": "/scripts/(.*)",
+      "destination": "/api/system?route=not-found"
+    },
+    {
+      "source": "/test/(.*)",
+      "destination": "/api/system?route=not-found"
+    },
+    {
+      "source": "/worker/(.*)",
+      "destination": "/api/system?route=not-found"
+    },
+    {
+      "source": "/legacy-php/(.*)",
+      "destination": "/api/system?route=not-found"
+    },
+    {
+      "source": "/api/_(.*)",
+      "destination": "/api/system?route=not-found"
+    },
     {
       "source": "/api/learning/verify/:code",
       "destination": "/api/learning?resource=verify&code=:code"
