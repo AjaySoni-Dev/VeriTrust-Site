@@ -13,8 +13,19 @@ function normalizeTarget(sourceFile, href) {
   const withoutQuery = href.split('?')[0];
   const [pathname, fragment = ''] = withoutQuery.split('#', 2);
   const decodedPath = decodeURIComponent(pathname || '');
-  const targetPath = decodedPath
-    ? path.resolve(root, decodedPath.replace(/^\/+/, ''))
+  const cleanRouteTarget = (() => {
+    if (/^\/?learn\/courses\/[^/]+\/lessons\/[^/]+\/?$/i.test(decodedPath)) return 'lesson.html';
+    if (/^\/?learn\/courses\/[^/]+\/?$/i.test(decodedPath)) return 'course.html';
+    if (/^\/?learn\/assessments\/[^/]+\/?$/i.test(decodedPath)) return 'assessment.html';
+    if (/^\/?learn(?:\/catalog|\/my-learning)?\/?$/i.test(decodedPath)) return 'learning.html';
+    if (/^\/?certificates(?:\/[^/]+)?\/?$/i.test(decodedPath)) return 'certificate.html';
+    if (/^\/?learning-admin\/?$/i.test(decodedPath)) return 'learning-admin.html';
+    return '';
+  })();
+  const targetPath = cleanRouteTarget
+    ? path.resolve(root, cleanRouteTarget)
+    : decodedPath
+      ? path.resolve(root, decodedPath.replace(/^\/+/, ''))
     : path.resolve(root, sourceFile);
   return { fragment: decodeURIComponent(fragment), targetPath };
 }
