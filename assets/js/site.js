@@ -37,7 +37,7 @@ const VeriTrustPageAccess = (() => {
   const isPublic = publicPages.has(page) && !isProtectedLearningRoute
     || isPublicCertificate;
 
-  const safeRedirect = (value, fallback = 'dashboard.html') => {
+  const safeRedirect = (value, fallback = '/dashboard') => {
     if (!value) return fallback;
     try {
       const target = new URL(value, window.location.href);
@@ -93,7 +93,7 @@ const VeriTrustPageAccess = (() => {
         return { allowed: true, callback, callbackError, isAuth, isLanding, session: null, sessionError };
       }
       const redirect = encodeURIComponent(currentDestination());
-      window.location.replace(`auth.html?redirect=${redirect}`);
+      window.location.replace(`/auth?redirect=${redirect}`);
       return { allowed: false, session: null };
     }
 
@@ -153,23 +153,23 @@ const VeriTrustSiteChrome = (() => {
     header.innerHTML = `
       <div class="tool-header-inner">
         <div class="tool-header-brand-group">
-          <a href="index.html" class="tool-header-brand" aria-label="VeriTrust home">
-            <img src="logo.png" alt="" class="tool-header-mark">
-            <img src="brand.png" alt="VeriTrust" class="tool-header-word">
+          <a href="/" class="tool-header-brand" aria-label="VeriTrust home">
+            <img src="/logo.png" alt="" class="tool-header-mark">
+            <img src="/brand.png" alt="VeriTrust" class="tool-header-word">
           </a>
           <span class="tool-header-context"></span>
         </div>
         <nav class="tool-header-links" aria-label="Primary navigation">
-          <a href="index.html">Home</a>
-          <a href="detection.html">Detection</a>
-          <a href="gateway.html">Gateway</a>
+          <a href="/">Home</a>
+          <a href="/detection">Detection</a>
+          <a href="/gateway">Gateway</a>
           <a href="/learn">Learn</a>
-          <a href="developers.html">Developers</a>
-          <a href="docs.html">Docs</a>
+          <a href="/developers">Developers</a>
+          <a href="/docs">Docs</a>
         </nav>
         <div class="tool-header-actions">
-          <a href="auth.html" class="tool-header-login">Log in</a>
-          <a href="dashboard.html" class="tool-header-dashboard">Dashboard</a>
+          <a href="/auth" class="tool-header-login">Log in</a>
+          <a href="/dashboard" class="tool-header-dashboard">Dashboard</a>
           <button class="tool-menu-toggle" aria-label="Open page menu" aria-expanded="false" type="button">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
               <path d="M4 6h16M4 12h16M4 18h16" stroke-linecap="round"/>
@@ -197,18 +197,18 @@ const VeriTrustSiteChrome = (() => {
     footer.innerHTML = `
       <div class="vt-site-footer-inner">
         <section class="vt-site-footer-brand" aria-label="VeriTrust">
-          <a href="index.html" class="tool-header-brand" aria-label="VeriTrust home">
-            <img src="logo.png" alt="" class="tool-header-mark">
-            <img src="brand.png" alt="VeriTrust" class="tool-header-word">
+          <a href="/" class="tool-header-brand" aria-label="VeriTrust home">
+            <img src="/logo.png" alt="" class="tool-header-mark">
+            <img src="/brand.png" alt="VeriTrust" class="tool-header-word">
           </a>
           <p>AI-assisted image, message, URL, and gateway review for cautious security triage.</p>
         </section>
         <nav class="vt-site-footer-groups" aria-label="Footer navigation">
-          <section><h2>Review</h2><a href="detection.html">Detection modules</a><a href="deepfake.html">Image review</a><a href="phishing.html">Message review</a><a href="link-check.html">Link intelligence</a><a href="gateway.html">Unified gateway</a></section>
-          <section><h2>Workspace</h2><a href="dashboard.html">Overview</a><a href="scans.html">Scan history</a><a href="api-access.html">API access</a><a href="billing.html">Billing</a><a href="account.html">Account</a></section>
+          <section><h2>Review</h2><a href="/detection">Detection modules</a><a href="/deepfake">Image review</a><a href="/phishing">Message review</a><a href="/link-check">Link intelligence</a><a href="/gateway">Unified gateway</a></section>
+          <section><h2>Workspace</h2><a href="/dashboard">Overview</a><a href="/scans">Scan history</a><a href="/api-access">API access</a><a href="/billing">Billing</a><a href="/account">Account</a></section>
           <section><h2>Learning</h2><a href="/learn">Catalog</a><a href="/learn/my-learning">My learning</a><a href="/certificates">Certificates</a><a href="/learning-admin">Administration</a></section>
-          <section><h2>Resources</h2><a href="docs.html">Documentation</a><a href="developers.html">Developer API</a><a href="cli.html">Web CLI</a><a href="gateway-powershell.html">PowerShell guide</a><a href="model-performance.html">Model performance</a></section>
-          <section><h2>Trust</h2><a href="security.html">Security</a><a href="privacy.html">Privacy</a><a href="terms.html">Terms</a><a href="disclaimer.html">Disclaimer</a></section>
+          <section><h2>Resources</h2><a href="/docs">Documentation</a><a href="/developers">Developer API</a><a href="/cli">Web CLI</a><a href="/gateway-powershell">PowerShell guide</a><a href="/model-performance">Model performance</a></section>
+          <section><h2>Trust</h2><a href="/security">Security</a><a href="/privacy">Privacy</a><a href="/terms">Terms</a><a href="/disclaimer">Disclaimer</a></section>
         </nav>
       </div>
       <div class="vt-site-footer-bottom"><span>&copy; 2026 VeriTrust. All rights reserved.</span><span>AI-assisted results require human review.</span></div>
@@ -294,12 +294,12 @@ document.addEventListener('DOMContentLoaded', async () => {
       disclaimer: 'docs'
     }[currentPage];
     const primaryItems = [
-      ['index.html', 'Home', 'index'],
-      ['detection.html', 'Detection', 'detection'],
-      ['gateway.html', 'Gateway', 'gateway'],
+      ['/', 'Home', 'index'],
+      ['/detection', 'Detection', 'detection'],
+      ['/gateway', 'Gateway', 'gateway'],
       ['/learn', 'Learn', 'learning'],
-      ['developers.html', 'Developers', 'developers'],
-      ['docs.html', 'Docs', 'docs']
+      ['/developers', 'Developers', 'developers'],
+      ['/docs', 'Docs', 'docs']
     ];
     const firstWorkspaceLink = nav.querySelector(':scope > .workspace-menu-link');
 
@@ -344,8 +344,8 @@ document.addEventListener('DOMContentLoaded', async () => {
   }
 
   const updateAuthNavigation = async () => {
-    const authLinks = document.querySelectorAll('.tool-header-login, .login-link, .nav-actions a[href="auth.html"]');
-    const dashboardLinks = document.querySelectorAll('.tool-header-dashboard, a[href="dashboard.html"]');
+    const authLinks = document.querySelectorAll('.tool-header-login, .login-link, .nav-actions a[href="/auth"]');
+    const dashboardLinks = document.querySelectorAll('.tool-header-dashboard, a[href="/dashboard"]');
     const toolHeaderLinks = document.querySelector('.tool-header-links, #primary-navigation');
 
     const closeToolMenu = () => {
@@ -358,7 +358,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     const showAuthLink = (link) => {
       link.hidden = false;
       link.removeAttribute('aria-hidden');
-      link.href = 'auth.html';
+      link.href = '/auth';
       link.classList.remove('is-logout');
       link.textContent = link.classList.contains('login-link')
         ? 'Login / Sign Up'
@@ -378,7 +378,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         link.addEventListener('click', async (event) => {
           event.preventDefault();
           await window.VeriTrustSupabase.signOut();
-          window.location.href = 'auth.html';
+          window.location.href = '/auth';
         });
       }
     };
@@ -394,12 +394,12 @@ document.addEventListener('DOMContentLoaded', async () => {
       }
 
       let dashboardAction = wrap.querySelector('[data-mobile-dashboard-action]');
-      const hasDashboardNavLink = Boolean(toolHeaderLinks.querySelector(':scope > a[href="dashboard.html"]'));
+      const hasDashboardNavLink = Boolean(toolHeaderLinks.querySelector(':scope > a[href="/dashboard"]'));
       if (hasDashboardNavLink && dashboardAction) {
         dashboardAction.remove();
       } else if (!hasDashboardNavLink && !dashboardAction) {
         dashboardAction = document.createElement('a');
-        dashboardAction.href = 'dashboard.html';
+        dashboardAction.href = '/dashboard';
         dashboardAction.textContent = 'Dashboard';
         dashboardAction.dataset.mobileDashboardAction = 'true';
         dashboardAction.addEventListener('click', closeToolMenu);
@@ -418,7 +418,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       } else {
         authAction.hidden = false;
         authAction.removeAttribute('aria-hidden');
-        authAction.href = 'auth.html';
+        authAction.href = '/auth';
         authAction.textContent = 'Login / Sign Up';
         authAction.classList.remove('is-logout');
       }
