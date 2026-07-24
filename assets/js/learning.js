@@ -34,9 +34,7 @@
     main.className = 'learning-card-main';
     main.appendChild(meta([
       course.level,
-      `${course.module_count || 0} modules`,
-      `${course.lesson_count || 0} lessons`,
-      `${course.estimated_minutes || 0} min`,
+      `${course.module_count || 0} modules · ${course.lesson_count || 0} lessons`,
       course.certification_available ? 'Certificate' : '',
     ]));
     const title = document.createElement('h2');
