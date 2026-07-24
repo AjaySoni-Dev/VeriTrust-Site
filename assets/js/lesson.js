@@ -60,6 +60,7 @@
   function renderLessonSkeleton(layout, message) {
     layout.hidden = false;
     layout.classList.add('is-loading');
+    layout.setAttribute('aria-busy', 'true');
     message.hidden = true;
     const blocks = $('#lesson-blocks');
     const fragment = document.createDocumentFragment();
@@ -76,6 +77,16 @@
       fragment.appendChild(section);
     });
     blocks.replaceChildren(fragment);
+  }
+
+  function finishLessonLoading(layout, message) {
+    layout.classList.remove('is-loading');
+    layout.removeAttribute('aria-busy');
+    document.body.classList.remove('learning-data-loading');
+    [$('#lesson-title'), $('#lesson-summary'), message, layout].forEach((node) => {
+      node?.classList.remove('vt-loading-shimmer');
+    });
+    global.VeriTrustLoadingShimmer?.sync(document);
   }
 
   document.addEventListener('DOMContentLoaded', async () => {
@@ -101,9 +112,9 @@
       $('#lesson-summary').textContent = lesson.summary || '';
       $('#lesson-duration').textContent = `${lesson.estimated_minutes || 0} min`;
       $('#lesson-blocks').replaceChildren(...(lesson.learning_lesson_blocks || []).map(blockNode));
-      layout.classList.remove('is-loading');
       layout.hidden = false;
       message.hidden = true;
+      finishLessonLoading(layout, message);
       if (alreadyCompleted) {
         setCompleted(completeButton);
       } else {
@@ -125,7 +136,7 @@
       layout.hidden = true;
       showMessage(message, error.message, 'error');
     } finally {
-      document.body.classList.remove('learning-data-loading');
+      finishLessonLoading(layout, message);
     }
     $('#lesson-complete')?.addEventListener('click', async (event) => {
       const button = event.currentTarget;

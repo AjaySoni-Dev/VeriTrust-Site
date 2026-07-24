@@ -4068,3 +4068,77 @@ html.vt-auth-checking::after {
     animation-duration: 1.6s;
   }
 }
+
+/* Dashboard uses the same subtle moving skeleton language as Learning. */
+.dashboard-is-loading {
+  --shimmer-base: #20252c;
+  --shimmer-edge: #20252c;
+  --shimmer-highlight: #282e36;
+}
+
+.dashboard-shimmer::after {
+  content: '' !important;
+  display: block !important;
+  background: linear-gradient(100deg, var(--shimmer-edge), var(--shimmer-highlight), var(--shimmer-edge));
+  animation: vt-dashboard-shimmer-slide 1.85s ease-in-out infinite !important;
+}
+
+.dashboard-is-loading .dashboard-grid .dashboard-panel > * {
+  visibility: visible;
+}
+
+.dashboard-is-loading .dashboard-grid .dashboard-panel::before,
+.dashboard-is-loading .dashboard-grid .dashboard-panel::after {
+  content: none !important;
+  display: none !important;
+}
+
+.dashboard-is-loading .dashboard-grid :is(h1, h2, p, strong, em, button, a, .account-avatar, .status-pill)::after,
+.dashboard-is-loading .dashboard-grid span:not(.status-dot)::after,
+.dashboard-is-loading .dashboard-grid .billing-meter i::after {
+  content: '' !important;
+  display: block !important;
+  background: linear-gradient(100deg, var(--shimmer-edge), var(--shimmer-highlight), var(--shimmer-edge));
+  animation: vt-dashboard-shimmer-slide 1.85s ease-in-out infinite !important;
+}
+
+.dashboard-loading-state span {
+  position: relative;
+  overflow: hidden;
+  animation: none;
+}
+
+.dashboard-loading-state span::after {
+  content: '';
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 34%;
+  background: linear-gradient(100deg, var(--shimmer-edge), var(--shimmer-highlight), var(--shimmer-edge));
+  animation: vt-dashboard-shimmer-slide 1.85s ease-in-out infinite;
+}
+
+@media (max-width: 680px) {
+  html.vt-auth-checking::before {
+    top: calc(50% - 24px);
+    left: calc(50% - 11px);
+    width: 22px;
+    height: 22px;
+    border-width: 2px;
+  }
+
+  html.vt-auth-checking::after {
+    top: calc(50% + 10px);
+    font-size: 9px;
+    letter-spacing: 0.055em;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dashboard-shimmer::after,
+  .dashboard-is-loading .dashboard-grid :is(h1, h2, p, strong, em, button, a, .account-avatar, .status-pill)::after,
+  .dashboard-is-loading .dashboard-grid span:not(.status-dot)::after,
+  .dashboard-is-loading .dashboard-grid .billing-meter i::after,
+  .dashboard-loading-state span::after {
+    animation: none !important;
+  }
+}
