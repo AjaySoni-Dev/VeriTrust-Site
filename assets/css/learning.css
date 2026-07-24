@@ -450,11 +450,20 @@ body.vt-learning-page {
 
 .learning-skeleton {
   min-height: 170px;
-  animation: learning-pulse 1.5s ease-in-out infinite;
+  position: relative;
+  overflow: hidden;
+  border-radius: 10px;
+  background: var(--shimmer-base);
+  contain: paint;
 }
 
-@keyframes learning-pulse {
-  50% { opacity: 0.56; }
+.learning-skeleton::after {
+  content: '';
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 34%;
+  background: linear-gradient(100deg, var(--shimmer-edge) 0%, var(--shimmer-highlight) 48%, var(--shimmer-edge) 100%);
+  animation: vt-dashboard-shimmer-slide 1.65s ease-in-out infinite;
 }
 
 @media (max-width: 900px) {
@@ -511,6 +520,7 @@ body.vt-learning-page {
 
 @media (prefers-reduced-motion: reduce) {
   .learning-skeleton { animation: none; }
+  .learning-skeleton::after { animation: none; }
   .learning-btn { transition: none; }
 }
 

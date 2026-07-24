@@ -110,6 +110,67 @@ const VeriTrustPageAccess = (() => {
 
 window.VeriTrustPageAccess = VeriTrustPageAccess;
 
+const VeriTrustLoadingShimmer = (() => {
+  const candidates = [
+    'button',
+    '[role="status"]',
+    '.learning-message',
+    '.result-loading',
+    '.loading-state',
+    '.is-loading',
+    '.gateway-history-item',
+    'h1[id$="-title"]',
+  ].join(',');
+  const loadingCopy = /^(?:loading|checking|preparing|processing|saving|submitting|creating|refreshing|uploading|analyzing|enrolling|verifying|please wait)\b/i;
+  let scheduled = false;
+
+  const isLoading = (node) => {
+    if (!(node instanceof HTMLElement) || node.hidden) return false;
+    if (node.classList.contains('result-loading')) return true;
+    if (node.classList.contains('loading-state')) {
+      return !node.parentElement?.classList.contains('result-loading');
+    }
+    if (node.classList.contains('is-loading')) return true;
+    if (node.getAttribute('aria-busy') === 'true') return true;
+    if (node.matches('button') && node.closest('[aria-busy="true"]')) return true;
+
+    const copy = String(node.textContent || '').trim();
+    if (!loadingCopy.test(copy)) return false;
+    if (node.matches('button')) return node.disabled;
+    return node.matches('[role="status"], .learning-message, h1[id$="-title"]');
+  };
+
+  const sync = (scope = document) => {
+    const nodes = scope instanceof HTMLElement && scope.matches(candidates)
+      ? [scope, ...scope.querySelectorAll(candidates)]
+      : [...scope.querySelectorAll(candidates)];
+    nodes.forEach((node) => node.classList.toggle('vt-loading-shimmer', isLoading(node)));
+  };
+
+  const schedule = () => {
+    if (scheduled) return;
+    scheduled = true;
+    window.requestAnimationFrame(() => {
+      scheduled = false;
+      sync();
+    });
+  };
+
+  const observer = new MutationObserver(schedule);
+  observer.observe(document.documentElement, {
+    attributes: true,
+    attributeFilter: ['aria-busy', 'class', 'disabled', 'hidden'],
+    characterData: true,
+    childList: true,
+    subtree: true,
+  });
+  document.addEventListener('DOMContentLoaded', schedule, { once: true });
+
+  return { sync };
+})();
+
+window.VeriTrustLoadingShimmer = VeriTrustLoadingShimmer;
+
 const VeriTrustSiteChrome = (() => {
   const PAGE_CONTEXT = Object.freeze({
     index: 'Home',

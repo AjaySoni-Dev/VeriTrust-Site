@@ -87,6 +87,7 @@
       }
       setMessage('');
     } catch (error) {
+      $('#course-title').textContent = 'Course unavailable';
       setMessage(error.message, 'error');
     }
     $('#course-enroll')?.addEventListener('click', enroll);

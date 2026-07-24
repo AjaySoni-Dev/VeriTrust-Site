@@ -62,6 +62,7 @@
       message.hidden = true;
       await record('lesson_started');
     } catch (error) {
+      $('#lesson-title').textContent = 'Lesson unavailable';
       message.textContent = error.message;
       message.dataset.tone = 'error';
     }

@@ -38,12 +38,6 @@ const runtimeConfigValue = {
     profile: '/api/profile',
     learning: '/api/learning'
   },
-  storage: {
-    scanUploadsBucket: 'scan-uploads',
-    scanCropsBucket: 'scan-crops',
-    avatarsBucket: 'avatars',
-    exportsBucket: 'exports'
-  },
   ...serverRuntimeConfig,
   ...injectedConfig,
   supabase: {
@@ -66,14 +60,6 @@ const runtimeConfigValue = {
     learning: '/api/learning',
     ...(serverRuntimeConfig.api || {}),
     ...(injectedConfig.api || {})
-  },
-  storage: {
-    scanUploadsBucket: 'scan-uploads',
-    scanCropsBucket: 'scan-crops',
-    avatarsBucket: 'avatars',
-    exportsBucket: 'exports',
-    ...(serverRuntimeConfig.storage || {}),
-    ...(injectedConfig.storage || {})
   }
 };
 

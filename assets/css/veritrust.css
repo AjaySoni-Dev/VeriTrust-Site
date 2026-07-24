@@ -51,36 +51,31 @@ html.vt-auth-checking body {
 }
 
 html.vt-auth-checking::before {
-  content: 'Verifying session';
+  content: '';
   position: fixed;
-  inset: 0;
+  top: calc(50% - 6px);
+  left: 50%;
   z-index: 10000;
-  display: grid;
-  place-items: center;
-  padding-top: 54px;
-  background: var(--bg);
-  color: var(--soft);
-  font-family: var(--font);
-  font-size: 12px;
-  letter-spacing: 0.02em;
+  width: min(180px, calc(100vw - 48px));
+  height: 12px;
+  border-radius: 5px;
+  background: var(--shimmer-base);
+  transform: translateX(-50%);
+  clip-path: inset(0 round 5px);
 }
 
 html.vt-auth-checking::after {
   content: '';
   position: fixed;
-  top: calc(50% - 21px);
-  left: calc(50% - 11px);
+  top: calc(50% - 6px);
+  left: calc(50% - 90px);
   z-index: 10001;
-  width: 22px;
-  height: 22px;
-  border: 2px solid rgba(168, 176, 187, 0.22);
-  border-top-color: var(--blue);
-  border-radius: 50%;
-  animation: vt-auth-spin 0.8s linear infinite;
-}
-
-@keyframes vt-auth-spin {
-  to { transform: rotate(360deg); }
+  width: min(62px, calc((100vw - 48px) * 0.34));
+  height: 12px;
+  border-radius: 5px;
+  background: linear-gradient(100deg, var(--shimmer-edge) 0%, var(--shimmer-highlight) 48%, var(--shimmer-edge) 100%);
+  animation: vt-dashboard-shimmer-slide 1.65s ease-in-out infinite;
+  will-change: transform;
 }
 
 html {
@@ -1996,6 +1991,60 @@ p {
   height: var(--dashboard-shimmer-height, 1.2em);
 }
 
+/* Shared asynchronous-state skeleton. The site script applies this class only
+   while a control or status region is actively loading, preserving its layout. */
+.vt-loading-shimmer {
+  position: relative !important;
+  overflow: hidden !important;
+  color: transparent !important;
+  border-color: transparent !important;
+  text-shadow: none !important;
+  background: var(--shimmer-base) !important;
+  contain: paint;
+  isolation: isolate;
+  clip-path: inset(0 round 5px);
+}
+
+.vt-loading-shimmer:is(h1, h2, h3, strong, em, span) {
+  display: inline-block;
+  min-width: 7ch;
+  min-height: 0.9em;
+}
+
+.vt-loading-shimmer::after {
+  content: '';
+  position: absolute;
+  z-index: 2;
+  inset: 0 auto 0 0;
+  width: 34%;
+  border-radius: inherit;
+  background: linear-gradient(
+    100deg,
+    var(--shimmer-edge) 0%,
+    var(--shimmer-highlight) 48%,
+    var(--shimmer-edge) 100%
+  );
+  animation: vt-dashboard-shimmer-slide 1.65s ease-in-out infinite;
+  will-change: transform;
+  pointer-events: none;
+}
+
+.vt-loading-shimmer :is(.spinner, svg) {
+  visibility: hidden;
+}
+
+.vt-loading-shimmer:is(.result-loading, .loading-state, .gateway-result, .gateway-history-item) > * {
+  visibility: hidden;
+}
+
+.vt-loading-shimmer:is(.btn, .learning-btn).is-loading::before {
+  display: none;
+}
+
+.vt-loading-shimmer:is(button, .btn, .learning-btn) {
+  cursor: wait;
+}
+
 /* Keep the real dashboard geometry in place while session/profile data loads.
    Every visible body element becomes its own same-size skeleton; the global
    header is intentionally excluded. */
@@ -2848,6 +2897,7 @@ p {
   .tool-header-links.is-open,
   .dashboard-shimmer,
   .dashboard-shimmer::after,
+  .vt-loading-shimmer::after,
   .dashboard-is-loading .dashboard-shell ::after,
   .dashboard-is-loading .legal-footer ::after,
   html.vt-auth-checking::after {

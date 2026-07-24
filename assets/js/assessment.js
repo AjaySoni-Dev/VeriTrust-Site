@@ -104,6 +104,7 @@
       await load();
       message('');
     } catch (error) {
+      $('#assessment-title').textContent = 'Assessment unavailable';
       message(error.message, 'error');
     }
     $('#assessment-submit')?.addEventListener('click', async (event) => {
