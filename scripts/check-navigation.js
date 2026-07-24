@@ -214,6 +214,24 @@ const intentContracts = [
   { file: 'gateway-powershell.html', label: 'Create an API key', href: 'api-access.html' },
 ];
 
+const deployedConfig = JSON.parse(fs.readFileSync(path.join(root, 'vercel.json'), 'utf8'));
+const rewriteMap = new Map((deployedConfig.rewrites || []).map((rewrite) => [rewrite.source, rewrite.destination]));
+const learningRewrites = new Map([
+  ['/learn/courses/:slug/lessons/:lessonSlug', '/lesson'],
+  ['/learn/courses/:slug', '/course'],
+  ['/learn/assessments/:assessmentId', '/assessment'],
+  ['/learn/my-learning', '/learning'],
+  ['/learn/catalog', '/learning'],
+  ['/learn', '/learning'],
+  ['/certificates/:publicCode', '/certificate'],
+  ['/certificates', '/certificate'],
+]);
+for (const [source, destination] of learningRewrites) {
+  if (rewriteMap.get(source) !== destination) {
+    failures.push(`vercel.json: ${source} must rewrite to the clean URL destination ${destination}`);
+  }
+}
+
 for (const contract of intentContracts) {
   const html = fs.readFileSync(path.join(root, contract.file), 'utf8');
   const escapedLabel = contract.label.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
