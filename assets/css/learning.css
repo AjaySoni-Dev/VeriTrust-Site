@@ -524,6 +524,10 @@ body.vt-learning-page {
   --learning-muted: #929292;
 }
 
+body.vt-learning-page [hidden] {
+  display: none !important;
+}
+
 body.vt-learning-page .learning-shell {
   width: min(1160px, calc(100% - 32px));
   padding: 124px 0 48px;
@@ -661,10 +665,13 @@ body.vt-learning-page .learning-message {
   font-size: 0.8rem;
 }
 
-body.vt-learning-page .learning-grid,
-body.vt-learning-page .learning-grid.is-featured {
+body.vt-learning-page .learning-grid {
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 16px;
+}
+
+body.vt-learning-page .learning-grid.is-featured {
+  grid-template-columns: minmax(0, 1fr);
 }
 
 body.vt-learning-page .learning-card,
