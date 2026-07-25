@@ -56,6 +56,21 @@ for (const directive of ["default-src 'self'", "base-uri 'none'", "object-src 'n
   if (!csp.includes(directive)) fail(`CSP is missing ${directive}`);
 }
 
+const rewriteMap = new Map((vercel.rewrites || []).map((rewrite) => [rewrite.source, rewrite.destination]));
+for (const protectedSource of [
+  '/lib/(.*)',
+  '/docs/(.*)',
+  '/scripts/(.*)',
+  '/test/(.*)',
+  '/worker/(.*)',
+  '/legacy-php/(.*)',
+  '/api/_(.*)',
+]) {
+  if (rewriteMap.get(protectedSource) !== '/api/system?route=not-found') {
+    fail(`vercel.json must deny public access to ${protectedSource}`);
+  }
+}
+
 for (const requiredFile of [
   'docs/supabase-security-audit.sql',
   'docs/supabase-security-hardening.sql',
@@ -70,6 +85,8 @@ const securityCriticalSources = {
   'lib/billing.js': ['AbortSignal.timeout', 'BILLING_RESPONSE_TOO_LARGE'],
   'api/_profile.js': ['AbortSignal.timeout', 'validateImageUpload'],
   'api/learning.js': ['enforceRateLimit', 'idempotencyKey', 'validateJsonContentType', 'X-Request-Id'],
+  'api/_learning-access.js': ['enforceRateLimit', 'validateJsonContentType', 'trustedSiteOrigin', 'Set-Cookie'],
+  'lib/learning-access.js': ['timingSafeEqual', 'HttpOnly', 'SameSite=Strict', 'VERITRUST_LEARNING_ACCESS_KEY'],
   'lib/learning/repository.js': ['learningUnavailable', 'user_id=eq.', 'learning_public_credentials'],
 };
 for (const [relativePath, requirements] of Object.entries(securityCriticalSources)) {
@@ -109,6 +126,26 @@ for (const absolute of textFiles()) {
   if (secretPatterns.some((pattern) => pattern.test(source))) {
     fail(`possible committed credential in ${path.relative(root, absolute)}`);
   }
+}
+
+const sharedStyles = read('assets/css/veritrust.css');
+const sharedSiteScript = read('assets/js/site.js');
+const learningMiddleware = read('middleware.ts');
+const clientConfig = read('api/_client-config.js');
+if (!/\.vt-loading-shimmer\s*\{[\s\S]*?vt-dashboard-shimmer-slide/i.test(sharedStyles)) {
+  fail('the shared Dashboard-style loading shimmer is missing');
+}
+if (!/MutationObserver\(schedule\)[\s\S]*?VeriTrustLoadingShimmer/i.test(sharedSiteScript)) {
+  fail('the shared loading-state observer is missing');
+}
+for (const requirement of ['VERITRUST_LEARNING_ACCESS_KEY', 'crypto.subtle.verify', 'veritrust_learning_access']) {
+  if (!learningMiddleware.includes(requirement)) fail(`learning middleware is missing ${requirement}`);
+}
+if (!read('api/learning.js').includes('requireLearningAccess')) {
+  fail('learning API is missing the server-side preview access check');
+}
+if (clientConfig.includes('VERITRUST_LEARNING_ACCESS_KEY')) {
+  fail('the learning preview key must not be exposed by client configuration');
 }
 
 console.log('Security configuration check passed.');

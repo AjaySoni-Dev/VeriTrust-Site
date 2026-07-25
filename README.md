@@ -247,6 +247,7 @@ HF_LINK_SWIFT_MODEL=
 VERITRUST_ALLOWED_ORIGINS=
 VERITRUST_SITE_URL=
 VERITRUST_WEBHOOK_ALLOWED_HOSTS=
+VERITRUST_LEARNING_ACCESS_KEY=
 ADMIN=
 CONTENT_HMAC=
 WEBHOOK_ENCRYPTION=
@@ -254,7 +255,7 @@ DISPATCH=
 VERITRUST_GATEWAY_SERVERLESS_BATCH=1
 ```
 
-The API also accepts `HF_ACCESS_TOKEN` instead of `HF_TOKEN`. Model paths can alternatively be supplied in one JSON object named `HF_MODEL_PATHS`, using the keys `deepfake_pixel`, `deepfake_prism`, `phishing_mailguard`, `phishing_cortex`, and `link_swift`. `ADMIN` is optional and enables private diagnostics on `/api/health`. `CONTENT_HMAC` must contain at least 32 random bytes; `WEBHOOK_ENCRYPTION` must be a 32-byte key encoded as 64 hexadecimal characters; `DISPATCH` must be the same 32+ character random value stored by migration 003 in Supabase Vault. Never expose any of these server values in browser JavaScript.
+The API also accepts `HF_ACCESS_TOKEN` instead of `HF_TOKEN`. Model paths can alternatively be supplied in one JSON object named `HF_MODEL_PATHS`, using the keys `deepfake_pixel`, `deepfake_prism`, `phishing_mailguard`, `phishing_cortex`, and `link_swift`. `ADMIN` is optional and enables private diagnostics on `/api/health`. `VERITRUST_LEARNING_ACCESS_KEY` must be a random value of at least 32 characters; it is validated only on the server and unlocks the learning preview for eight hours through a signed HttpOnly cookie. `CONTENT_HMAC` must contain at least 32 random bytes; `WEBHOOK_ENCRYPTION` must be a 32-byte key encoded as 64 hexadecimal characters; `DISPATCH` must be the same 32+ character random value stored by migration 003 in Supabase Vault. Never expose any of these server values in browser JavaScript.
 
 ### Developer API
 
@@ -647,6 +648,7 @@ HF_LINK_SWIFT_MODEL=
 VERITRUST_ALLOWED_ORIGINS=
 VERITRUST_SITE_URL=https://www.veritrustlab.in
 VERITRUST_WEBHOOK_ALLOWED_HOSTS=hooks.example.edu
+VERITRUST_LEARNING_ACCESS_KEY=
 CONTENT_HMAC=
 WEBHOOK_ENCRYPTION=
 DISPATCH=

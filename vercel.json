@@ -157,6 +157,10 @@
       "destination": "/api/system?route=not-found"
     },
     {
+      "source": "/api/learning-access",
+      "destination": "/api/system?route=learning-access"
+    },
+    {
       "source": "/api/learning/verify/:code",
       "destination": "/api/learning?resource=verify&code=:code"
     },

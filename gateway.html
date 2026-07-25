@@ -10,14 +10,14 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@500;600&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="assets/css/veritrust.css?v=20260723-unified-chrome2">
+  <link rel="stylesheet" href="assets/css/veritrust.css?v=20260725-product9">
   <link rel="stylesheet" href="assets/css/tool-pages.css?v=20260717-gateway">
-  <link rel="stylesheet" href="assets/css/gateway.css?v=20260724-compact-controls1">
+  <link rel="stylesheet" href="assets/css/gateway.css?v=20260725-history2">
   <link rel="stylesheet" href="assets/css/graphite-orange-theme.css?v=20260719-reference7">
   <script src="assets/js/config.js?v=20260717-gateway" defer></script>
   <script src="assets/js/supabase-client.js?v=20260717-gateway" defer></script>
   <script src="assets/js/site.js?v=20260723-unified-chrome3" defer></script>
-  <script src="assets/js/gateway.js?v=20260724-recent-loading1" defer></script>
+  <script src="assets/js/gateway.js?v=20260725-history2" defer></script>
   <link rel="stylesheet" href="assets/css/glass-system.css?v=20260723-global4">
 </head>
 <body class="vt-tool-page vt-gateway-page vt-graphite-theme">
@@ -62,7 +62,7 @@
       </form>
 
       <section class="tool-panel gateway-result" aria-live="polite">
-        <div class="panel-title"><div><h2>Unified decision</h2><p id="gateway-status-copy">No scan submitted.</p></div><span id="gateway-status" class="status-pill">Idle</span></div>
+        <div class="panel-title"><div><h2>Unified decision</h2><p id="gateway-status-copy">No scan submitted.</p></div><div class="gateway-result-state"><span id="gateway-result-loading" class="gateway-card-loader" hidden>Loading scan</span><span id="gateway-status" class="status-pill">Idle</span></div></div>
         <div id="gateway-empty" class="tool-result-empty">Your decision and supporting evidence will appear here.</div>
         <div id="gateway-output" class="gateway-output" hidden>
           <div class="gateway-decision"><div><span>Recommendation</span><strong id="gateway-recommendation">—</strong></div><div><span>Risk</span><strong id="gateway-risk">—</strong></div><div><span>Verdict</span><strong id="gateway-verdict">—</strong></div></div>
@@ -73,7 +73,7 @@
       </section>
     </section>
 
-    <section class="tool-panel gateway-history"><div class="panel-title"><div><h2>Recent scans</h2><p>Your latest gateway activity.</p></div><button id="gateway-refresh" class="btn btn-secondary" type="button">Refresh</button></div><div id="gateway-history-list" class="gateway-history-list"></div></section>
+    <section class="tool-panel gateway-history"><div class="panel-title"><div><h2>Recent scans</h2><p>Your latest gateway activity.</p></div><button id="gateway-refresh" class="btn btn-secondary" type="button">Refresh</button></div><div id="gateway-history-list" class="gateway-history-list"></div><div id="gateway-history-pagination" class="gateway-history-pagination" hidden><p id="gateway-history-count"></p><button id="gateway-history-more" class="btn btn-secondary" type="button">Show more</button></div></section>
   </main>
   <footer class="legal-footer"><a href="privacy.html">Privacy</a><span>&middot;</span><a href="security.html">Security</a><span>&middot;</span><a href="docs.html">Docs</a></footer>
 </body>

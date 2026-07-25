@@ -8,6 +8,7 @@ const {
 } = require('../lib/veritrust-api');
 const { validateJsonContentType } = require('../lib/validators');
 const { enforceRateLimit } = require('../lib/rate-limit');
+const { requireLearningAccess } = require('../lib/learning-access');
 const repo = require('../lib/learning/repository');
 const {
   boundedText,
@@ -62,6 +63,8 @@ module.exports = async function handler(req, res) {
   res.setHeader('X-Request-Id', rid);
 
   try {
+    if (target.resource !== 'verify') requireLearningAccess(req);
+
     if (target.resource === 'catalog') {
       requireMethods(req, ['GET']);
       await enforceRateLimit({ req, endpoint: 'learning:catalog', limit: 240, identityType: 'ip' });

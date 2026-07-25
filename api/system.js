@@ -3,6 +3,7 @@ const { handleOptions, sendJson } = require('../lib/veritrust-api');
 const routes = Object.freeze({
   health: require('./_health'),
   'client-config': require('./_client-config'),
+  'learning-access': require('./_learning-access'),
 });
 
 function routeName(req) {

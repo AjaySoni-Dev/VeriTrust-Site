@@ -264,4 +264,3 @@ if (failures.length) {
 }
 
 console.log(`Navigation integrity check passed: ${htmlFiles.length} pages, ${intentContracts.length} intent contracts, and shared chrome/content contracts.`);
-
