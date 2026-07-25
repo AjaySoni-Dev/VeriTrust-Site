@@ -1042,7 +1042,7 @@ body.vt-learning-page .learning-btn.is-complete:hover {
 }
 
 .learning-skeleton-line::after,
-.learning-data-loading :is(#course-title, #course-summary, #course-level, #course-duration, #course-count)::after,
+.learning-data-loading :is(#course-title, #course-summary, #course-level, #course-duration, #course-count, #course-enroll, .learning-page-title .learning-actions > a)::after,
 .lesson-layout.is-loading .lesson-sidebar :is(.learning-kicker, h2, p, button, a)::after,
 .credential-card.is-loading :is(.credential-mark, .learning-kicker, h2, p, .credential-details)::after {
   content: '';
@@ -1106,7 +1106,7 @@ body.vt-learning-page .learning-metric-skeleton {
   margin-top: 10px;
 }
 
-.learning-data-loading :is(#course-title, #course-summary, #course-level, #course-duration, #course-count),
+.learning-data-loading :is(#course-title, #course-summary, #course-level, #course-duration, #course-count, #course-enroll, .learning-page-title .learning-actions > a),
 .lesson-layout.is-loading .lesson-sidebar :is(.learning-kicker, h2, p, button, a),
 .credential-card.is-loading :is(.credential-mark, .learning-kicker, h2, p, .credential-details) {
   position: relative;
@@ -1119,13 +1119,93 @@ body.vt-learning-page .learning-metric-skeleton {
 }
 
 .learning-data-loading #course-title {
-  width: min(460px, 76%);
-  min-height: 2.3rem;
+  width: min(480px, 72%);
+  min-height: 2.4rem;
 }
 
 .learning-data-loading #course-summary {
-  width: min(650px, 92%);
-  min-height: 1.2rem;
+  width: min(700px, 88%);
+  min-height: 1.15rem;
+}
+
+.learning-data-loading .learning-page-title .learning-meta {
+  pointer-events: none;
+}
+
+.learning-data-loading .learning-page-title .learning-meta li {
+  min-height: 24px;
+  padding: 0;
+}
+
+.learning-data-loading .learning-page-title .learning-meta li:nth-child(1) {
+  width: 84px;
+}
+
+.learning-data-loading .learning-page-title .learning-meta li:nth-child(2) {
+  width: 76px;
+}
+
+.learning-data-loading .learning-page-title .learning-meta li:nth-child(3) {
+  width: 92px;
+}
+
+.learning-data-loading .learning-page-title .learning-actions {
+  pointer-events: none;
+}
+
+.learning-data-loading .learning-page-title .learning-actions > * {
+  min-height: 36px;
+  padding: 0;
+}
+
+.learning-data-loading #course-enroll {
+  width: 84px;
+}
+
+.learning-data-loading .learning-page-title .learning-actions > a:last-child {
+  width: 132px;
+}
+
+.learning-module-skeleton {
+  min-height: 132px;
+}
+
+.learning-module-skeleton .learning-skeleton-copy {
+  display: grid;
+  gap: 9px;
+  margin-top: 11px;
+}
+
+.learning-module-skeleton .learning-skeleton-copy .learning-skeleton-line,
+.learning-module-skeleton .learning-skeleton-lessons .learning-skeleton-line {
+  margin-top: 0;
+}
+
+.learning-module-skeleton .learning-skeleton-lessons {
+  display: grid;
+  gap: 9px;
+  margin: 13px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.learning-module-skeleton .learning-skeleton-lessons li {
+  display: grid;
+  grid-template-columns: 14px minmax(0, 1fr);
+  align-items: center;
+  gap: 8px;
+}
+
+.learning-module-skeleton .learning-skeleton-lessons li::before {
+  content: '';
+  width: 12px;
+  height: 8px;
+  border-radius: 2px;
+  background: var(--learning-skeleton-base);
+}
+
+.learning-module-skeleton .learning-skeleton-lessons .learning-skeleton-line {
+  height: 8px;
 }
 
 .lesson-layout.is-loading .lesson-sidebar :is(.learning-kicker, h2, p) {
@@ -1195,11 +1275,30 @@ body.vt-learning-page .learning-metric-skeleton {
   .learning-skeleton-meta .learning-skeleton-line.is-chip:nth-child(2) {
     width: 112px !important;
   }
+
+  .learning-data-loading #course-title,
+  .learning-data-loading #course-summary {
+    width: 100%;
+  }
+
+  .learning-data-loading #course-title {
+    min-height: 1.85rem;
+  }
+
+  .learning-data-loading .learning-page-title .learning-actions {
+    display: grid;
+    grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
+  }
+
+  .learning-data-loading #course-enroll,
+  .learning-data-loading .learning-page-title .learning-actions > a:last-child {
+    width: 100%;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
   .learning-skeleton-line::after,
-  .learning-data-loading :is(#course-title, #course-summary, #course-level, #course-duration, #course-count)::after,
+  .learning-data-loading :is(#course-title, #course-summary, #course-level, #course-duration, #course-count, #course-enroll, .learning-page-title .learning-actions > a)::after,
   .lesson-layout.is-loading .lesson-sidebar :is(.learning-kicker, h2, p, button, a)::after,
   .credential-card.is-loading :is(.credential-mark, .learning-kicker, h2, p, .credential-details)::after {
     animation: none;
