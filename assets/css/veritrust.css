@@ -50,6 +50,16 @@ html.vt-auth-checking body {
   visibility: hidden;
 }
 
+/*
+ * Keep the blocking session phase visually isolated from page-level skeletons.
+ * Some dashboard placeholders explicitly restore child visibility, so the
+ * stronger descendant rule prevents both loaders from painting together.
+ */
+html.vt-auth-checking body,
+html.vt-auth-checking body * {
+  visibility: hidden !important;
+}
+
 html.vt-auth-checking::before {
   content: '';
   position: fixed;
@@ -4119,17 +4129,17 @@ html.vt-auth-checking::after {
 
 @media (max-width: 680px) {
   html.vt-auth-checking::before {
-    top: calc(50% - 24px);
-    left: calc(50% - 11px);
-    width: 22px;
-    height: 22px;
-    border-width: 2px;
+    top: calc(50% - 28px);
+    left: calc(50% - 14px);
+    width: 28px;
+    height: 28px;
+    border-width: 3px;
   }
 
   html.vt-auth-checking::after {
-    top: calc(50% + 10px);
-    font-size: 9px;
-    letter-spacing: 0.055em;
+    top: calc(50% + 14px);
+    font-size: 10.5px;
+    letter-spacing: 0.06em;
   }
 }
 
