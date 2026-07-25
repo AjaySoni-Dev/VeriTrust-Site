@@ -46,16 +46,39 @@
     const container = $('#course-modules');
     if (!container) return;
     const fragment = document.createDocumentFragment();
-    [1, 2].forEach(() => {
+    [
+      { title: '38%', copy: ['78%', '57%'], lessons: ['72%', '64%', '82%'] },
+      { title: '32%', copy: ['74%', '54%'], lessons: ['68%', '77%', '59%'] },
+    ].forEach((shape) => {
       const section = document.createElement('section');
       section.className = 'course-module learning-module-skeleton';
       section.setAttribute('aria-hidden', 'true');
-      ['34%', '76%', '58%'].forEach((width, index) => {
+
+      const title = document.createElement('span');
+      title.className = 'learning-skeleton-line is-title';
+      title.style.setProperty('--skeleton-width', shape.title);
+
+      const copy = document.createElement('div');
+      copy.className = 'learning-skeleton-copy';
+      shape.copy.forEach((width) => {
         const line = document.createElement('span');
-        line.className = `learning-skeleton-line${index === 0 ? ' is-title' : ''}`;
+        line.className = 'learning-skeleton-line';
         line.style.setProperty('--skeleton-width', width);
-        section.appendChild(line);
+        copy.appendChild(line);
       });
+
+      const lessons = document.createElement('ol');
+      lessons.className = 'learning-skeleton-lessons';
+      shape.lessons.forEach((width) => {
+        const item = document.createElement('li');
+        const line = document.createElement('span');
+        line.className = 'learning-skeleton-line';
+        line.style.setProperty('--skeleton-width', width);
+        item.appendChild(line);
+        lessons.appendChild(item);
+      });
+
+      section.append(title, copy, lessons);
       fragment.appendChild(section);
     });
     container.replaceChildren(fragment);
