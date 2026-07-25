@@ -29,6 +29,7 @@ const VeriTrustPageAccess = (() => {
     'learning',
     'course',
     'certificate',
+    'learning-access',
   ]);
   const isPublicCertificate = /^\/certificates\/[^/]+\/?$/i.test(pathname);
   const isProtectedLearningRoute = /^\/learn\/(?:my-learning|assessments\/|courses\/[^/]+\/lessons\/)/i.test(pathname)
@@ -202,6 +203,7 @@ const VeriTrustSiteChrome = (() => {
     assessment: 'Assessment',
     certificate: 'Credentials',
     'learning-admin': 'Learning administration',
+    'learning-access': 'Learning preview',
   });
 
   const currentPage = () => veritrustPageId(window.location.pathname);
@@ -347,6 +349,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       assessment: 'learning',
       certificate: 'learning',
       'learning-admin': 'learning',
+      'learning-access': 'learning',
       'gateway-powershell': 'developers',
       developers: 'developers',
       'model-performance': 'developers',

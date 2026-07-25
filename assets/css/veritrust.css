@@ -2333,6 +2333,70 @@ p {
   font-family: var(--mono);
 }
 
+.scan-gateway-signals {
+  margin-top: 12px;
+}
+
+.scan-gateway-signals h4 {
+  margin: 0 0 8px;
+  color: var(--text);
+  font-size: 12px;
+}
+
+.scan-gateway-signal-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.scan-gateway-signal {
+  min-width: 0;
+  padding: 10px;
+  border-radius: 2px;
+  background: var(--surface-2);
+}
+
+.scan-gateway-signal-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.scan-gateway-signal-head strong {
+  color: var(--text);
+  font-size: 11px;
+}
+
+.scan-gateway-signal-head > span {
+  flex: 0 0 auto;
+  color: var(--soft);
+  font: 600 8.5px var(--mono);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.scan-detail-row .scan-gateway-signal > p {
+  margin-top: 6px;
+  font-size: 10.5px;
+  line-height: 1.45;
+}
+
+.scan-gateway-signal .scan-detail-signals {
+  margin-top: 7px;
+}
+
+.scan-gateway-signal .scan-detail-signals span {
+  padding: 3px 6px;
+  font-size: 9.5px;
+}
+
+@media (max-width: 900px) {
+  .scan-gateway-signal-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
 .scan-row:last-child {
   border-bottom: 0;
 }

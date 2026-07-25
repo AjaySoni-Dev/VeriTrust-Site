@@ -2,9 +2,13 @@
   const api = global.VeriTrustSupabase;
   const form = document.getElementById('gateway-form');
   if (!form || !api) return;
-  const elements = Object.fromEntries(['auth','error','text','urls','file','file-label','context','submit','cancel','status','status-copy','empty','output','recommendation','risk','verdict','reasons','evidence','audit','refresh','history-list'].map((name) => [name, document.getElementById(`gateway-${name}`)]));
+  const elements = Object.fromEntries(['auth','error','text','urls','file','file-label','context','submit','cancel','status','status-copy','empty','output','recommendation','risk','verdict','reasons','evidence','audit','refresh','result-loading','history-list','history-pagination','history-count','history-more'].map((name) => [name, document.getElementById(`gateway-${name}`)]));
   let activeScanId = null;
   let polling = null;
+  let historyRows = [];
+  let visibleHistoryCount = 5;
+  let historySelectionPending = false;
+  const HISTORY_PAGE_SIZE = 5;
 
   function setError(message) { elements.error.textContent = message || ''; elements.error.hidden = !message; }
   function setBusy(busy, message) { form.querySelectorAll('input,textarea,select,button').forEach((item) => { if (item !== elements.cancel) item.disabled = busy; }); elements.submit.textContent = busy ? 'Processing…' : 'Analyze through gateway'; document.querySelector('.gateway-result').classList.toggle('is-loading', busy); if (message) elements['status-copy'].textContent = message; }
@@ -40,14 +44,19 @@
   }
 
   async function openHistoryScan(scan, item) {
-    if (item.classList.contains('is-loading')) return;
+    if (historySelectionPending) return;
+    historySelectionPending = true;
     setError('');
     clearTimeout(polling);
-    const historyItems = [...elements['history-list'].querySelectorAll('.gateway-history-item')];
-    historyItems.forEach((historyItem) => { historyItem.disabled = true; });
-    item.classList.add('is-loading');
-    item.setAttribute('aria-busy', 'true');
-    elements['history-list'].setAttribute('aria-busy', 'true');
+    elements['history-list'].querySelectorAll('.gateway-history-item').forEach((historyItem) => {
+      historyItem.classList.toggle('is-selected', historyItem === item);
+      historyItem.removeAttribute('aria-current');
+    });
+    item.disabled = true;
+    item.setAttribute('aria-current', 'true');
+    elements['result-loading'].hidden = false;
+    document.querySelector('.gateway-result')?.classList.add('is-history-loading');
+    document.querySelector('.gateway-result')?.setAttribute('aria-busy', 'true');
     elements['status-copy'].textContent = `Loading ${scan.display_id || 'selected scan'}…`;
 
     try {
@@ -57,39 +66,56 @@
       setError(error.message);
       elements['status-copy'].textContent = 'The selected scan could not be loaded.';
     } finally {
-      historyItems.forEach((historyItem) => { historyItem.disabled = false; });
-      item.classList.remove('is-loading');
-      item.removeAttribute('aria-busy');
-      elements['history-list'].removeAttribute('aria-busy');
+      historySelectionPending = false;
+      item.disabled = false;
+      elements['result-loading'].hidden = true;
+      document.querySelector('.gateway-result')?.classList.remove('is-history-loading');
+      document.querySelector('.gateway-result')?.removeAttribute('aria-busy');
     }
+  }
+
+  function renderHistory() {
+    const visibleRows = historyRows.slice(0, visibleHistoryCount);
+    elements['history-list'].replaceChildren(...visibleRows.map((scan) => {
+      const item = document.createElement('button');
+      item.type = 'button';
+      item.className = 'gateway-history-item';
+      item.setAttribute('aria-label', `Open scan ${scan.display_id || scan.id}, ${scan.status || 'unknown status'}`);
+
+      const id = document.createElement('strong');
+      id.textContent = scan.display_id || scan.id;
+      const state = document.createElement('em');
+      state.textContent = scan.status || 'unknown';
+      const time = document.createElement('span');
+      time.textContent = new Date(scan.created_at).toLocaleString();
+
+      item.append(id, state, time);
+      item.addEventListener('click', () => openHistoryScan(scan, item));
+      return item;
+    }));
+
+    if (!historyRows.length) {
+      elements['history-list'].textContent = 'No gateway scans yet.';
+      elements['history-pagination'].hidden = true;
+      return;
+    }
+
+    elements['history-count'].textContent = `Showing ${visibleRows.length} of ${historyRows.length} scans`;
+    elements['history-more'].hidden = visibleRows.length >= historyRows.length;
+    elements['history-pagination'].hidden = false;
   }
 
   async function refreshHistory() {
     elements.refresh.disabled = true;
     elements.refresh.classList.add('is-loading');
     try {
-      const data = await request('/api/v1/gateway/scans?limit=12', { cache: 'no-store' });
-      const rows = data.scans || [];
-      elements['history-list'].replaceChildren(...rows.map((scan) => {
-        const item = document.createElement('button');
-        item.type = 'button';
-        item.className = 'gateway-history-item';
-        item.setAttribute('aria-label', `Open scan ${scan.display_id || scan.id}, ${scan.status || 'unknown status'}`);
-
-        const id = document.createElement('strong');
-        id.textContent = scan.display_id || scan.id;
-        const state = document.createElement('em');
-        state.textContent = scan.status || 'unknown';
-        const time = document.createElement('span');
-        time.textContent = new Date(scan.created_at).toLocaleString();
-
-        item.append(id, state, time);
-        item.addEventListener('click', () => openHistoryScan(scan, item));
-        return item;
-      }));
-      if (!rows.length) elements['history-list'].textContent = 'No gateway scans yet.';
+      const data = await request('/api/v1/gateway/scans?limit=50', { cache: 'no-store' });
+      historyRows = Array.isArray(data.scans) ? data.scans : [];
+      visibleHistoryCount = HISTORY_PAGE_SIZE;
+      renderHistory();
     } catch (error) {
       elements['history-list'].textContent = error.message;
+      elements['history-pagination'].hidden = true;
     } finally {
       elements.refresh.disabled = false;
       elements.refresh.classList.remove('is-loading');
@@ -113,5 +139,9 @@
   elements.file.addEventListener('change',()=>{const files=[...elements.file.files];elements['file-label'].textContent=files.length?`${files.length} file${files.length===1?'':'s'} selected`:'Choose up to 10 images, audio, or video files';});
   elements.cancel.addEventListener('click',async()=>{if(!activeScanId)return;try{await request(`/api/v1/gateway/scans/${activeScanId}/cancel`,{method:'POST'});poll(activeScanId);}catch(error){setError(error.message);}});
   elements.refresh.addEventListener('click',refreshHistory);
+  elements['history-more'].addEventListener('click', () => {
+    visibleHistoryCount = Math.min(historyRows.length, visibleHistoryCount + HISTORY_PAGE_SIZE);
+    renderHistory();
+  });
   api.getSession().then((session)=>{elements.auth.hidden=Boolean(session);form.querySelectorAll('input,textarea,select,button').forEach((item)=>item.disabled=!session);if(session)refreshHistory();});
 })(window);

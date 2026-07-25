@@ -186,6 +186,58 @@ document.addEventListener('DOMContentLoaded', async () => {
     return titleCase(key || 'unknown');
   };
 
+  const gatewaySignalType = (row = {}) => {
+    const key = String(row.signal_type || row.kind || row.model_key || '').toLowerCase();
+    if (/(?:swift|link|url)/u.test(key)) return 'link';
+    if (/(?:pixel|prism|deepfake|image|media)/u.test(key)) return 'deepfake';
+    if (/(?:mailguard|cortex|phishing|message|text)/u.test(key)) return 'phishing';
+    return 'supporting';
+  };
+
+  const gatewaySignalLabel = (type) => ({
+    phishing: 'Phishing analysis',
+    link: 'Link analysis',
+    deepfake: 'Deepfake analysis',
+    supporting: 'Supporting analysis',
+  }[type] || 'Supporting analysis');
+
+  const indicatorText = (item) => {
+    if (typeof item === 'string') return item;
+    return item?.title || item?.description || item?.label || item?.code || '';
+  };
+
+  const renderGatewaySignals = (result) => {
+    const rows = Array.isArray(result?.raw_scores) ? result.raw_scores : [];
+    if (!rows.length) return '';
+    return `
+      <section class="scan-gateway-signals" aria-label="Unified gateway signal results">
+        <h4>Signal results</h4>
+        <div class="scan-gateway-signal-grid">
+          ${rows.map((row) => {
+    const type = gatewaySignalType(row);
+    const score = row.score === null || row.score === undefined || !Number.isFinite(Number(row.score))
+      ? 'Score unavailable'
+      : `Score ${formatPercent(Number(row.score))}`;
+    const signalIndicators = [
+      ...(Array.isArray(row.reason_codes) ? row.reason_codes : []),
+      ...(Array.isArray(row.indicators) ? row.indicators : []),
+    ].map(indicatorText).filter(Boolean);
+    return `
+            <article class="scan-gateway-signal" data-signal="${escapeHtml(type)}">
+              <div class="scan-gateway-signal-head">
+                <strong>${escapeHtml(gatewaySignalLabel(type))}</strong>
+                <span>${escapeHtml(titleCase(row.status || 'unknown'))}</span>
+              </div>
+              <p>${escapeHtml(modelDisplayName(row.model_key))} &middot; ${escapeHtml(titleCase(row.verdict || 'unknown'))} &middot; ${escapeHtml(score)}</p>
+              ${signalIndicators.length ? `<div class="scan-detail-signals">${signalIndicators.map((item) => `<span>${escapeHtml(String(item).replaceAll('_', ' '))}</span>`).join('')}</div>` : ''}
+            </article>
+          `;
+  }).join('')}
+        </div>
+      </section>
+    `;
+  };
+
   const fallbackUsed = (scan) => {
     const completed = modelRuns(scan).filter((run) => run.status === 'completed');
     return completed.length > 0 && completed[0].model_key !== scan.selected_model_key;
@@ -700,9 +752,13 @@ document.addEventListener('DOMContentLoaded', async () => {
             </span>
           </div>
           <details class="scan-detail-row">
-            <summary>View details</summary>
+            <summary>${gateway ? 'View full details' : 'View details'}</summary>
             <p>${escapeHtml(result.explanation || 'Saved scan result.')}</p>
-            ${indicators.length ? `<div class="scan-detail-signals">${indicators.slice(0, 5).map((item) => `<span>${escapeHtml(item.title || item.description || item)}</span>`).join('')}</div>` : ''}
+            ${gateway
+    ? renderGatewaySignals(result)
+    : indicators.length
+      ? `<div class="scan-detail-signals">${indicators.slice(0, 5).map((item) => `<span>${escapeHtml(indicatorText(item))}</span>`).join('')}</div>`
+      : ''}
             <p class="scan-detail-id">${detailIdentity}</p>
           </details>
         `;
