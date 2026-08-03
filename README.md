@@ -99,8 +99,6 @@ The deployed Vercel route model supports clean public routes such as:
 /api/link-check
 ```
 
-The repository also keeps a `legacy-php/` folder as reference code only. Vercel deployment uses only the JavaScript files inside `api/`.
-
 ---
 
 ## Core Features
@@ -118,7 +116,6 @@ The repository also keeps a `legacy-php/` folder as reference code only. Vercel 
 | Vercel deployment | Active | Serverless functions, rewrites, headers, and static asset caching are configured |
 | Risk engine | Active | Shared deterministic risk levels, confidence bands, phishing indicators, and safe summaries |
 | Report exports | Active | Successful scans can be downloaded as JSON, printed/saved as PDF, and copied as summaries |
-| Legacy PHP reference | Excluded from Vercel | PHP inference endpoints are retained only as non-production reference code |
 | Authentication UI | Active with Supabase | Login, signup, password recovery, session checks, and dashboard access use Supabase Auth through server-managed HttpOnly cookies |
 | Developer API | Active | API-key management plus `/api/v1/deepfake`, `/api/v1/phishing`, `/api/v1/link-check`, and `/api/v1/usage` |
 | API key security | Active | Raw keys are shown once; only hashes, prefixes, masked values, scopes, and usage metadata are stored |
@@ -145,7 +142,6 @@ The implementation prioritizes:
 - focused detection tools rather than a general chatbot interface
 - fast deployment through static pages and Vercel functions
 - reusable browser-side result rendering
-- simple migration support through legacy PHP endpoints
 
 The project is intentionally structured so the public website, detection interface, API proxy, and model-specific parsing logic remain separate.
 
@@ -201,7 +197,6 @@ VeriTrust/
 |       |-- detection.js   # Detection workflow and result rendering logic
 |       |-- link-check.js  # Link Intelligence page logic
 |       `-- site.js        # Navigation and auth UI interactions
-|-- legacy-php/            # Legacy reference code excluded from Vercel
 |-- lib/
 |   |-- risk-engine.js     # Shared risk, confidence, indicator, and summary logic
 |   |-- link-intelligence.js # Link parsing, rules, scoring, and result shaping
@@ -685,19 +680,6 @@ Configure secrets only in Vercel Environment Variables or local ignored `.env` f
 
 If a Hugging Face token was ever committed or shared, rotate/regenerate it immediately from the Hugging Face dashboard.
 
-### Legacy PHP Reference
-
-The `legacy-php/` folder is legacy reference code only and is excluded from Vercel deployment by `.vercelignore`. The production API uses the Node.js serverless routes in `/api`.
-
-Legacy Hugging Face token lookup supports environment variables only:
-
-- `HF_ACCESS_TOKEN`
-- `HF_TOKEN`
-- the same five `HF_*_MODEL` variables listed above
-
-> [!WARNING]
-> Do not deploy `legacy-php/` without separate hardening.
-
 ### Model Performance
 
 The `model-performance.html` page documents evaluation status honestly. Accuracy, precision, recall, F1, false positive rates, false negative rates, and confusion matrices must be calculated on labeled test datasets before publication. Benchmark numbers should not be invented or inferred from ad hoc scans.
@@ -784,7 +766,6 @@ Long-term exploration:
 | Export scan reports | Use Download JSON Report, Save PDF Report, or Copy Summary on successful results |
 | Change browser API routes | Update `assets/js/config.js` |
 | Deploy on Vercel | Use the JavaScript endpoints in `api/` |
-| Review legacy PHP reference | Inspect `legacy-php/`, which is excluded from Vercel deployment |
 | Adjust visual design | Edit `assets/css/veritrust.css` and `assets/css/tool-pages.css` |
 
 ---
@@ -795,7 +776,7 @@ Long-term exploration:
 - Browser access and refresh tokens are kept in Secure, HttpOnly, SameSite session cookies; do not move them into local storage, session storage, or page JavaScript.
 - Never expose `SUPABASE_SERVICE_ROLE_KEY`, `ADMIN`, `CONTENT_HMAC`, `WEBHOOK_ENCRYPTION`, or `DISPATCH` in browser JavaScript.
 - Do not commit `.env`, `.env.local`, `.env.*.local`, `private/`, logs, `node_modules/`, or private token files.
-- Keep `private/` and `legacy-php/` excluded from Vercel deployment when using the Node API path.
+- Keep `private/` excluded from Vercel deployment.
 - If a Hugging Face token was ever committed or shared, rotate/regenerate it immediately from the Hugging Face dashboard.
 - Treat uploaded images and pasted messages as potentially sensitive user data.
 - Keep the Supabase production schema applied so serverless rate limiting remains active.
