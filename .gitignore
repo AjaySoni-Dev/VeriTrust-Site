@@ -1,8 +1,28 @@
-.env*
-*.log
-legacy-php/
+# Secrets and local configuration
+.env
+.env.*
+!.env.example
+private/
+
+# Installed dependencies and platform state
 node_modules/
+.vercel/
+
+# Generated reports, coverage, and temporary files
 output/
-test/
-VeriTrust-Domain - Copy/
-transformation/
+coverage/
+tmp/
+
+# Runtime and debug output
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Editor and operating-system metadata
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+
