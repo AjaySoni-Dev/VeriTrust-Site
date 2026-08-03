@@ -35,3 +35,11 @@ npm run check:db
 ```
 
 Regeneration rejects snapshots containing auth users, table rows, Vault values, or credential-shaped content.
+
+## Task 4: atomic integrity forward migration
+
+`supabase/migrations/20260803103000_atomic_scan_usage_billing.sql` is a forward migration layered on the snapshot baseline. It introduces serialized quota reservations, idempotent commit/refund, mandatory transactional scan completion, API-key metering reservations, a billing outbox, claim-token protected Stripe processing, and stale-reservation recovery.
+
+For an existing database, run `db/preflight/004_atomic_integrity.sql` first. The forward migration deliberately marks its scan lifecycle constraint `NOT VALID`: existing inconsistent rows do not block deployment, while all new or changed rows are enforced. Any nonzero `completed_without_result` or terminal-timestamp count requires reconciliation from retained provider/audit evidence; the migration never fabricates a result.
+
+Deployment order is database migration first, application second. Do not deploy the application before the atomic RPCs exist because compatibility table writes have been removed and the application now fails closed.

@@ -1,4 +1,5 @@
 // Private route implementation; api/detection.js is the Vercel entrypoint.
+const crypto = require('crypto');
 const {
   DEEPFAKE_MODELS,
   HttpError,
@@ -15,15 +16,10 @@ const {
 } = require('../lib/veritrust-api');
 const { enforceRateLimit } = require('../lib/rate-limit');
 const {
-  enforceEntitlement,
-  recordBillableUsage,
-} = require('../lib/entitlements');
-const {
-  completeScanRecord,
-  createScanRecord,
-  failScanRecord,
   getProfileContext,
   requireServiceRole,
+  runScanLifecycle,
+  scanIdempotencyKey,
 } = require('../lib/supabase-server');
 const {
   validateImageUpload,
@@ -185,11 +181,6 @@ module.exports = async function handler(req, res) {
     const upload = validateImageUpload(files.image);
 
     const context = await getProfileContext(req, fields.org_id || null);
-    await enforceEntitlement(context, {
-      action: 'web_scan',
-      source: 'web',
-      scanType: 'deepfake',
-    });
     await enforceRateLimit({ req, endpoint: 'deepfake', context });
 
     const inputMetadata = {
@@ -198,17 +189,18 @@ module.exports = async function handler(req, res) {
       size_bytes: upload.size,
       retain_file: String(fields.retain_file || 'false') === 'true',
     };
-    const scanId = await createScanRecord(context, {
+    const { payload } = await runScanLifecycle(context, {
       scanType: 'deepfake',
       inputKind: 'image',
       modelKey,
       projectId: fields.project_id || null,
+      textHash: crypto.createHash('sha256').update(upload.buffer).digest('hex'),
       metadata: inputMetadata,
-    });
-    const createdAt = new Date().toISOString();
-
-    try {
-      const { payload, modelRuns } = await runDeepfakeDetection({
+      endpoint: '/api/deepfake',
+      requestId: scanIdempotencyKey(req, 'deepfake'),
+    }, async (scanId) => {
+      const createdAt = new Date().toISOString();
+      return runDeepfakeDetection({
         upload,
         modelKey,
         scanId,
@@ -216,22 +208,8 @@ module.exports = async function handler(req, res) {
         metadata: inputMetadata,
         createdAt,
       });
-      await completeScanRecord(scanId, payload, modelRuns);
-      await recordBillableUsage(context, {
-        source: 'web',
-        scanType: 'deepfake',
-        endpoint: '/api/deepfake',
-        requestId: scanId ? `scan:${scanId}` : null,
-        metadata: {
-          scan_id: scanId,
-          model_key: modelKey,
-        },
-      });
-      sendJson(res, 200, payload);
-    } catch (error) {
-      await failScanRecord(scanId, error.message || 'Deepfake analysis failed.');
-      throw error;
-    }
+    });
+    sendJson(res, 200, payload);
   } catch (error) {
     handleApiError(res, error, 'Deepfake analysis failed.');
   }

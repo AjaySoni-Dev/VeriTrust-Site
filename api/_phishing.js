@@ -16,14 +16,10 @@ const {
 } = require('../lib/veritrust-api');
 const { enforceRateLimit } = require('../lib/rate-limit');
 const {
-  enforceEntitlement,
-  recordBillableUsage,
-} = require('../lib/entitlements');
-const {
-  completeScanRecord,
-  createScanRecord,
   getProfileContext,
   requireServiceRole,
+  runScanLifecycle,
+  scanIdempotencyKey,
   textHash,
 } = require('../lib/supabase-server');
 const {
@@ -394,14 +390,9 @@ module.exports = async function handler(req, res) {
     const text = validatePhishingText(body.text);
 
     const context = await getProfileContext(req, body.org_id || null);
-    await enforceEntitlement(context, {
-      action: 'web_scan',
-      source: 'web',
-      scanType: 'phishing',
-    });
     await enforceRateLimit({ req, endpoint: 'phishing', context });
 
-    const scanId = await createScanRecord(context, {
+    const { payload } = await runScanLifecycle(context, {
       scanType: 'phishing',
       inputKind: 'text',
       modelKey,
@@ -412,27 +403,15 @@ module.exports = async function handler(req, res) {
         length: text.length,
         retain_text: Boolean(body.retain_text),
       },
-    });
-    const createdAt = new Date().toISOString();
-
-    const { payload, modelRuns } = await runPhishingDetection({
+      endpoint: '/api/phishing',
+      requestId: scanIdempotencyKey(req, 'phishing'),
+    }, async (scanId) => runPhishingDetection({
       text,
       modelKey,
       scanId,
       context,
-      createdAt,
-    });
-    await completeScanRecord(scanId, payload, modelRuns);
-    await recordBillableUsage(context, {
-      source: 'web',
-      scanType: 'phishing',
-      endpoint: '/api/phishing',
-      requestId: scanId ? `scan:${scanId}` : null,
-      metadata: {
-        scan_id: scanId,
-        model_key: modelKey,
-      },
-    });
+      createdAt: new Date().toISOString(),
+    }));
     sendJson(res, 200, payload);
   } catch (error) {
     handleApiError(res, error, 'Phishing analysis failed.');

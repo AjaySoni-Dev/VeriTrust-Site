@@ -5,15 +5,12 @@ const {
   validateLinkInput,
 } = require('../lib/link-intelligence');
 const { enforceRateLimit } = require('../lib/rate-limit');
-const {
-  enforceEntitlement,
-  recordBillableUsage,
-} = require('../lib/entitlements');
 const { runLinkDetection } = require('../lib/detection-service');
 const {
-  completeScanRecord,
-  createScanRecord,
   getProfileContext,
+  requireServiceRole,
+  runScanLifecycle,
+  scanIdempotencyKey,
   textHash,
 } = require('../lib/supabase-server');
 const {
@@ -42,47 +39,12 @@ function requireJsonContentType(req) {
   }
 }
 
-function persistenceWarning(message) {
-  return {
-    code: 'SCAN_HISTORY_UNAVAILABLE',
-    message: message || 'Link analysis completed, but scan history could not be saved. Apply the latest Supabase schema to enable saved link scans.',
-  };
-}
-
-function runtimeWarning(code, message) {
-  return { code, message };
-}
-
-function appendWarning(warnings, warning) {
-  if (warning?.code && !warnings.some((item) => item.code === warning.code)) {
-    warnings.push(warning);
-  }
-}
-
-function isInfrastructureError(error) {
-  const status = Number(error?.status || 0);
-  const code = String(error?.code || error?.extra?.code || '').toUpperCase();
-  const details = typeof error?.details === 'string' ? error.details : JSON.stringify(error?.details || '');
-  const text = `${error?.message || ''} ${details}`.toLowerCase();
-  return status >= 500
-    || code === 'SERVER_CONFIG_ERROR'
-    || code === 'CONFIG_MISSING'
-    || text.includes('schema cache')
-    || text.includes('does not exist')
-    || text.includes('could not find')
-    || text.includes('invalid input value for enum')
-    || text.includes('invalid input syntax')
-    || text.includes('violates check constraint')
-    || text.includes('new row for relation')
-    || text.includes('pgrst202')
-    || text.includes('pgrst205');
-}
-
 module.exports = async function handler(req, res) {
   if (handleOptions(req, res)) return;
 
   try {
     requireMethod(req, 'POST');
+    requireServiceRole();
     requireJsonContentType(req);
 
     const body = await parseJsonBody(req, 16000);
@@ -93,113 +55,32 @@ module.exports = async function handler(req, res) {
       context: body.context,
     });
 
-    const warnings = [];
     const context = await getProfileContext(req, body.org_id || null);
-    await enforceEntitlement(context, {
-      action: 'web_scan',
-      source: 'web',
-      scanType: 'link',
-    });
     await enforceRateLimit({ req, endpoint: 'link', context });
 
-    const createdAt = new Date().toISOString();
-    let scanId = null;
-    let historyWarning = null;
-
-    if (context.organization?.id) {
-      try {
-        scanId = await createScanRecord(context, {
-          scanType: 'link',
-          inputKind: 'url',
-          modelKey,
-          projectId: body.project_id || null,
-          textPreview: `${linkInput.url}${linkInput.context ? ` ${linkInput.context}` : ''}`.slice(0, 500),
-          textHash: textHash(`${linkInput.url}\n${linkInput.context || ''}`),
-          metadata: {
-            normalized_url: linkInput.url,
-            urls_found: linkInput.urls_found,
-            context_length: linkInput.context.length,
-          },
-        });
-      } catch (error) {
-        historyWarning = persistenceWarning();
-        appendWarning(warnings, historyWarning);
-        console.error('VeriTrust link scan history create failed', {
-          status: error.status,
-          code: error.code,
-          message: error.message,
-        });
-      }
-    } else {
-      historyWarning = persistenceWarning('Link analysis completed, but scan history could not be saved because workspace persistence is unavailable.');
-      appendWarning(warnings, historyWarning);
-    }
-
-    const { payload, modelRuns } = await runLinkDetection({
+    const { payload } = await runScanLifecycle(context, {
+      scanType: 'link',
+      inputKind: 'url',
+      modelKey,
+      projectId: body.project_id || null,
+      textPreview: `${linkInput.url}${linkInput.context ? ` ${linkInput.context}` : ''}`.slice(0, 500),
+      textHash: textHash(`${linkInput.url}\n${linkInput.context || ''}`),
+      metadata: {
+        normalized_url: linkInput.url,
+        urls_found: linkInput.urls_found,
+        context_length: linkInput.context.length,
+      },
+      endpoint: '/api/link-check',
+      requestId: scanIdempotencyKey(req, 'link'),
+    }, async (scanId) => runLinkDetection({
       url: body.url,
       text: body.text,
       context: body.context,
       modelKey,
       scanId,
       context,
-      createdAt,
-    });
-
-    if (scanId) {
-      try {
-        await completeScanRecord(scanId, payload, modelRuns);
-      } catch (error) {
-        historyWarning = persistenceWarning();
-        appendWarning(warnings, historyWarning);
-        payload.scan = {
-          id: scanId,
-          persisted: false,
-          organization_id: context.organization?.id || null,
-        };
-        console.error('VeriTrust link scan history complete failed', {
-          status: error.status,
-          code: error.code,
-          message: error.message,
-        });
-      }
-    } else {
-      payload.scan = {
-        id: null,
-        persisted: false,
-        organization_id: context.organization?.id || null,
-      };
-    }
-
-    if (context.organization?.id) {
-      try {
-        await recordBillableUsage(context, {
-          source: 'web',
-          scanType: 'link',
-          endpoint: '/api/link-check',
-          requestId: scanId ? `scan:${scanId}` : null,
-          metadata: {
-            scan_id: scanId,
-            model_key: modelKey,
-          },
-        });
-      } catch (error) {
-        appendWarning(warnings, runtimeWarning(
-          'USAGE_TRACKING_UNAVAILABLE',
-          'Link analysis completed, but usage tracking could not be updated.'
-        ));
-        console.error('VeriTrust link billable usage failed', {
-          status: error.status,
-          code: error.code,
-          message: error.message,
-        });
-      }
-    }
-
-    if (historyWarning) appendWarning(warnings, historyWarning);
-    if (warnings.length) {
-      payload.warning = warnings[0];
-      payload.warnings = warnings;
-    }
+      createdAt: new Date().toISOString(),
+    }));
     sendJson(res, 200, payload);
   } catch (error) {
     handleApiError(res, error, 'Link analysis failed.');

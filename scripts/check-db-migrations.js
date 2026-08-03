@@ -28,8 +28,8 @@ check(manifest.source_safety?.read_only === true, 'snapshot must be read-only');
 check(manifest.source_safety?.auth_users_included === false, 'auth users must not be included');
 check(manifest.source_safety?.table_rows_included === false, 'table rows must not be included');
 check(manifest.source_safety?.vault_values_included === false, 'Vault values must not be included');
-check(migrations.length === 10, `expected 10 migrations, found ${migrations.length}`);
-check(JSON.stringify(migrations.map((name) => `migrations/${name}`)) === JSON.stringify(trackedMigrations), 'migration files do not match the manifest');
+check(migrations.length >= trackedMigrations.length, `expected at least ${trackedMigrations.length} migrations, found ${migrations.length}`);
+check(trackedMigrations.every((name) => migrations.includes(name.slice('migrations/'.length))), 'a snapshot baseline migration is missing');
 const migrationVersions = migrations.map((name) => name.split('_', 1)[0]);
 check(migrationVersions.every((version) => /^\d{14}$/u.test(version)), 'every migration must start with a 14-digit timestamp');
 check(new Set(migrationVersions).size === migrations.length, 'migration timestamps must be unique');
@@ -45,20 +45,22 @@ for (const [relative, expected] of Object.entries(manifest.files)) {
   check(content.length === expected.bytes, `${relative} byte count does not match the manifest`);
 }
 
+const baselineSql = trackedMigrations.map((name) => fs.readFileSync(path.join(dbRoot, name), 'utf8')).join('\n');
 const sql = migrations.map((name) => fs.readFileSync(path.join(migrationsDir, name), 'utf8')).join('\n');
 const count = (pattern) => [...sql.matchAll(pattern)].length;
 const expected = manifest.counts;
 
-check(count(/^create table "public"\./gmu) === expected.public_tables, 'public table count differs from the snapshot');
-check(count(/^create type "public"\./gmu) === expected.public_enums, 'enum count differs from the snapshot');
-check(count(/^alter table "public"\..+ add constraint /gmu) === expected.public_constraints, 'constraint count differs from the snapshot');
-check(count(/^create or replace function\s+(?:public|veritrust_private)\./gimu) === expected.owned_routines, 'routine count differs from the snapshot');
-check(count(/^create view "public"\./gmu) === expected.public_views, 'view count differs from the snapshot');
-check(count(/^CREATE TRIGGER /gmu) === expected.public_triggers, 'trigger count differs from the snapshot');
-check(count(/^create policy /gmu) === expected.public_and_storage_policies, 'policy count differs from the snapshot');
-check(count(/^insert into storage\.buckets /gmu) === expected.storage_buckets, 'Storage bucket count differs from the snapshot');
-check(count(/^select pgmq\.create\(/gmu) === expected.pgmq_queues, 'PGMQ queue count differs from the snapshot');
-check(count(/^alter table "public"\..+ enable row level security;/gmu) === expected.public_tables, 'every public table must enable RLS');
+const baselineCount = (pattern) => [...baselineSql.matchAll(pattern)].length;
+check(baselineCount(/^create table "public"\./gmu) === expected.public_tables, 'public table count differs from the snapshot');
+check(baselineCount(/^create type "public"\./gmu) === expected.public_enums, 'enum count differs from the snapshot');
+check(baselineCount(/^alter table "public"\..+ add constraint /gmu) === expected.public_constraints, 'constraint count differs from the snapshot');
+check(baselineCount(/^create or replace function\s+(?:public|veritrust_private)\./gimu) === expected.owned_routines, 'routine count differs from the snapshot');
+check(baselineCount(/^create view "public"\./gmu) === expected.public_views, 'view count differs from the snapshot');
+check(baselineCount(/^CREATE TRIGGER /gmu) === expected.public_triggers, 'trigger count differs from the snapshot');
+check(baselineCount(/^create policy /gmu) === expected.public_and_storage_policies, 'policy count differs from the snapshot');
+check(baselineCount(/^insert into storage\.buckets /gmu) === expected.storage_buckets, 'Storage bucket count differs from the snapshot');
+check(baselineCount(/^select pgmq\.create\(/gmu) === expected.pgmq_queues, 'PGMQ queue count differs from the snapshot');
+check(baselineCount(/^alter table "public"\..+ enable row level security;/gmu) === expected.public_tables, 'every public table must enable RLS');
 
 check(!/^create table "(?:auth|storage|vault|net|cron|pgmq)"\./mu.test(sql), 'baseline attempts to own a Supabase-managed table');
 check(!/\bdrop\s+(?:table|schema|database)\b/iu.test(sql), 'destructive DROP statement found');
@@ -66,6 +68,15 @@ check(!/^\s*truncate\s+/imu.test(sql), 'TRUNCATE statement found');
 check(!/\bdelete\s+from\b/iu.test(sql), 'DELETE statement found');
 check(sql.includes('create event trigger "veritrust_enable_public_rls"'), 'future-table RLS event trigger is missing');
 check(sql.includes('revoke create on schema public'), 'public schema CREATE revocation is missing');
+check(sql.includes('create table public.usage_reservations'), 'atomic usage reservations migration is missing');
+check(sql.includes('create table public.billing_outbox'), 'billing outbox migration is missing');
+for (const routine of [
+  'create_scan_record_atomic', 'complete_scan_record_atomic', 'fail_scan_record_atomic',
+  'reserve_api_usage_atomic', 'finalize_api_usage_atomic', 'claim_billing_event_atomic',
+  'recover_stale_usage_reservations',
+]) {
+  check(sql.includes(`function public.${routine}`), `${routine} is missing`);
+}
 
 if (errors.length) {
   console.error('Database baseline validation failed:');
@@ -73,4 +84,4 @@ if (errors.length) {
   process.exit(1);
 }
 
-console.log(`Database baseline validated: ${migrations.length} migrations, ${expected.public_tables} tables, ${expected.owned_routines} routines, ${expected.public_and_storage_policies} policies.`);
+console.log(`Database migrations validated: ${migrations.length} migrations (${trackedMigrations.length} snapshot baseline + ${migrations.length - trackedMigrations.length} forward), ${expected.public_tables} baseline tables.`);
