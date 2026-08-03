@@ -66,6 +66,8 @@
     "coverage/",
     "scripts/",
     "docs/",
+    "db/",
+    "supabase/",
     "*.md",
     "LICENSE"
   ]

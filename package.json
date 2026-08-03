@@ -4,7 +4,8 @@
   "private": true,
   "description": "VeriTrust landing site and Vercel API proxy",
   "scripts": {
-    "check": "node scripts/check-js.js && node scripts/check-vercel-functions.js && node scripts/check-navigation.js && node scripts/check-security.js",
+    "check": "node scripts/check-js.js && node scripts/check-vercel-functions.js && node scripts/check-navigation.js && node scripts/check-security.js && npm run check:db",
+    "check:db": "node scripts/check-db-migrations.js",
     "check:deploy": "node scripts/check-deploy-inventory.js",
     "check:secrets": "node scripts/check-secrets.js",
     "ci": "npm run check:secrets && npm run check:deploy && npm run check && npm test && npm audit --omit=dev --audit-level=high",

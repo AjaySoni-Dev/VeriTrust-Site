@@ -1,0 +1,88 @@
+{
+  "format": 1,
+  "generated_at": "2026-08-03T10:28:51.656215+00:00",
+  "snapshot_sha256": "9fd45a67ebc2d9c1f8f9a644c7abb431bdebad0f51cf6383016d25563bb7b473",
+  "source_safety": {
+    "read_only": true,
+    "auth_users_included": false,
+    "table_rows_included": false,
+    "vault_values_included": false
+  },
+  "owned_schemas": [
+    "public",
+    "veritrust_private"
+  ],
+  "prerequisites": [
+    "auth",
+    "storage",
+    "vault",
+    "net",
+    "pgmq",
+    "cron",
+    "extensions"
+  ],
+  "counts": {
+    "public_tables": 79,
+    "public_columns": 901,
+    "public_enums": 30,
+    "public_constraints": 519,
+    "public_indexes": 73,
+    "owned_routines": 59,
+    "public_views": 2,
+    "public_triggers": 44,
+    "public_and_storage_policies": 66,
+    "storage_buckets": 8,
+    "pgmq_queues": 3
+  },
+  "runtime_configuration_required": [
+    "Vault secret veritrust_gateway_worker_url",
+    "Vault secret veritrust_gateway_dispatch_secret",
+    "Cron job veritrust-gateway-recovery command body"
+  ],
+  "files": {
+    "migrations/20260803102851_prerequisites.sql": {
+      "sha256": "3d4b75c53923ba45cfda6597f438827fcb6adbdd6915000ec4fd492321694fbc",
+      "bytes": 945
+    },
+    "migrations/20260803102852_types.sql": {
+      "sha256": "568c595b034620bccab82e8eca2e9d111dc6fe6d5e949eb460f4f9cdba72f238",
+      "bytes": 3580
+    },
+    "migrations/20260803102853_tables.sql": {
+      "sha256": "1f397d0c783e5deea54decc5b9233c863a0927f2c8230a2cea550ec9d2b2007e",
+      "bytes": 42902
+    },
+    "migrations/20260803102854_constraints.sql": {
+      "sha256": "858adc7123b6d43eca7ac91867a08d4674d7d84c8548ca14b1448e6cf78e0a6b",
+      "bytes": 81373
+    },
+    "migrations/20260803102855_indexes.sql": {
+      "sha256": "b6a14fe9b71ad6853188e4310b478b32e209b5c858a1061acb4b76763055586c",
+      "bytes": 10087
+    },
+    "migrations/20260803102856_storage_and_queues.sql": {
+      "sha256": "0b4eb1bd356b36c4173a68450e77d4efaa90770bb0fcaee5d25e1fa3ccc48e8a",
+      "bytes": 5028
+    },
+    "migrations/20260803102857_routines.sql": {
+      "sha256": "b993485aece93e7d574a4dff1dc065a2a6c5fe97ce65642d6f3861d00c72e32f",
+      "bytes": 130002
+    },
+    "migrations/20260803102858_views_and_triggers.sql": {
+      "sha256": "4269da7887a19df598442e9db16c6531243a011ebb66081ab1362c7e6fb36fb9",
+      "bytes": 9627
+    },
+    "migrations/20260803102859_rls_policies.sql": {
+      "sha256": "0a1491eb02daece024d8b39a2c7f9a0527a2c5e2098df617b5a321cfa70e45e0",
+      "bytes": 20930
+    },
+    "migrations/20260803102900_grants.sql": {
+      "sha256": "32c39d47f4b85a6b3dc202b5f35c033163cf5a1131b33aba734eeac05931ee16",
+      "bytes": 20204
+    },
+    "seed.sql": {
+      "sha256": "b006a191a66db53ef9585287525f245a782252bad7dc9bae5a580c1032886409",
+      "bytes": 354
+    }
+  }
+}
