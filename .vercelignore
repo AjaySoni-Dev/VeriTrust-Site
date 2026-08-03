@@ -1,5 +1,7 @@
 .env*
 *.log
+.github/
+.gitignore
 legacy-php/
 node_modules/
 output/
@@ -11,4 +13,4 @@ coverage/
 scripts/
 docs/
 *.md
-
+LICENSE
