@@ -6,3 +6,9 @@ output/
 test/
 VeriTrust-Domain - Copy/
 transformation/
+tmp/
+coverage/
+scripts/
+docs/
+*.md
+
