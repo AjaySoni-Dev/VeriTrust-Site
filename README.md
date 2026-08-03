@@ -399,6 +399,14 @@ The static trust/legal pages are:
 npm run check
 ```
 
+Run the same complete release gate used by GitHub Actions before opening a pull request:
+
+```bash
+npm run ci
+```
+
+The CI gate performs a committed-secret scan, validates the positive Vercel deployment inventory, runs static/navigation/security checks and unit tests, and fails on high or critical production dependency vulnerabilities.
+
 ### 4. Start the local Vercel runtime
 
 ```bash
