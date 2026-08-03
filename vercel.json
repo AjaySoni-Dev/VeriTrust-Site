@@ -241,6 +241,10 @@
       "destination": "/api/account?route=scans"
     },
     {
+      "source": "/api/cases",
+      "destination": "/api/account?route=cases"
+    },
+    {
       "source": "/api/dashboard",
       "destination": "/api/account?route=dashboard"
     },
@@ -255,6 +259,18 @@
     {
       "source": "/api/profile",
       "destination": "/api/account?route=profile"
+    },
+    {
+      "source": "/api/privacy",
+      "destination": "/api/account?route=privacy"
+    },
+    {
+      "source": "/api/jobs",
+      "destination": "/api/account?route=jobs"
+    },
+    {
+      "source": "/api/model-cards",
+      "destination": "/api/system?route=model-cards"
     },
     {
       "source": "/api/health",
@@ -382,7 +398,15 @@
     },
     {
       "source": "/scans",
-      "destination": "/scans.html"
+      "destination": "/cases.html"
+    },
+    {
+      "source": "/cases",
+      "destination": "/cases.html"
+    },
+    {
+      "source": "/case",
+      "destination": "/case.html"
     },
     {
       "source": "/api-access",

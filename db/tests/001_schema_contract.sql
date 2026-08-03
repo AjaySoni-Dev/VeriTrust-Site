@@ -8,7 +8,7 @@ begin
   from pg_class c
   join pg_namespace n on n.oid = c.relnamespace
   where n.nspname = 'public' and c.relkind in ('r', 'p');
-  if actual < 81 then raise exception 'Expected at least 81 public tables after forward migrations, found %', actual; end if;
+  if actual < 85 then raise exception 'Expected at least 85 public tables after forward migrations, found %', actual; end if;
 
   select count(*) into actual
   from information_schema.columns
@@ -22,7 +22,7 @@ begin
   from pg_proc p
   join pg_namespace n on n.oid = p.pronamespace
   where n.nspname in ('public', 'veritrust_private');
-  if actual < 70 then raise exception 'Expected at least 70 owned routines after forward migrations, found %', actual; end if;
+  if actual < 81 then raise exception 'Expected at least 81 owned routines after forward migrations, found %', actual; end if;
 
   select count(*) into actual
   from pg_trigger t
@@ -35,6 +35,15 @@ begin
      or to_regclass('public.billing_outbox') is null
      or to_regprocedure('public.create_scan_record_atomic(uuid,public.scan_type,public.input_kind,text,uuid,text,text,jsonb,text,text,text,text)') is null then
     raise exception 'Task 4 atomic integrity objects are missing';
+  end if;
+
+  if to_regclass('public.cases') is null
+     or to_regclass('public.case_evidence') is null
+     or to_regclass('public.case_decisions') is null
+     or to_regclass('public.case_events') is null
+     or to_regprocedure('public.case_record_analyst_decision(uuid,text,public.risk_level,text,uuid[],uuid)') is null
+     or to_regprocedure('public.case_update_workflow(uuid,text,text,uuid,uuid)') is null then
+    raise exception 'Task 5 unified case workflow objects are missing';
   end if;
 
   if exists (

@@ -5,6 +5,7 @@ const { deleteObjects } = require('../lib/gateway/storage');
 const handleMedia = require('./handlers/media');
 const handleWebhook = require('./handlers/webhook');
 const handleRetention = require('./handlers/retention');
+const { processBillingOutbox, processPlatformQueue } = require('../lib/platform-worker');
 
 const QUEUES = Object.freeze({ gateway_media: handleMedia, gateway_webhooks: handleWebhook, gateway_retention: handleRetention });
 let nextUploadCleanupAt = 0;
@@ -115,6 +116,8 @@ async function tick(options = {}) {
     upload_cleanup: 0,
     media_finalizations: 0,
     retention_reconciliations: 0,
+    platform_jobs: 0,
+    billing_outbox: 0,
     processed: 0,
   };
 
@@ -129,8 +132,14 @@ async function tick(options = {}) {
   if (runMaintenance) {
     report.media_finalizations = await reconcileMediaFinalizations();
     report.retention_reconciliations = await reconcileRetentionJobs();
+    report.platform_jobs = await processPlatformQueue(workerId, {
+      limit: options.limit,
+      visibilitySeconds: options.visibilitySeconds,
+    });
+    report.billing_outbox = await processBillingOutbox(workerId, 25);
   }
-  report.processed += report.upload_cleanup + report.media_finalizations + report.retention_reconciliations;
+  report.processed += report.upload_cleanup + report.media_finalizations + report.retention_reconciliations
+    + report.platform_jobs + report.billing_outbox;
   return options.report ? report : report.processed;
 }
 

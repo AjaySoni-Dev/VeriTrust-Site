@@ -43,3 +43,9 @@ Regeneration rejects snapshots containing auth users, table rows, Vault values, 
 For an existing database, run `db/preflight/004_atomic_integrity.sql` first. The forward migration deliberately marks its scan lifecycle constraint `NOT VALID`: existing inconsistent rows do not block deployment, while all new or changed rows are enforced. Any nonzero `completed_without_result` or terminal-timestamp count requires reconciliation from retained provider/audit evidence; the migration never fabricates a result.
 
 Deployment order is database migration first, application second. Do not deploy the application before the atomic RPCs exist because compatibility table writes have been removed and the application now fails closed.
+
+## Task 5: unified case workflow forward migration
+
+`supabase/migrations/20260803104000_unified_case_workflow.sql` adds the customer-facing investigation model: one case per standard or gateway scan, normalized append-only evidence, machine and analyst decision history, workflow assignment/status/priority, and an audit event stream. Existing `scans`, `scan_results`, `gateway_scans`, `gateway_evidence`, and `gateway_decisions` remain authoritative source records and are backfilled into the new model without replacement or deletion.
+
+Run `db/preflight/005_unified_case_workflow.sql` before applying the migration. All orphan counts should be zero. A nonzero `standard_scans_with_multiple_results` count is supported, but should be reviewed because each result becomes a separate evidence item and machine decision. Apply the Task 5 migration before deploying the application routes and `cases.html`/`case.html` UI. Run `db/tests/004_unified_case_workflow_contract.sql` in staging to verify automatic case creation, evidence normalization, analyst authorization, and state transitions.

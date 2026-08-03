@@ -378,7 +378,7 @@ Never hardcode production API keys in public notebooks, frontend JavaScript, rep
 
 ### Supabase Schema Setup
 
-Apply the version-controlled production schema used by your deployed Supabase project before production use. The historical bootstrap schema referenced by older revisions is not present in this checkout, so export the live schema into version control before making structural changes. After the schema is installed, run `docs/supabase-security-hardening.sql`, then run the read-only `docs/supabase-security-audit.sql` and review every non-empty result set.
+The clean-environment baseline and all forward migrations live in `supabase/migrations`. Apply the baseline only to a new local or staging project. Existing deployments must align migration history with the baseline and then apply only forward migrations; never push the reconstructed baseline over an existing production schema. See `db/README.md`, run the applicable read-only SQL in `db/preflight`, and execute every contract in `db/tests` against staging before production rollout.
 
 ### Legal And Trust Pages
 
@@ -454,6 +454,10 @@ The production gateway foundation is available under `/api/v1/gateway`. It uses 
 The browser guide at `/gateway-powershell.html` includes copy-ready Windows PowerShell workflows for phishing, link, image deepfake, message-plus-link, and unified message-plus-link-plus-image scans. Unified submissions place all applicable artifacts in one request so the gateway returns one correlated policy decision.
 
 The machine-readable alpha contract is in `openapi/veritrust-gateway-v1.yaml`. Private signed media uploads, durable PGMQ jobs, bounded Vercel media/webhook/retention workers, immediate `pg_net` dispatch, and one-minute Supabase Cron recovery are implemented. Enforcement remains advisory-first and organization activation should still be limited to approved pilots.
+
+### Unified Case Workflow
+
+Authenticated workspace users review every Deepfake, Phishing, Link, and Gateway result through `/cases`. Each source scan creates exactly one tenant-bound case. Model outputs are normalized into append-only evidence and machine decisions; owners, admins, and analysts can take a case, set priority, cite evidence, record a human decision, close it, and later reopen it without overwriting decision history. Viewers have read-only access. The server route is `GET/POST /api/cases`; browsers never receive direct write grants on the case tables.
 
 ### Health Check
 
@@ -724,7 +728,7 @@ Current limitations include:
 - Supabase authentication and scan persistence require the production schema and Vercel environment variables
 - the free-tier serverless worker is intended for an MVP workload; capacity, invocation, bandwidth, and external-model quotas still require monitoring
 - serverless rate limiting requires the `api_rate_limits` table and `consume_api_rate_limit` RPC in the deployed Supabase schema
-- the historical Supabase bootstrap and gateway migration files are not present in this checkout; export the deployed schema and migrations into version control before the next database change
+- production migration history must be aligned before applying the forward-only Task 4 and Task 5 migrations
 - existing Supabase projects created before Critical risk support must run: `alter type public.risk_level add value if not exists 'critical';`
 - billing and paid-plan enforcement are not implemented beyond basic plan-aware daily limits
 - AI results depend on external Hugging Face model availability and latency

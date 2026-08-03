@@ -19,6 +19,7 @@
   <script src="assets/js/config.js?v=20260712-supabase3" defer></script>
   <script src="assets/js/supabase-client.js?v=20260712-supabase3" defer></script>
   <script src="assets/js/site.js?v=20260723-unified-chrome3" defer></script>
+  <script src="assets/js/model-performance.js?v=20260803-governance1" defer></script>
   <link rel="stylesheet" href="assets/css/glass-system.css?v=20260723-global4">
 </head>
 <body class="vt-graphite-theme">
@@ -66,6 +67,12 @@
         <h1>No VeriTrust benchmark is currently published.</h1>
         <p>The repository does not contain a controlled labeled evaluation, confusion matrix, or verified accuracy, precision, recall, or F1 result. Accordingly, the site makes no numerical performance claim.</p>
         <p>Current scan output is an AI-assisted triage signal. A provider model&apos;s confidence value is not a VeriTrust accuracy measurement and is not legal, forensic, cybersecurity, or final proof.</p>
+        <div class="model-governance-summary" data-model-governance aria-live="polite" aria-busy="true"><strong>Checking the model-card registry</strong><p>Published evidence will appear only after an evaluated model card has been approved.</p></div>
+      </section>
+
+      <section id="published-cards" class="doc-section">
+        <h2>Published model cards</h2>
+        <div class="model-card-grid" data-model-cards><div class="model-card-empty"><strong>Loading governance records</strong><p>No metric is displayed until its supporting model card is published.</p></div></div>
       </section>
 
       <section id="deepfake" class="doc-section">

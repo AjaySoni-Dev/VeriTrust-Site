@@ -4,6 +4,7 @@ const routes = Object.freeze({
   health: require('./_health'),
   'client-config': require('./_client-config'),
   'learning-access': require('./_learning-access'),
+  'model-cards': require('./_model-cards'),
 });
 
 function routeName(req) {
