@@ -8,7 +8,9 @@ function fail(message) {
 }
 
 function read(relativePath) {
-  return fs.readFileSync(path.join(root, relativePath), 'utf8');
+  const absolute = path.join(root, relativePath);
+  if (!fs.existsSync(absolute)) fail(`${relativePath} is missing`);
+  return fs.readFileSync(absolute, 'utf8');
 }
 
 const ignoredDirectories = new Set([
