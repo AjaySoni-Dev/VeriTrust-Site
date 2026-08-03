@@ -1,0 +1,8 @@
+.env*
+*.log
+legacy-php/
+node_modules/
+output/
+test/
+VeriTrust-Domain - Copy/
+transformation/
