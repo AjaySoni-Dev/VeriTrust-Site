@@ -576,6 +576,10 @@
     }
 
     @media (max-width: 760px) {
+      body.vt-dashboard-page .dashboard-overview-head {
+        display: none;
+      }
+
       body.vt-dashboard-page .dashboard-shell,
       body.vt-dashboard-page .legal-footer {
         width: min(100% - 24px, 1160px);
@@ -762,7 +766,7 @@
   </header>
 
   <main class="dashboard-shell workspace-page">
-    <section class="dashboard-head">
+    <section class="dashboard-head dashboard-overview-head">
       <div>
         <p class="eyebrow">Workspace</p>
         <h1>Workspace overview.</h1>
