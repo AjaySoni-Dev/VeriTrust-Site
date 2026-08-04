@@ -195,6 +195,10 @@
   gap: 18px;
 }
 
+.gateway-form .panel-title h1 {
+  font-size: 18px;
+}
+
 .gateway-form .field {
   display: grid;
   gap: 8px;
@@ -798,13 +802,6 @@ body.vt-tool-page.vt-gateway-page.vt-graphite-theme .gateway-history {
 body.vt-tool-page.vt-gateway-page.vt-graphite-theme :where(.gateway-upload, .gateway-decision > div, .gateway-evidence article, .gateway-history-list article, .gateway-history-list .gateway-history-item) {
   border: 1px solid rgba(255, 255, 255, 0.075);
   background: rgba(43, 43, 43, 0.68) !important;
-}
-
-/* On phones, begin with actionable gateway content instead of the introductory card. */
-@media (max-width: 760px) {
-  body.vt-tool-page.vt-gateway-page .gateway-heading {
-    display: none;
-  }
 }
 
 @media (max-width: 900px) {
