@@ -68,6 +68,9 @@ function setLoading(button, loading, label) {
   button.disabled = loading;
   button.textContent = label || button.dataset.defaultLabel;
   button.classList.toggle('is-loading', loading);
+  if (loading) button.setAttribute('aria-busy', 'true');
+  else button.removeAttribute('aria-busy');
+  button.classList.remove('vt-loading-shimmer');
 }
 
 function formatBytes(bytes) {
@@ -208,7 +211,7 @@ function resetResult(targetId, message) {
   const target = document.getElementById(targetId);
   if (!target) return;
   target.classList.add('result-empty');
-  target.classList.remove('result-ready', 'result-loading');
+  target.classList.remove('result-ready', 'result-loading', 'vt-loading-shimmer');
   target.textContent = message;
 }
 
@@ -216,7 +219,7 @@ function renderLoadingResult(targetId, title, message) {
   window.VeriTrustResultDialog?.closeFor(targetId);
   const target = document.getElementById(targetId);
   if (!target) return;
-  target.classList.remove('result-empty', 'result-ready');
+  target.classList.remove('result-empty', 'result-ready', 'vt-loading-shimmer');
   target.classList.add('result-loading');
   target.innerHTML = `
     <div class="loading-state">
@@ -544,7 +547,7 @@ function renderExtractedEntities(extracted) {
 function renderResult(targetId, data) {
   const target = document.getElementById(targetId);
   if (!target) return;
-  target.classList.remove('result-empty', 'result-loading');
+  target.classList.remove('result-empty', 'result-loading', 'vt-loading-shimmer');
   target.classList.add('result-ready');
   const result = data.result || {};
   const labelLower = String(result.label || '').toLowerCase();

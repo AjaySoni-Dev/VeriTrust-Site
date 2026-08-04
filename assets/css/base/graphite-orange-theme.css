@@ -478,12 +478,6 @@ body.vt-dashboard-page.vt-graphite-theme .tool-header-links > a:not(.workspace-m
   background: var(--accent-main);
 }
 
-body.vt-dashboard-page.vt-graphite-theme .tool-header-dashboard.active {
-  border-color: var(--accent-border) !important;
-  background: var(--accent-soft) !important;
-  color: var(--accent-hover) !important;
-}
-
 body.vt-dashboard-page.vt-graphite-theme .dashboard-head {
   border: 1px solid var(--dashboard-border) !important;
   border-radius: var(--radius-md) !important;

@@ -7,9 +7,17 @@
     document.body.classList.toggle(bodyClass, Boolean(document.querySelector('.result-dialog[open]')));
   };
 
+  const clearShimmer = (dialog) => {
+    dialog.classList.remove('vt-loading-shimmer');
+    dialog.querySelectorAll('.vt-loading-shimmer').forEach((node) => {
+      node.classList.remove('vt-loading-shimmer');
+    });
+  };
+
   const openFor = (targetId) => {
     const dialog = dialogFor(targetId);
     if (!dialog) return;
+    clearShimmer(dialog);
     if (!dialog.open) {
       if (typeof dialog.showModal === 'function') dialog.showModal();
       else dialog.setAttribute('open', '');

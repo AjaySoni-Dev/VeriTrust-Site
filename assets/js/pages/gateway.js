@@ -3,6 +3,7 @@
   const form = document.getElementById('gateway-form');
   if (!form || !api) return;
   const elements = Object.fromEntries(['auth','error','text','urls','file','file-label','context','submit','cancel','status','status-copy','empty','output','recommendation','risk','verdict','reasons','evidence','audit','refresh','result-loading','history-list','history-pagination','history-count','history-more'].map((name) => [name, document.getElementById(`gateway-${name}`)]));
+  const resultPanel = document.querySelector('.gateway-result');
   let activeScanId = null;
   let polling = null;
   let historyRows = [];
@@ -11,7 +12,19 @@
   const HISTORY_PAGE_SIZE = 5;
 
   function setError(message) { elements.error.textContent = message || ''; elements.error.hidden = !message; }
-  function setBusy(busy, message) { form.querySelectorAll('input,textarea,select,button').forEach((item) => { if (item !== elements.cancel) item.disabled = busy; }); elements.submit.textContent = busy ? 'Processing…' : 'Analyze through gateway'; document.querySelector('.gateway-result').classList.toggle('is-loading', busy); if (message) elements['status-copy'].textContent = message; }
+  function setBusy(busy, message) {
+    form.querySelectorAll('input,textarea,select,button').forEach((item) => {
+      if (item !== elements.cancel) item.disabled = busy;
+    });
+    elements.submit.textContent = busy ? 'Processing…' : 'Analyze through gateway';
+    elements.submit.classList.toggle('is-loading', busy);
+    elements.submit.classList.remove('vt-loading-shimmer');
+    if (busy) elements.submit.setAttribute('aria-busy', 'true');
+    else elements.submit.removeAttribute('aria-busy');
+    resultPanel?.classList.toggle('is-loading', busy);
+    resultPanel?.classList.remove('vt-loading-shimmer');
+    if (message) elements['status-copy'].textContent = message;
+  }
   async function request(url, options = {}) { return api.callAppApi(url, options); }
 
   async function uploadMedia(file) {
@@ -28,6 +41,10 @@
   function render(data) {
     activeScanId = data.scan_id || activeScanId;
     const decision = data.decision || {};
+    resultPanel?.classList.remove('vt-loading-shimmer');
+    resultPanel?.querySelectorAll('.vt-loading-shimmer').forEach((node) => {
+      node.classList.remove('vt-loading-shimmer');
+    });
     elements.empty.hidden = true; elements.output.hidden = false;
     elements.status.textContent = data.status || 'unknown'; elements['status-copy'].textContent = data.status === 'completed' ? 'Final policy decision available.' : 'Analysis is continuing in the durable worker.';
     elements.recommendation.textContent = decision.recommendation || 'Pending'; elements.risk.textContent = Number.isFinite(Number(decision.risk)) ? `${Math.round(Number(decision.risk) * 100)}%` : 'Pending'; elements.verdict.textContent = decision.verdict || 'Unknown';
@@ -55,8 +72,9 @@
     item.disabled = true;
     item.setAttribute('aria-current', 'true');
     elements['result-loading'].hidden = false;
-    document.querySelector('.gateway-result')?.classList.add('is-history-loading');
-    document.querySelector('.gateway-result')?.setAttribute('aria-busy', 'true');
+    resultPanel?.classList.add('is-history-loading');
+    resultPanel?.classList.remove('vt-loading-shimmer');
+    resultPanel?.setAttribute('aria-busy', 'true');
     elements['status-copy'].textContent = `Loading ${scan.display_id || 'selected scan'}…`;
 
     try {
@@ -69,8 +87,8 @@
       historySelectionPending = false;
       item.disabled = false;
       elements['result-loading'].hidden = true;
-      document.querySelector('.gateway-result')?.classList.remove('is-history-loading');
-      document.querySelector('.gateway-result')?.removeAttribute('aria-busy');
+      resultPanel?.classList.remove('is-history-loading', 'vt-loading-shimmer');
+      resultPanel?.removeAttribute('aria-busy');
     }
   }
 
@@ -108,6 +126,8 @@
   async function refreshHistory() {
     elements.refresh.disabled = true;
     elements.refresh.classList.add('is-loading');
+    elements.refresh.classList.remove('vt-loading-shimmer');
+    elements.refresh.setAttribute('aria-busy', 'true');
     try {
       const data = await request('/api/v1/gateway/scans?limit=50', { cache: 'no-store' });
       historyRows = Array.isArray(data.scans) ? data.scans : [];
@@ -119,6 +139,7 @@
     } finally {
       elements.refresh.disabled = false;
       elements.refresh.classList.remove('is-loading');
+      elements.refresh.removeAttribute('aria-busy');
     }
   }
 

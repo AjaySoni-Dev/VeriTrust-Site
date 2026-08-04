@@ -114,32 +114,34 @@ window.VeriTrustPageAccess = VeriTrustPageAccess;
 
 const VeriTrustLoadingShimmer = (() => {
   const candidates = [
-    'button',
     '[role="status"]',
     '.learning-message',
-    '.result-loading',
-    '.loading-state',
     '.is-loading',
     '.gateway-history-item',
     'h1[id$="-title"]',
+    '.vt-loading-shimmer',
+  ].join(',');
+  const spinnerOnly = [
+    'button',
+    '.btn',
+    '.learning-btn',
+    '.result-loading',
+    '.loading-state',
+    '.gateway-result',
+    '.gateway-history-item',
   ].join(',');
   const loadingCopy = /^(?:loading|checking|preparing|processing|saving|submitting|creating|refreshing|uploading|analyzing|enrolling|verifying|please wait)\b/i;
   let scheduled = false;
 
   const isLoading = (node) => {
     if (!(node instanceof HTMLElement) || node.hidden) return false;
+    if (node.matches(spinnerOnly) || node.closest('.result-dialog, .gateway-result')) return false;
     if (node.classList.contains('learning-message')) return false;
-    if (node.classList.contains('result-loading')) return true;
-    if (node.classList.contains('loading-state')) {
-      return !node.parentElement?.classList.contains('result-loading');
-    }
     if (node.classList.contains('is-loading')) return true;
     if (node.getAttribute('aria-busy') === 'true') return true;
-    if (node.matches('button') && node.closest('[aria-busy="true"]')) return true;
 
     const copy = String(node.textContent || '').trim();
     if (!loadingCopy.test(copy)) return false;
-    if (node.matches('button')) return node.disabled;
     return node.matches('[role="status"], .learning-message, h1[id$="-title"]');
   };
 

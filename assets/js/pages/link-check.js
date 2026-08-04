@@ -40,6 +40,9 @@ function setLoading(button, loading, label) {
   button.disabled = loading;
   button.textContent = label || button.dataset.defaultLabel;
   button.classList.toggle('is-loading', loading);
+  if (loading) button.setAttribute('aria-busy', 'true');
+  else button.removeAttribute('aria-busy');
+  button.classList.remove('vt-loading-shimmer');
 }
 
 function formatPercent(value) {
@@ -193,7 +196,7 @@ function renderLoadingResult() {
   window.VeriTrustResultDialog?.closeFor('linkResult');
   const target = qs('#linkResult');
   if (!target) return;
-  target.classList.remove('result-empty', 'result-ready');
+  target.classList.remove('result-empty', 'result-ready', 'vt-loading-shimmer');
   target.classList.add('result-loading');
   target.innerHTML = `
     <div class="loading-state">
@@ -268,7 +271,7 @@ function renderResult(data) {
   const modelMeta = result.model_meta || {};
   const fallbackReason = model.fallback_reason || modelMeta.fallback_reason || 'Hosted inference was unavailable; fallback scoring was used.';
 
-  target.classList.remove('result-empty', 'result-loading');
+  target.classList.remove('result-empty', 'result-loading', 'vt-loading-shimmer');
   target.classList.add('result-ready');
   target.innerHTML = `
     <div class="result-summary">
@@ -329,7 +332,7 @@ function renderError(message, details = {}) {
     details.code ? `Code: ${details.code}` : '',
     details.status ? `Status: ${details.status}` : '',
   ].filter(Boolean);
-  target.classList.remove('result-empty', 'result-loading');
+  target.classList.remove('result-empty', 'result-loading', 'vt-loading-shimmer');
   target.classList.add('result-ready');
   target.innerHTML = `
     <div class="result-summary">

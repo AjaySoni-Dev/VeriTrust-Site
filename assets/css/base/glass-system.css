@@ -150,19 +150,27 @@ html body.vt-dashboard-page.vt-graphite-theme .vt-site-header .tool-header-actio
   gap: 12px !important;
 }
 
-html body.vt-dashboard-page.vt-graphite-theme .vt-site-header :where(
+html body .vt-site-header :where(
   .tool-header-dashboard,
   .tool-header-login.is-logout
 ) {
-  min-height: 38px;
+  align-items: center;
+  justify-content: center;
+  min-height: 40px;
   padding: 0.5rem 1rem;
-  border: 1px solid var(--border-hover) !important;
-  border-radius: 6px !important;
-  background: var(--bg-surface-hover) !important;
+  border: 1px solid var(--border-subtle) !important;
+  border-radius: var(--radius-sm) !important;
+  background: var(--bg-surface-light) !important;
   color: var(--text-primary) !important;
+  font-size: 0.875rem;
+  font-weight: 500;
+  line-height: 1.2;
 }
 
-html body.vt-dashboard-page.vt-graphite-theme .vt-site-header .tool-header-dashboard.active {
+html body .vt-site-header :where(
+  .tool-header-dashboard,
+  .tool-header-login.is-logout
+):hover {
   border-color: var(--border-hover) !important;
   background: var(--bg-surface-hover) !important;
   color: var(--text-primary) !important;
