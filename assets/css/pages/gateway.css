@@ -800,6 +800,13 @@ body.vt-tool-page.vt-gateway-page.vt-graphite-theme :where(.gateway-upload, .gat
   background: rgba(43, 43, 43, 0.68) !important;
 }
 
+/* On phones, begin with actionable gateway content instead of the introductory card. */
+@media (max-width: 760px) {
+  body.vt-tool-page.vt-gateway-page .gateway-heading {
+    display: none;
+  }
+}
+
 @media (max-width: 900px) {
   body.vt-tool-page.vt-gateway-page.vt-graphite-theme .gateway-powershell-feature {
     grid-template-columns: minmax(0, 1fr) auto;
