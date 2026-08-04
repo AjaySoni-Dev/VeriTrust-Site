@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Learning Preview Access | VeriTrust</title>
+  <meta name="description" content="Enter the private development access key to open VeriTrust Learning preview features.">
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="theme-color" content="#060910">
+  <link rel="icon" href="/favicon.ico">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@500;600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/base/veritrust.css">
+  <link rel="stylesheet" href="/assets/css/base/tool-pages.css">
+  <link rel="stylesheet" href="/assets/css/base/graphite-orange-theme.css">
+  <link rel="stylesheet" href="/assets/css/pages/learning-access.css">
+  <link rel="stylesheet" href="/assets/css/base/glass-system.css">
+  <script src="/assets/js/core/config.js" defer></script>
+  <script src="/assets/js/core/supabase-client.js" defer></script>
+  <script src="/assets/js/core/site.js" defer></script>
+  <script src="/assets/js/pages/learning-access.js" defer></script>
+</head>
+<body class="vt-tool-page vt-graphite-theme vt-learning-access-page">
+  <header></header>
+  <main class="learning-access-shell">
+    <section class="learning-access-panel" aria-labelledby="learning-access-title">
+      <div class="learning-access-copy">
+        <p class="eyebrow">Development preview</p>
+        <h1 id="learning-access-title">VeriTrust Learning is in development.</h1>
+        <p>The learning and certification workspace is currently available only to approved preview users. Enter the development access key to continue.</p>
+        <div class="learning-access-notes" aria-label="Access information">
+          <div><strong>Server validated</strong><span>The key is checked securely and is never added to page source.</span></div>
+          <div><strong>Time limited</strong><span>Successful access unlocks this browser for eight hours.</span></div>
+        </div>
+      </div>
+      <form id="learning-access-form" class="learning-access-form">
+        <div>
+          <p class="eyebrow">Preview access</p>
+          <h2>Enter development key</h2>
+          <p>Use the key provided by the VeriTrust administrator.</p>
+        </div>
+        <label for="learning-access-key">Development access key</label>
+        <input id="learning-access-key" name="key" type="password" maxlength="256" autocomplete="current-password" required>
+        <button id="learning-access-submit" class="btn btn-primary" type="submit">Unlock learning</button>
+        <p id="learning-access-message" class="learning-access-message" role="status" aria-live="polite"></p>
+      </form>
+    </section>
+  </main>
+  <footer></footer>
+</body>
+</html>

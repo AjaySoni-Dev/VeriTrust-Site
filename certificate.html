@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Verify Credential | VeriTrust</title>
+  <meta name="description" content="Verify the current status and public details of a VeriTrust learning credential without exposing private learner account data.">
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="theme-color" content="#060910">
+  <link rel="icon" href="/favicon.ico">
+  <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@500;600&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/base/veritrust.css"><link rel="stylesheet" href="/assets/css/base/tool-pages.css"><link rel="stylesheet" href="/assets/css/base/graphite-orange-theme.css"><link rel="stylesheet" href="/assets/css/pages/learning.css"><link rel="stylesheet" href="/assets/css/base/glass-system.css">
+  <script src="/assets/js/core/config.js" defer></script><script src="/assets/js/core/supabase-client.js" defer></script><script src="/assets/js/core/site.js" defer></script><script src="/assets/js/core/learning-api.js" defer></script><script src="/assets/js/pages/certificate.js" defer></script>
+</head>
+<body class="vt-tool-page vt-graphite-theme vt-learning-page learning-data-loading">
+  <header></header>
+  <main class="learning-shell">
+    <section class="learning-page-title"><p class="learning-kicker">Credential verification</p><h1>Verify a VeriTrust credential.</h1><p>Only consented public credential details are displayed. Email addresses, account IDs, organizations, scores, answers, and activity history remain private.</p></section>
+    <div id="credential-message" class="learning-message" role="status">Checking credential status…</div>
+    <article id="credential-card" class="credential-card" hidden>
+      <img class="credential-mark" src="/assets/images/logo.png" alt="">
+      <p id="credential-status" class="learning-kicker">VALID</p>
+      <h2 id="credential-title">VeriTrust credential</h2>
+      <p>Awarded to <strong id="credential-name">credential holder</strong></p>
+      <dl id="credential-details" class="credential-details"></dl>
+    </article>
+  </main>
+  <footer></footer>
+</body>
+</html>

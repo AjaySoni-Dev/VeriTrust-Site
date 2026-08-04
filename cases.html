@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" href="/favicon.ico" type="image/x-icon">
+  <title>Cases | VeriTrust</title>
+  <meta name="description" content="Review VeriTrust investigation cases, model evidence, and analyst decisions in one workspace queue.">
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@500;600&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/base/veritrust.css">
+  <link rel="stylesheet" href="/assets/css/base/graphite-orange-theme.css">
+  <link rel="stylesheet" href="/assets/css/pages/case-workflow.css">
+  <link rel="stylesheet" href="/assets/css/base/glass-system.css">
+  <script src="/assets/js/core/config.js" defer></script>
+  <script src="/assets/js/core/supabase-client.js" defer></script>
+  <script src="/assets/js/core/site.js" defer></script>
+  <script src="/assets/js/pages/cases.js" defer></script>
+</head>
+<body class="dashboard-is-loading vt-dashboard-page vt-graphite-theme">
+  <header class="tool-header-shell vt-page-header"><div class="tool-header-inner">
+    <a href="index.html" class="tool-header-brand" aria-label="VeriTrust home"><img src="/assets/images/logo.png" alt="" class="tool-header-mark"><img src="/assets/images/brand.png" alt="VeriTrust" class="tool-header-word"></a>
+    <nav class="tool-header-links" aria-label="Primary"><a href="index.html">Home</a><a href="detection.html">Detection</a><a href="developers.html">Developers</a><a href="docs.html">Docs</a><a href="model-performance.html">Model Performance</a><a class="workspace-menu-link" href="dashboard.html">Workspace overview</a><a class="workspace-menu-link active" href="cases.html">Cases</a><a class="workspace-menu-link" href="api-access.html">API access</a><a class="workspace-menu-link" href="billing.html">Billing</a><a class="workspace-menu-link" href="account.html">Account</a></nav>
+    <div class="tool-header-actions"><a href="auth.html" class="tool-header-login">Log in</a><a href="dashboard.html" class="tool-header-dashboard active">Dashboard</a><button class="tool-menu-toggle" aria-label="Open page menu" aria-expanded="false" type="button"><svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="12" cy="5" r="1.8"/><circle cx="12" cy="12" r="1.8"/><circle cx="12" cy="19" r="1.8"/></svg></button></div>
+  </div></header>
+  <main class="dashboard-shell workspace-page" data-cases-list>
+    <section class="dashboard-head"><div><p class="eyebrow">Workspace / Cases</p><h1>Investigation case queue.</h1><p class="lead" data-case-status>Every detection is organized with its evidence, machine assessment, and human decision in one review record.</p></div><a class="btn btn-primary" href="detection.html">New Scan</a></section>
+    <nav class="workspace-nav" aria-label="Workspace"><a href="dashboard.html">Overview</a><a class="active" href="cases.html" aria-current="page">Cases</a><a href="api-access.html">API access</a><a href="billing.html">Billing</a><a href="account.html">Account</a></nav>
+
+    <section class="case-summary-grid" aria-label="Case summary">
+      <article><span>Open queue</span><strong data-case-count-open>0</strong></article>
+      <article><span>In review</span><strong data-case-count-review>0</strong></article>
+      <article><span>Decided</span><strong data-case-count-decided>0</strong></article>
+      <article><span>High / critical</span><strong data-case-count-high>0</strong></article>
+    </section>
+
+    <section class="dashboard-grid"><article class="dashboard-panel dashboard-wide">
+      <div class="panel-title"><div><h2>Review queue</h2><p>Filter cases by workflow state, priority, or assignment. Open a case to inspect evidence and record a bounded analyst decision.</p></div></div>
+      <form class="case-filters" data-case-filters>
+        <label>Status<select name="status"><option value="">All statuses</option><option value="open">Open</option><option value="in_review">In review</option><option value="decided">Decided</option><option value="closed">Closed</option></select></label>
+        <label>Priority<select name="priority"><option value="">All priorities</option><option value="urgent">Urgent</option><option value="high">High</option><option value="normal">Normal</option><option value="low">Low</option></select></label>
+        <label>Assignment<select name="assigned"><option value="">Everyone</option><option value="me">Assigned to me</option><option value="unassigned">Unassigned</option></select></label>
+        <button class="btn btn-secondary" type="submit">Apply filters</button>
+      </form>
+      <div data-case-list aria-live="polite"><div class="empty-state-table"><strong>Loading cases</strong><p>Building the investigation queue.</p></div></div>
+    </article></section>
+  </main>
+  <footer class="legal-footer"><a href="privacy.html">Privacy</a><span aria-hidden="true">&middot;</span><a href="terms.html">Terms</a><span aria-hidden="true">&middot;</span><a href="security.html">Security</a><span aria-hidden="true">&middot;</span><a href="docs.html">Docs</a></footer>
+</body>
+</html>

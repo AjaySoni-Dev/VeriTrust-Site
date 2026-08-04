@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Learning Administration | VeriTrust</title>
+  <meta name="description" content="Manage VeriTrust learning participation, assignments, completion insights, credentials, and secure organization-level access.">
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="theme-color" content="#060910">
+  <link rel="icon" href="/favicon.ico">
+  <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@500;600&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/base/veritrust.css"><link rel="stylesheet" href="/assets/css/base/tool-pages.css"><link rel="stylesheet" href="/assets/css/base/graphite-orange-theme.css"><link rel="stylesheet" href="/assets/css/pages/learning.css"><link rel="stylesheet" href="/assets/css/base/glass-system.css">
+  <script src="/assets/js/core/config.js" defer></script><script src="/assets/js/core/supabase-client.js" defer></script><script src="/assets/js/core/site.js" defer></script><script src="/assets/js/core/learning-api.js" defer></script><script src="/assets/js/pages/learning-admin.js" defer></script>
+</head>
+<body class="vt-tool-page vt-graphite-theme vt-learning-page learning-data-loading">
+  <header></header>
+  <main class="learning-shell">
+    <section class="learning-page-title"><p class="learning-kicker">Organization learning</p><h1>Learning administration.</h1><p>Monitor participation and completion for the active workspace. Access is restricted to workspace owners and administrators.</p></section>
+    <div id="admin-message" class="learning-message" role="status">Loading organization learning metrics…</div>
+    <section class="learning-section"><div class="learning-section-heading"><div><p class="learning-kicker">Current workspace</p><h2>Learning overview</h2></div></div><div id="admin-metrics" class="learning-grid"></div></section>
+    <section class="learning-panel learning-section"><p class="learning-kicker">Security boundary</p><h2>Role-controlled operations</h2><p>Publishing, question-bank editing, assessment scoring, credential status changes, bulk assignment, and exports are performed through protected database functions. The browser cannot read answer keys or write certification status directly.</p></section>
+  </main>
+  <footer></footer>
+</body>
+</html>
