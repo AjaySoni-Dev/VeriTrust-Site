@@ -1,5 +1,4 @@
 const crypto = require('crypto');
-const { serverConfig } = require('../../lib/config');
 const { correlate } = require('../../lib/gateway/correlation');
 const { validateImageBytes } = require('../../lib/gateway/media');
 const { compilePolicy } = require('../../lib/gateway/policy');

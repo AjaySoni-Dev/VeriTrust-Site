@@ -1,17 +1,16 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
-  "version": 2,
   "cleanUrls": true,
   "trailingSlash": false,
   "functions": {
     "api/detection.js": {
-      "maxDuration": 300
+      "maxDuration": 60
     },
     "api/gateway.js": {
-      "maxDuration": 300
+      "maxDuration": 60
     },
     "api/v1.js": {
-      "maxDuration": 300
+      "maxDuration": 60
     },
     "api/account.js": {
       "maxDuration": 60
@@ -26,6 +25,13 @@
       "maxDuration": 60
     }
   },
+  "redirects": [
+    {
+      "source": "/scans",
+      "destination": "/cases",
+      "permanent": true
+    }
+  ],
   "headers": [
     {
       "source": "/favicon(.*)",
@@ -78,6 +84,10 @@
         {
           "key": "Cache-Control",
           "value": "no-store, max-age=0"
+        },
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex, nofollow, nosnippet"
         }
       ]
     },
@@ -86,7 +96,7 @@
       "headers": [
         {
           "key": "Content-Security-Policy",
-          "value": "default-src 'self'; base-uri 'none'; object-src 'none'; frame-src 'none'; frame-ancestors 'none'; form-action 'self'; script-src 'self' 'sha256-NxF1MD3j89FDVujFES5VEXOVpX49NF05bNxWLGnteD8='; script-src-attr 'none'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data: blob: https://*.supabase.co https://ajaysoni-dev-deepfakefusion.hf.space; media-src 'self' data: blob: https://*.supabase.co; connect-src 'self' https://*.supabase.co https://ajaysoni-dev-deepfakefusion.hf.space; worker-src 'self' blob:; manifest-src 'self'; upgrade-insecure-requests"
+          "value": "default-src 'self'; base-uri 'none'; object-src 'none'; frame-src 'none'; frame-ancestors 'none'; form-action 'self'; script-src 'self' 'sha256-wczZ3q1V++z9fMI0lTtJu87UY/39DA8gzGUR/Lh3Ed8='; script-src-attr 'none'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data: blob: https://*.supabase.co https://ajaysoni-dev-deepfakefusion.hf.space; media-src 'self' data: blob: https://*.supabase.co; connect-src 'self' https://*.supabase.co https://ajaysoni-dev-deepfakefusion.hf.space; worker-src 'self' blob:; manifest-src 'self'; upgrade-insecure-requests"
         },
         {
           "key": "Strict-Transport-Security",
@@ -367,90 +377,6 @@
     {
       "source": "/api/billing/webhook",
       "destination": "/api/billing?route=webhook"
-    },
-    {
-      "source": "/detection",
-      "destination": "/detection.html"
-    },
-    {
-      "source": "/gateway",
-      "destination": "/gateway.html"
-    },
-    {
-      "source": "/deepfake",
-      "destination": "/deepfake.html"
-    },
-    {
-      "source": "/phishing",
-      "destination": "/phishing.html"
-    },
-    {
-      "source": "/link-check",
-      "destination": "/link-check.html"
-    },
-    {
-      "source": "/docs",
-      "destination": "/docs.html"
-    },
-    {
-      "source": "/dashboard",
-      "destination": "/dashboard.html"
-    },
-    {
-      "source": "/scans",
-      "destination": "/cases.html"
-    },
-    {
-      "source": "/cases",
-      "destination": "/cases.html"
-    },
-    {
-      "source": "/case",
-      "destination": "/case.html"
-    },
-    {
-      "source": "/api-access",
-      "destination": "/api-access.html"
-    },
-    {
-      "source": "/billing",
-      "destination": "/billing.html"
-    },
-    {
-      "source": "/account",
-      "destination": "/account.html"
-    },
-    {
-      "source": "/auth",
-      "destination": "/auth.html"
-    },
-    {
-      "source": "/model-performance",
-      "destination": "/model-performance.html"
-    },
-    {
-      "source": "/privacy",
-      "destination": "/privacy.html"
-    },
-    {
-      "source": "/terms",
-      "destination": "/terms.html"
-    },
-    {
-      "source": "/security",
-      "destination": "/security.html"
-    },
-    {
-      "source": "/disclaimer",
-      "destination": "/disclaimer.html"
-    },
-    {
-      "source": "/developers",
-      "destination": "/developers.html"
-    },
-    {
-      "source": "/gateway-powershell",
-      "destination": "/gateway-powershell.html"
     },
     {
       "source": "/learn/courses/:slug/lessons/:lessonSlug",

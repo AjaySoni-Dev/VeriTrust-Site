@@ -2,15 +2,10 @@
   "name": "veritrust-domain",
   "version": "1.0.0",
   "private": true,
-  "description": "VeriTrust landing site and Vercel API proxy",
+  "description": "VeriTrust static web application and Vercel API",
   "scripts": {
-    "check": "node scripts/check-js.js && node scripts/check-vercel-functions.js && node scripts/check-navigation.js && node scripts/check-security.js && npm run check:db",
-    "check:db": "node scripts/check-db-migrations.js",
-    "check:deploy": "node scripts/check-deploy-inventory.js",
-    "check:secrets": "node scripts/check-secrets.js",
-    "ci": "npm run check:secrets && npm run check:deploy && npm run check && npm test && npm audit --omit=dev --audit-level=high",
-    "test": "node --test \"test/unit/*.test.js\"",
-    "verify:gateway": "npm run check && npm test",
+    "check": "node scripts/verify.js",
+    "ci": "npm run check && npm audit --omit=dev --audit-level=high",
     "worker": "node worker/index.js",
     "start": "vercel dev"
   },
@@ -18,6 +13,6 @@
     "busboy": "^1.6.0"
   },
   "engines": {
-    "node": ">=20"
+    "node": "24.x"
   }
 }

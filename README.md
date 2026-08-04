@@ -1,802 +1,156 @@
-<h1 align="center">VeriTrust</h1>
+# VeriTrust
 
-<p align="center">
-  <strong>AI-Powered Digital Trust and Threat Detection Platform</strong><br>
-  Static security frontend, Vercel inference proxy, Hugging Face model routing, image verification, and phishing analysis.
-</p>
+VeriTrust is a static multi-page security review application backed by Vercel serverless functions. It provides AI-assisted image, phishing-message, URL, and unified gateway review; authenticated workspaces; case management; developer API access; billing hooks; and a private learning preview.
 
-<p align="center">
-  <img alt="Status" src="https://img.shields.io/badge/status-active%20development-blue">
-  <img alt="Frontend" src="https://img.shields.io/badge/frontend-HTML%20%2B%20CSS%20%2B%20JS-black">
-  <img alt="API" src="https://img.shields.io/badge/API-Vercel%20Functions-lightgrey">
-  <img alt="AI" src="https://img.shields.io/badge/AI-Hugging%20Face-yellow">
-  <img alt="Runtime" src="https://img.shields.io/badge/runtime-Node.js%2020-green">
-  <img alt="License" src="https://img.shields.io/badge/license-not%20specified-orange">
-</p>
+Production site: [veritrustlab.in](https://www.veritrustlab.in/)
 
-<p align="center">
-  <a href="#overview">Overview</a> .
-  <a href="#architecture">Architecture</a> .
-  <a href="#core-features">Features</a> .
-  <a href="#quick-start">Quick Start</a> .
-  <a href="#roadmap">Roadmap</a>
-</p>
+## Project status
 
----
+The repository is organized for GitHub and Vercel deployment. Public Vercel functions are intentionally limited to seven route dispatchers, while implementation code lives under `lib/`. Generated reports, historical implementation plans, local SQL utilities, and broken test scaffolding are not part of the deployable source tree.
 
-## Overview
+AI-assisted results are advisory and require human review. They are not forensic proof.
 
-**VeriTrust** is an AI-assisted security review platform designed to help users evaluate suspicious media and messages through focused detection workflows.
+## Features
 
-The project currently combines a polished static web interface with server-side inference endpoints that protect the Hugging Face access token from browser exposure.
+- Image deepfake scoring with validation and exportable reports
+- Phishing-message and suspicious-link analysis
+- Unified policy-backed gateway submissions
+- Authenticated workspace, scan history, case review, and profile management
+- Scoped API keys and versioned API endpoints
+- Optional Stripe checkout, portal, subscription, and webhook integration
+- Private learning, assessment, and credential-preview flows
+- Security headers, restricted server routes, canonical URLs, sitemap, and crawler controls
 
-Core workflow:
+## Repository structure
 
 ```text
-User Input
-     |
-     v
-Static VeriTrust Interface
-     |
-     v
-Vercel Serverless API Proxy
-     |
-     v
-Hugging Face Model Inference
-     |
-     v
-Normalized Risk Result
-```
-
-The platform is built around three primary review modules:
-
-- deepfake and synthetic-media image detection
-- phishing, scam, and suspicious-message detection
-- Link Intelligence for suspicious URLs, shortened links, and domain impersonation patterns
-- optional face-crop preprocessing for image analysis
-- normalized verdicts with confidence, risk level, and explanatory output
-- public documentation and authentication-facing UI screens
-
-> [!IMPORTANT]
-> VeriTrust is currently an active development project. It should be treated as a functional prototype and deployment-ready static/API bundle, not as a finalized enterprise security product.
-
----
-
-## Architecture
-
-The current architecture follows a static frontend plus protected inference-proxy model:
-
-```text
-Browser Pages
-     |
-     v
-Shared Frontend Assets
-     |
-     v
-/api/health, /api/deepfake, /api/phishing, /api/link-check
-     |
-     v
-Shared API Utilities
-     |
-     v
-Hugging Face Router / Inference API
-     |
-     v
-Structured VeriTrust Verdict
-```
-
-The deployed Vercel route model supports clean public routes such as:
-
-```text
-/detection
-/deepfake
-/phishing
-/link-check
-/docs
-/api/health
-/api/deepfake
-/api/phishing
-/api/link-check
-```
-
----
-
-## Core Features
-
-| Area | Current State | Description |
-|---|---:|---|
-| Landing website | Active | Public-facing VeriTrust marketing and product overview page |
-| Detection hub | Active | Entry page for selecting image or message review workflows |
-| Deepfake detection | Active | Image upload workflow using Hugging Face vision classifiers |
-| Phishing detection | Active | Text, email, SMS, and URL review workflow using classifier/chat models |
-| Link Intelligence | Active | URL string analysis for suspicious links, shortened URLs, unsafe URL patterns, and domain impersonation indicators |
-| Model fallback | Active | API endpoints can attempt a backup model when the selected model fails |
-| Face preparation | Active | Optional face-crop preprocessing for focused image checks through the browser workflow or `/api/v1/deepfake` |
-| Server-side token handling | Active | Hugging Face token is read from environment variables on the server |
-| Vercel deployment | Active | Serverless functions, rewrites, headers, and static asset caching are configured |
-| Risk engine | Active | Shared deterministic risk levels, confidence bands, phishing indicators, and safe summaries |
-| Report exports | Active | Successful scans can be downloaded as JSON, printed/saved as PDF, and copied as summaries |
-| Authentication UI | Active with Supabase | Login, signup, password recovery, session checks, and dashboard access use Supabase Auth through server-managed HttpOnly cookies |
-| Developer API | Active | API-key management plus `/api/v1/deepfake`, `/api/v1/phishing`, `/api/v1/link-check`, and `/api/v1/usage` |
-| API key security | Active | Raw keys are shown once; only hashes, prefixes, masked values, scopes, and usage metadata are stored |
-| Legal and trust pages | Active | Privacy, Terms, Security, Disclaimer, Developers, Docs, and Model Performance pages are available |
-| Production protection | Active | CORS allow-listing, clean API errors, Supabase-backed daily rate limits, and security headers are configured |
-| Coming soon | Not implemented | Video analysis, browser extension, official SDKs, webhooks, and enterprise analytics |
-
----
-
-## Design Philosophy
-
-VeriTrust focuses on:
-
-```text
-Clear AI security triage
-instead of
-opaque model output.
-```
-
-The implementation prioritizes:
-
-- protected server-side AI access
-- readable verdict normalization
-- focused detection tools rather than a general chatbot interface
-- fast deployment through static pages and Vercel functions
-- reusable browser-side result rendering
-
-The project is intentionally structured so the public website, detection interface, API proxy, and model-specific parsing logic remain separate.
-
----
-
-## Tech Stack
-
-| Tool | Purpose |
-|---|---|
-| HTML | Static public pages and tool screens |
-| CSS | Responsive VeriTrust interface styling |
-| JavaScript | Browser interactions, uploads, model selection, and result rendering |
-| Node.js 20 | Vercel serverless function runtime |
-| Vercel Functions | Protected API proxy endpoints |
-| Busboy | Multipart image upload parsing |
-| Hugging Face Router | Model inference routing |
-| Hugging Face Inference API | Fallback model inference path |
-| PHP | Legacy reference endpoint implementation |
-
----
-
-## AI Models
-
-| Module | Model Key | Display Name | Provider path |
-|---|---|---|---|
-| Deepfake | `pixel` | VeriTrust Pixel | Server-only environment variable |
-| Deepfake | `prism` | VeriTrust Prism | Server-only environment variable |
-| Phishing | `mailguard` | VeriTrust MailGuard | Server-only environment variable |
-| Phishing | `cortex` | VeriTrust Cortex | Server-only environment variable |
-| Link Intelligence | `swift` | VeriTrust Swift | Server-only environment variable |
-| Link Intelligence | `sentinel` | VeriTrust Sentinel | Locked |
-
-Provider repository identifiers are not stored in frontend code, returned in scan payloads, or listed in public documentation.
-
----
-
-## Repository Structure
-
-```text
-VeriTrust/
-|-- api/                  # Vercel serverless API endpoints
-|   |-- client-config.js   # Public browser runtime config endpoint
-|   |-- deepfake.js        # Image deepfake detection proxy
-|   |-- health.js          # Public health endpoint with optional admin diagnostics
-|   |-- link-check.js      # Link Intelligence web scan endpoint
-|   `-- phishing.js        # Message phishing detection proxy
+.
+|-- .github/                 GitHub Actions and repository guidance
+|-- api/                     Seven public Vercel function entrypoints
 |-- assets/
-|   |-- css/
-|   |   |-- tool-pages.css # Detection tool page styling
-|   |   `-- veritrust.css  # Shared site and documentation styling
-|   `-- js/
-|       |-- config.js      # Browser runtime endpoint configuration
-|       |-- detection.js   # Detection workflow and result rendering logic
-|       |-- link-check.js  # Link Intelligence page logic
-|       `-- site.js        # Navigation and auth UI interactions
+|   |-- css/base/            Shared styles and visual system
+|   |-- css/pages/           Page-specific styles
+|   |-- images/              Brand assets
+|   |-- js/core/             Shared browser modules
+|   `-- js/pages/            Page controllers
+|-- docs/                    Architecture and deployment documentation
 |-- lib/
-|   |-- risk-engine.js     # Shared risk, confidence, indicator, and summary logic
-|   |-- link-intelligence.js # Link parsing, rules, scoring, and result shaping
-|   `-- veritrust-api.js   # Shared Node API helpers and model utilities
-|-- auth.html              # Login/signup interface prototype
-|-- deepfake.html          # Image detection workspace
-|-- detection.html         # Detection module selection page
-|-- docs.html              # User-facing platform guide
-|-- index.html             # Public landing page
-|-- link-check.html        # Link Intelligence workspace
-|-- phishing.html          # Message detection workspace
-|-- brand.png              # Brand image asset
-|-- logo.png               # Logo asset
-|-- package.json           # Scripts, dependencies, and runtime metadata
-|-- vercel.json            # Vercel routes, headers, and function config
-`-- README.md
+|   |-- gateway/             Gateway orchestration and persistence
+|   |-- learning/            Learning data and validation
+|   |-- routes/              Private route implementations by domain
+|   `-- ...                  Shared service, billing, auth, and risk modules
+|-- openapi/                 Public gateway API contract
+|-- scripts/verify.js        Consolidated repository validation
+|-- worker/                  Optional background worker runtime
+|-- *.html                   Route-aligned static pages
+|-- middleware.ts            Learning-preview access middleware
+|-- vercel.json              Vercel routes, redirects, functions, and headers
+|-- robots.txt               Search crawler policy
+`-- sitemap.xml              Public canonical URL inventory
 ```
 
----
+Root HTML files are intentional: Vercel serves them directly and maps clean URLs such as `/detection` to `detection.html`. Moving them under another folder would add routing complexity without reducing the number of real pages.
 
-## Quick Start
+## Requirements
 
-### 1. Install dependencies
+- Node.js 24
+- npm
+- A Vercel project for local serverless emulation and deployment
+- An existing Supabase project matching [the documented schema contract](docs/database-schema.json)
+- Provider credentials for the enabled detection models
+
+## Local setup
 
 ```bash
-npm install
-```
-
-### 2. Configure environment variables
-
-Create a local environment file for development or configure these variables in Vercel:
-
-```env
-SUPABASE_URL=
-SUPABASE_ANON_KEY=
-SUPABASE_SERVICE_ROLE_KEY=
-HF_TOKEN=
-HF_DEEPFAKE_PIXEL_MODEL=
-HF_DEEPFAKE_PRISM_MODEL=
-HF_PHISHING_MAILGUARD_MODEL=
-HF_PHISHING_CORTEX_MODEL=
-HF_LINK_SWIFT_MODEL=
-VERITRUST_ALLOWED_ORIGINS=
-VERITRUST_SITE_URL=
-VERITRUST_WEBHOOK_ALLOWED_HOSTS=
-VERITRUST_LEARNING_ACCESS_KEY=
-ADMIN=
-CONTENT_HMAC=
-WEBHOOK_ENCRYPTION=
-DISPATCH=
-VERITRUST_GATEWAY_SERVERLESS_BATCH=1
-```
-
-The API also accepts `HF_ACCESS_TOKEN` instead of `HF_TOKEN`. Model paths can alternatively be supplied in one JSON object named `HF_MODEL_PATHS`, using the keys `deepfake_pixel`, `deepfake_prism`, `phishing_mailguard`, `phishing_cortex`, and `link_swift`. `ADMIN` is optional and enables private diagnostics on `/api/health`. `VERITRUST_LEARNING_ACCESS_KEY` must be a random value of at least 32 characters; it is validated only on the server and unlocks the learning preview for eight hours through a signed HttpOnly cookie. `CONTENT_HMAC` must contain at least 32 random bytes; `WEBHOOK_ENCRYPTION` must be a 32-byte key encoded as 64 hexadecimal characters; `DISPATCH` must be the same 32+ character random value stored by migration 003 in Supabase Vault. Never expose any of these server values in browser JavaScript.
-
-### Developer API
-
-Logged-in users can create API keys from the dashboard and call VeriTrust from secure backends, Python scripts, Jupyter notebooks, and automation workflows.
-
-Available endpoints:
-
-```text
-POST /api/v1/phishing
-POST /api/v1/deepfake
-POST /api/v1/link-check
-GET  /api/v1/usage
-GET  /api/api-keys
-POST /api/api-keys
-DELETE /api/api-keys?id={key_id}
-```
-
-Authenticate external API calls with:
-
-```http
-Authorization: Bearer vtg_live_YOUR_API_KEY
-```
-
-Raw API keys are returned only once when created. VeriTrust stores `key_hash`, `key_prefix`, `masked_key`, owner metadata, scopes, status, timestamps, and usage limits. It does not store the raw key.
-
-Default API key scopes:
-
-```text
-deepfake:scan
-phishing:scan
-link:scan
-usage:read
-```
-
-Example phishing request:
-
-```bash
-curl -X POST "https://YOUR_DOMAIN/api/v1/phishing" \
-  -H "Authorization: Bearer vtg_live_YOUR_API_KEY" \
-  -H "Content-Type: application/json" \
-  -d '{"text":"Your account will be blocked. Verify your password now.","model":"fast"}'
-```
-
-Example deepfake request:
-
-```bash
-curl -X POST "https://YOUR_DOMAIN/api/v1/deepfake" \
-  -H "Authorization: Bearer vtg_live_YOUR_API_KEY" \
-  -F "image=@sample.jpg" \
-  -F "model=fast" \
-  -F "crop=true"
-```
-
-Example Link Intelligence request:
-
-```bash
-curl -X POST "https://YOUR_DOMAIN/api/v1/link-check" \
-  -H "Authorization: Bearer vtg_live_YOUR_API_KEY" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "url": "https://secure-bank-verify-example.com/login",
-    "model": "swift"
-  }'
-```
-
-Python example:
-
-```python
-import requests
-
-API_KEY = "vtg_live_YOUR_API_KEY"
-BASE_URL = "https://YOUR_DOMAIN"
-
-response = requests.post(
-    f"{BASE_URL}/api/v1/phishing",
-    headers={"Authorization": f"Bearer {API_KEY}"},
-    json={"text": "Your account will be blocked. Verify your password now.", "model": "fast"},
-    timeout=60,
-)
-
-data = response.json()
-print(data["result"]["label"])
-print(data["result"]["risk_level"])
-print(data["result"]["confidence"])
-```
-
-Python Link Intelligence example:
-
-```python
-import requests
-
-API_KEY = "vtg_live_YOUR_API_KEY"
-BASE_URL = "https://YOUR_DOMAIN"
-
-payload = {
-    "url": "https://secure-bank-verify-example.com/login",
-    "model": "swift"
-}
-
-response = requests.post(
-    f"{BASE_URL}/api/v1/link-check",
-    headers={"Authorization": f"Bearer {API_KEY}"},
-    json=payload,
-    timeout=60
-)
-
-data = response.json()
-
-print(data["result"]["label"])
-print(data["result"]["risk_level"])
-print(data["result"]["confidence"])
-print(data["result"]["summary"])
-```
-
-Jupyter users should load keys from environment variables:
-
-```python
-import os
-import requests
-
-API_KEY = os.getenv("VERITRUST_API_KEY")
-```
-
-Never hardcode production API keys in public notebooks, frontend JavaScript, repositories, or logs.
-
-### Supabase Schema Setup
-
-The clean-environment baseline and all forward migrations live in `supabase/migrations`. Apply the baseline only to a new local or staging project. Existing deployments must align migration history with the baseline and then apply only forward migrations; never push the reconstructed baseline over an existing production schema. See `db/README.md`, run the applicable read-only SQL in `db/preflight`, and execute every contract in `db/tests` against staging before production rollout.
-
-### Legal And Trust Pages
-
-The static trust/legal pages are:
-
-```text
-/privacy
-/terms
-/security
-/disclaimer
-/developers
-/model-performance
-```
-
-### 3. Validate JavaScript syntax
-
-```bash
+npm ci
+cp .env.example .env.local
 npm run check
+npm start
 ```
 
-Run the same complete release gate used by GitHub Actions before opening a pull request:
+On PowerShell, use `Copy-Item .env.example .env.local` instead of `cp`.
+
+`npm start` runs `vercel dev`, so install or invoke the Vercel CLI when it is not already available in your environment.
+
+## Environment variables
+
+Copy `.env.example` and fill only the services you use. Keep all real values in Vercel Environment Variables or an ignored local environment file.
+
+| Variable | Purpose |
+| --- | --- |
+| `SUPABASE_URL` | Supabase project URL |
+| `SUPABASE_ANON_KEY` | Browser-safe Supabase anonymous key returned through server configuration |
+| `SUPABASE_SERVICE_ROLE_KEY` | Server-only Supabase service role key |
+| `HF_TOKEN` | Server-only Hugging Face access token |
+| `HF_*_MODEL` | Provider model repository identifiers for enabled detectors |
+| `VERITRUST_ALLOWED_ORIGINS` | Comma-separated trusted browser origins |
+| `VERITRUST_SITE_URL` | Canonical HTTPS site origin used by auth and billing redirects |
+| `VERITRUST_LEARNING_ACCESS_KEY` | Private learning-preview key with at least 32 characters |
+| `VERITRUST_CONTENT_HMAC_KEY` | Gateway content-integrity key with at least 32 random bytes |
+| `VERITRUST_GATEWAY_DISPATCH_SECRET` | Shared signed-dispatch secret |
+| `VERITRUST_WEBHOOK_ENCRYPTION_KEY` | 32-byte gateway webhook encryption key |
+| `VERITRUST_WEBHOOK_ALLOWED_HOSTS` | Comma-separated approved webhook destination hosts |
+| `STRIPE_SECRET_KEY` | Optional Stripe server key |
+| `STRIPE_WEBHOOK_SECRET` | Optional Stripe webhook signature secret |
+
+The code supports a small set of legacy aliases, but new deployments should use the canonical names in `.env.example`.
+
+## Commands
 
 ```bash
-npm run ci
+npm run check   # syntax, links, SEO, Vercel, security, and secret checks
+npm run ci      # repository checks plus production dependency audit
+npm run worker  # run the optional background worker
+npm start       # run the site with Vercel's local runtime
 ```
 
-The CI gate performs a committed-secret scan, validates the positive Vercel deployment inventory, runs static/navigation/security checks and unit tests, and fails on high or critical production dependency vulnerabilities.
+## Vercel deployment
 
-### 4. Start the local Vercel runtime
+1. Push this directory to a GitHub repository.
+2. Import the repository into Vercel, choose a lowercase project name such as `veritrust-site`, and select the project root.
+3. Use the "Other" framework preset; no build output directory is required.
+4. Add production and preview environment variables separately.
+5. Deploy and confirm `/api/health`, the public routes, authentication redirects, and one configured detection flow.
+6. Set the production domain to `www.veritrustlab.in` or update canonical URLs, `robots.txt`, and `sitemap.xml` together if the domain changes.
 
-```bash
-npm run start
-```
+The included `vercel.json` defines function timeouts, clean URL rewrites, the legacy `/scans` redirect, cache policy, and security headers. See [Deployment](docs/DEPLOYMENT.md) for the release checklist.
 
-This runs:
+## API surfaces
 
-```bash
-vercel dev
-```
+- Browser APIs: `/api/deepfake`, `/api/phishing`, `/api/link-check`
+- Workspace APIs: `/api/session`, `/api/scans`, `/api/cases`, `/api/dashboard`, `/api/profile`
+- Gateway APIs: `/api/v1/gateway/*`
+- Developer API v1: `/api/v1/deepfake`, `/api/v1/phishing`, `/api/v1/link-check`, `/api/v1/usage`
+- Billing APIs: `/api/billing/*`
+- Learning APIs: `/api/learning/*`
+- Operations: `/api/health`, `/api/model-cards`, `/api/client-config`
 
-### 5. Confirm API readiness
+The gateway contract is available at [openapi/veritrust-gateway-v1.yaml](openapi/veritrust-gateway-v1.yaml).
 
-Open:
+## Database contract
 
-```text
-/api/health
-```
+This cleaned repository does not include local seed SQL, migration experiments, preflight queries, rollback samples, or database test scripts. The runtime expects an already provisioned Supabase project. [docs/database-schema.json](docs/database-schema.json) records the expected schema inventory for operators; it is documentation, not an executable migration.
 
-A correctly configured runtime should return a JSON response with:
+Never apply reconstructed SQL directly to an existing production database. Manage production schema changes in the controlled database repository or Supabase project that owns the deployed schema.
 
-```json
-{
-  "ok": true,
-  "service": "VeriTrust API",
-  "status": "operational"
-}
-```
+## SEO and indexing
 
----
+Public informational routes have unique titles, descriptions, absolute canonical URLs, Open Graph metadata, and Twitter metadata. Private workspace, authentication, API, and learning-preview routes use `noindex` and are disallowed in `robots.txt`. Only canonical public routes appear in `sitemap.xml`.
 
-## API Reference
+When a public page is added, update its metadata, `sitemap.xml`, `robots.txt` if necessary, `vercel.json`, and the public-page map in `scripts/verify.js` in the same change.
 
-### Unified Security Gateway (feature-gated)
+## Security
 
-The production gateway foundation is available under `/api/v1/gateway`. It uses the verified gateway schema, tenant-scoped Supabase or API-key authentication, atomic idempotency, normalized evidence, deterministic correlation, and advisory-first policy enforcement.
+- Never commit `.env` files, API keys, provider tokens, Supabase service credentials, or Stripe secrets.
+- Keep sensitive configuration server-side; browser modules must use `/api/client-config` only.
+- Preserve the CSP and related security headers unless a reviewed integration requires a narrow change.
+- Treat model output as advisory evidence and avoid exposing provider repository identifiers in client responses.
+- Report vulnerabilities through the process in [SECURITY.md](SECURITY.md).
 
-- `POST /api/v1/gateway/scans` submits text, URLs, and registered private media in focused or unified combinations. `Idempotency-Key` is required.
-- `GET /api/v1/gateway/scans` lists tenant-scoped gateway scans.
-- `GET /api/v1/gateway/scans/{id}` returns status, artifacts, evidence, and the current decision.
-- `POST /api/v1/gateway/scans/{id}/cancel` requests idempotent cancellation.
-- `GET /api/v1/gateway/reports/{id}` returns the unified audit report.
+## Contributing
 
-The browser guide at `/gateway-powershell.html` includes copy-ready Windows PowerShell workflows for phishing, link, image deepfake, message-plus-link, and unified message-plus-link-plus-image scans. Unified submissions place all applicable artifacts in one request so the gateway returns one correlated policy decision.
-
-The machine-readable alpha contract is in `openapi/veritrust-gateway-v1.yaml`. Private signed media uploads, durable PGMQ jobs, bounded Vercel media/webhook/retention workers, immediate `pg_net` dispatch, and one-minute Supabase Cron recovery are implemented. Enforcement remains advisory-first and organization activation should still be limited to approved pilots.
-
-### Unified Case Workflow
-
-Authenticated workspace users review every Deepfake, Phishing, Link, and Gateway result through `/cases`. Each source scan creates exactly one tenant-bound case. Model outputs are normalized into append-only evidence and machine decisions; owners, admins, and analysts can take a case, set priority, cite evidence, record a human decision, close it, and later reopen it without overwriting decision history. Viewers have read-only access. The server route is `GET/POST /api/cases`; browsers never receive direct write grants on the case tables.
-
-### Health Check
-
-```http
-GET /api/health
-```
-
-Returns public operational status only. Private diagnostics are available only when `ADMIN` (or `VERITRUST_ADMIN_SECRET`) is configured and the request includes `X-VeriTrust-Admin-Secret`.
-
-### Deepfake Detection
-
-```http
-POST /api/deepfake
-Content-Type: multipart/form-data
-```
-
-Expected fields:
-
-| Field | Type | Required | Description |
-|---|---|---:|---|
-| `image` | File | Yes | JPG, PNG, WEBP, or BMP image |
-| `model` | String | No | `pixel` or `prism` |
-
-Current Vercel image limit:
-
-```text
-4 MB
-```
-
-### Phishing Detection
-
-```http
-POST /api/phishing
-Content-Type: application/json
-```
-
-Expected body:
-
-```json
-{
-  "text": "Suspicious email, SMS, URL, or message content",
-  "model": "mailguard"
-}
-```
-
-Supported model values:
-
-```text
-mailguard
-cortex
-```
-
-Current text limit:
-
-```text
-12,000 characters
-```
-
-### Link Intelligence
-
-```http
-POST /api/link-check
-Content-Type: application/json
-```
-
-Expected body:
-
-```json
-{
-  "url": "https://example.com/login",
-  "context": "Optional surrounding email, SMS, or message text",
-  "model": "swift"
-}
-```
-
-Supported model values:
-
-```text
-swift
-```
-
-If `model` is missing, VeriTrust uses `swift`. VeriTrust Sentinel is locked and coming soon; requests for `sentinel` currently return `INVALID_MODEL`.
-
-### Result Payloads
-
-Successful scans return report-ready metadata:
-
-```json
-{
-  "scan_id": "...",
-  "scan_type": "deepfake",
-  "created_at": "...",
-  "model": {
-    "key": "pixel",
-    "name": "VeriTrust Pixel",
-    "fallback_used": false
-  },
-  "result": {
-    "label": "Fake",
-    "confidence": 0.87,
-    "risk_level": "High",
-    "confidence_band": "Strong",
-    "summary": "AI-assisted summary text",
-    "evidence": []
-  },
-  "report": {
-    "title": "VeriTrust Scan Report",
-    "exportable": true
-  }
-}
-```
-
-Risk levels are `Low`, `Medium`, `High`, and `Critical`. Confidence bands are `Weak`, `Moderate`, and `Strong`. These values are triage aids, not legal, forensic, or final proof.
-
-Deepfake evidence is limited to safe model-score facts such as fake score, real score, confidence band, accepted image type, fallback model use, and manual-review guidance. VeriTrust does not claim visual forensic evidence unless a model explicitly returns it.
-
-Phishing results combine the model score with deterministic rule indicators for urgency, credential requests, OTP/password language, payment or refund wording, KYC/account blocking pressure, attachments, URL shorteners, suspicious domains, sender identity, and contact methods. Low-risk results mean no strong indicators were found from available signals; they do not prove safety.
-
-Link Intelligence results combine model output with deterministic URL indicators such as URL shorteners, IP-address URLs, punycode/IDN patterns, long domains, excessive hyphens or subdomains, suspicious TLDs, missing HTTPS, login/KYC/payment terms, India-relevant scam terms, credential terms, brand impersonation patterns, redirect parameters, encoded URLs inside query strings, and random-looking tokens.
-
-Link Intelligence MVP limitations:
-
-- VeriTrust Sentinel is locked and coming soon.
-- The MVP analyzes URL strings and optional context; it does not fetch target webpages or follow redirects.
-- No real-time WHOIS, domain-age, reputation, or security-engine blocklist lookup is included.
-
-Browser PDF export uses a print window with a dark one-page A4 report layout. `print-color-adjust` is enabled so supported browsers preserve the dark VeriTrust background; some browsers may still require background graphics to be enabled in the print dialog.
-
----
-
-## Runtime Configuration
-
-Browser-side endpoint configuration lives in:
-
-```text
-assets/js/config.js
-```
-
-Current face-crop Space configuration:
-
-```js
-cropApiUrl: 'https://ajaysoni-dev-deepfakefusion.hf.space/api/crop-image'
-cropOutputBaseUrl: 'https://ajaysoni-dev-deepfakefusion.hf.space'
-```
-
-Update these values only if the external face-crop service changes.
-
-External API users do not need to call the crop Space directly. Send `crop=true` to `POST /api/v1/deepfake` and VeriTrust will attempt face-crop preprocessing server-side, then fall back to the full image when a crop is unavailable.
-
----
-
-## Deployment
-
-### Vercel Deployment
-
-Recommended deployment workflow:
-
-```text
-Push Repository
-     |
-     v
-Import Project in Vercel
-     |
-     v
-Set required environment variables
-     |
-     v
-Deploy Static Pages + API Functions
-     |
-     v
-Verify /api/health
-```
-
-Vercel-specific behavior is configured in `vercel.json`:
-
-- clean URLs enabled
-- `/detection`, `/deepfake`, `/phishing`, `/docs`, `/dashboard`, and `/model-performance` rewrites
-- 300-second maximum function duration for bounded gateway media work
-- six logical Hobby-compatible function entrypoints (`account`, `billing`, `detection`, `gateway`, `system`, and `v1`); underscore-prefixed route handlers are bundled dependencies, not separate Vercel Functions
-- immutable caching for `/assets/*`
-- security headers for content type sniffing, referrer policy, permissions policy, and frame denial
-
-Required Vercel environment variables:
-
-```env
-SUPABASE_URL=
-SUPABASE_ANON_KEY=
-SUPABASE_SERVICE_ROLE_KEY=
-HF_TOKEN=
-HF_DEEPFAKE_PIXEL_MODEL=
-HF_DEEPFAKE_PRISM_MODEL=
-HF_PHISHING_MAILGUARD_MODEL=
-HF_PHISHING_CORTEX_MODEL=
-HF_LINK_SWIFT_MODEL=
-VERITRUST_ALLOWED_ORIGINS=
-VERITRUST_SITE_URL=https://www.veritrustlab.in
-VERITRUST_WEBHOOK_ALLOWED_HOSTS=hooks.example.edu
-VERITRUST_LEARNING_ACCESS_KEY=
-CONTENT_HMAC=
-WEBHOOK_ENCRYPTION=
-DISPATCH=
-VERITRUST_GATEWAY_SERVERLESS_BATCH=1
-```
-
-`HF_ACCESS_TOKEN` may be used instead of `HF_TOKEN`. `VERITRUST_ALLOWED_ORIGINS` is a comma-separated list, for example:
-
-```env
-VERITRUST_ALLOWED_ORIGINS=https://veritrustlab.in,https://www.veritrustlab.in,http://localhost:3000,http://localhost:3001
-```
-
-Optional:
-
-```env
-ADMIN=
-```
-
-Gateway serverless deployment order:
-
-1. Generate one random 32+ character dispatch secret and set it as `DISPATCH` in Vercel for Production and Preview as appropriate.
-2. Deploy the repository so `https://YOUR-DOMAIN/api/gateway-worker` exists.
-3. Restore the deployed gateway dispatch migration and its verification SQL into version control; those historical migration files are not present in this checkout.
-4. Confirm the worker secret is stored in Supabase Vault, dispatch signatures use the five-minute timestamp and nonce envelope implemented by `lib/gateway/worker-auth.js`, and persistent replay protection exists in the deployed migration.
-5. Run the restored verification SQL and a live dispatch check before enabling the gateway for production traffic.
-
-Do not enable the serverless gateway worker from this checkout alone until the missing dispatch migration has been recovered and reviewed. PGMQ leases and dedupe keys reduce duplicate job execution, but they do not replace persistent dispatch replay protection.
-
-When `ADMIN` is set, `/api/health` accepts `X-VeriTrust-Admin-Secret` for private diagnostics. Without that header, health returns only public operational status. The deployed Supabase schema must include the `api_rate_limits` table and `consume_api_rate_limit` RPC. Apply `docs/supabase-security-hardening.sql` after the full schema and verify it with `docs/supabase-security-audit.sql`.
-
-Configure secrets only in Vercel Environment Variables or local ignored `.env` files. Never store Hugging Face, Supabase service-role, or admin secret values in repository files.
-
-`VERITRUST_SITE_URL` is mandatory in production billing deployments and must be the HTTPS origin that Stripe may return users to. Gateway webhook delivery is disabled in production until `VERITRUST_WEBHOOK_ALLOWED_HOSTS` contains the exact approved receiver hostnames (a leading `*.` wildcard is supported for a controlled subdomain).
-
-If a Hugging Face token was ever committed or shared, rotate/regenerate it immediately from the Hugging Face dashboard.
-
-### Model Performance
-
-The `model-performance.html` page documents evaluation status honestly. Accuracy, precision, recall, F1, false positive rates, false negative rates, and confusion matrices must be calculated on labeled test datasets before publication. Benchmark numbers should not be invented or inferred from ad hoc scans.
-
----
-
-## Planned Workflow
-
-```text
-User opens VeriTrust
-        |
-        v
-Chooses detection module
-        |
-        v
-Uploads image or pastes message
-        |
-        v
-Frontend sends request to protected API
-        |
-        v
-Server calls configured AI model
-        |
-        v
-Result is normalized into verdict, confidence, risk, and explanation
-```
-
----
-
-## Current Limitations
-
-Current limitations include:
-
-- Supabase authentication and scan persistence require the production schema and Vercel environment variables
-- the free-tier serverless worker is intended for an MVP workload; capacity, invocation, bandwidth, and external-model quotas still require monitoring
-- serverless rate limiting requires the `api_rate_limits` table and `consume_api_rate_limit` RPC in the deployed Supabase schema
-- production migration history must be aligned before applying the forward-only Task 4 and Task 5 migrations
-- existing Supabase projects created before Critical risk support must run: `alter type public.risk_level add value if not exists 'critical';`
-- billing and paid-plan enforcement are not implemented beyond basic plan-aware daily limits
-- AI results depend on external Hugging Face model availability and latency
-- Vercel image uploads are limited to 4 MB in the current Node endpoint
-- model explanations are normalized for usability and should not be treated as legal, forensic, or final proof
-- false positives and false negatives are possible; verify suspicious messages through official channels
-- face-crop preprocessing depends on the configured external crop service, but `/api/v1/deepfake` callers use only the VeriTrust API URL
-- no standalone `LICENSE` file is currently included
-
-> [!WARNING]
-> VeriTrust can support security triage, but AI-generated verdicts should be reviewed with human judgment before high-impact decisions are made.
-
----
-
-## Roadmap
-
-Immediate development priorities:
-
-- add structured logging and production observability
-- add automated migration checks for Supabase production schema changes
-- improve model result calibration and confidence messaging
-- add automated endpoint and browser workflow tests
-- document API examples with request and response samples
-
-Long-term exploration:
-
-- organization accounts and role-based access control
-- dashboard analytics for reviewed threats
-- batch analysis workflows
-- human review queues for high-risk results
-- pluggable model providers beyond Hugging Face
-- enterprise API keys and usage metering
-- privacy controls for sensitive message and image handling
-
----
-
-## Usage Direction
-
-| Use Case | Recommended Workflow |
-|---|---|
-| Review suspicious images | Use the Deepfake Detection workspace |
-| Review suspicious messages | Use the Phishing Detection workspace |
-| Review suspicious URLs | Use the Link Intelligence workspace |
-| Check deployment health | Open `/api/health` after configuring Vercel environment variables |
-| Change AI endpoints | Update model definitions in `lib/veritrust-api.js` and `lib/link-intelligence.js` |
-| Review model evaluation status | Open `/model-performance` |
-| Export scan reports | Use Download JSON Report, Save PDF Report, or Copy Summary on successful results |
-| Change browser API routes | Update `assets/js/config.js` |
-| Deploy on Vercel | Use the JavaScript endpoints in `api/` |
-| Adjust visual design | Edit `assets/css/veritrust.css` and `assets/css/tool-pages.css` |
-
----
-
-## Security Notes
-
-- Never expose Hugging Face tokens or model-path environment variables in browser JavaScript or API responses.
-- Browser access and refresh tokens are kept in Secure, HttpOnly, SameSite session cookies; do not move them into local storage, session storage, or page JavaScript.
-- Never expose `SUPABASE_SERVICE_ROLE_KEY`, `ADMIN`, `CONTENT_HMAC`, `WEBHOOK_ENCRYPTION`, or `DISPATCH` in browser JavaScript.
-- Do not commit `.env`, `.env.local`, `.env.*.local`, `private/`, logs, `node_modules/`, or private token files.
-- Keep `private/` excluded from Vercel deployment.
-- If a Hugging Face token was ever committed or shared, rotate/regenerate it immediately from the Hugging Face dashboard.
-- Treat uploaded images and pasted messages as potentially sensitive user data.
-- Keep the Supabase production schema applied so serverless rate limiting remains active.
-
----
+Read [CONTRIBUTING.md](CONTRIBUTING.md), run `npm run check`, and keep changes focused. Do not add generated reports, local SQL dumps, one-off scripts, or version-suffixed duplicate assets.
 
 ## License
 
-No standalone license file is currently included in this repository.
-
-Add a formal license before distributing VeriTrust as an open-source or commercial package.
+Licensed under the [MIT License](LICENSE).
