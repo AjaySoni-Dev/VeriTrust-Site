@@ -49,3 +49,56 @@ document.addEventListener('keydown', (event) => {
 window.addEventListener('resize', () => {
   if (window.innerWidth > 1024) closeHomeMenu();
 });
+
+const COOKIE_CONSENT_KEY = 'vt-cookie-consent-v1';
+const cookieConsentPanel = document.getElementById('cookie-consent');
+
+const readCookieConsent = () => {
+  try {
+    const storedChoice = window.localStorage.getItem(COOKIE_CONSENT_KEY);
+    if (storedChoice === 'all' || storedChoice === 'essential') return storedChoice;
+  } catch (_) {
+    // Consent can still be read from the cookie when storage is unavailable.
+  }
+
+  const consentCookie = document.cookie
+    .split('; ')
+    .find((entry) => entry.startsWith(`${COOKIE_CONSENT_KEY}=`));
+  const cookieChoice = consentCookie?.split('=')[1];
+  return cookieChoice === 'all' || cookieChoice === 'essential' ? cookieChoice : '';
+};
+
+const saveCookieConsent = (choice) => {
+  document.documentElement.dataset.cookieConsent = choice;
+
+  try {
+    window.localStorage.setItem(COOKIE_CONSENT_KEY, choice);
+  } catch (_) {
+    // The first-party preference cookie remains the fallback.
+  }
+
+  const secureAttribute = window.location.protocol === 'https:' ? '; Secure' : '';
+  document.cookie = `${COOKIE_CONSENT_KEY}=${choice}; Max-Age=31536000; Path=/; SameSite=Lax${secureAttribute}`;
+  window.dispatchEvent(new CustomEvent('veritrust:cookie-consent', { detail: { choice } }));
+};
+
+const existingCookieConsent = readCookieConsent();
+if (existingCookieConsent) {
+  document.documentElement.dataset.cookieConsent = existingCookieConsent;
+} else if (cookieConsentPanel) {
+  cookieConsentPanel.hidden = false;
+  window.requestAnimationFrame(() => cookieConsentPanel.classList.add('is-visible'));
+
+  cookieConsentPanel.querySelectorAll('[data-cookie-choice]').forEach((button) => {
+    button.addEventListener('click', () => {
+      const choice = button.dataset.cookieChoice;
+      if (choice !== 'all' && choice !== 'essential') return;
+
+      saveCookieConsent(choice);
+      cookieConsentPanel.classList.remove('is-visible');
+      window.setTimeout(() => {
+        cookieConsentPanel.hidden = true;
+      }, reduceHomeMotion.matches ? 0 : 320);
+    });
+  });
+}

@@ -1212,6 +1212,183 @@
             }
         }
 
+        .cookie-consent {
+            position: fixed;
+            right: 0;
+            bottom: max(16px, env(safe-area-inset-bottom));
+            left: 0;
+            z-index: 2100;
+            width: min(1120px, calc(100% - 32px));
+            max-height: calc(100dvh - 32px);
+            margin: 0 auto;
+            overflow-y: auto;
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-top-color: var(--accent-border);
+            border-radius: var(--radius-md);
+            background: rgba(26, 26, 26, 0.97);
+            box-shadow: 0 22px 70px rgba(0, 0, 0, 0.56);
+            opacity: 0;
+            transform: translateY(calc(100% + 32px));
+            transition: opacity 220ms ease, transform 320ms cubic-bezier(0.22, 1, 0.36, 1);
+            backdrop-filter: blur(18px);
+            -webkit-backdrop-filter: blur(18px);
+        }
+
+        .cookie-consent[hidden] {
+            display: none !important;
+        }
+
+        .cookie-consent.is-visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .cookie-consent-inner {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) auto;
+            gap: 24px;
+            align-items: center;
+            padding: 20px 22px;
+        }
+
+        .cookie-consent-copy {
+            display: grid;
+            grid-template-columns: 42px minmax(0, 1fr);
+            gap: 14px;
+            align-items: start;
+        }
+
+        .cookie-consent-mark {
+            display: grid;
+            width: 42px;
+            height: 42px;
+            place-items: center;
+            border: 1px solid var(--accent-border);
+            border-radius: 50%;
+            background: var(--accent-soft);
+            color: var(--accent-main);
+            font: 600 12px var(--font-mono);
+            letter-spacing: 0.06em;
+        }
+
+        .cookie-consent-label {
+            margin: 0 0 4px;
+            color: var(--accent-main);
+            font: 600 10px var(--font-mono);
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+        }
+
+        .cookie-consent h2 {
+            margin: 0;
+            font-size: clamp(17px, 2vw, 20px);
+            line-height: 1.2;
+        }
+
+        .cookie-consent-description {
+            max-width: 760px;
+            margin: 6px 0 0;
+            color: var(--text-secondary);
+            font-size: 13px;
+            line-height: 1.55;
+        }
+
+        .cookie-consent-description a {
+            color: var(--text-primary);
+            text-decoration: underline;
+            text-decoration-color: var(--accent-border);
+            text-underline-offset: 3px;
+        }
+
+        .cookie-consent-actions {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .cookie-consent-button {
+            min-height: 42px;
+            padding: 10px 16px;
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-sm);
+            background: var(--bg-surface-light);
+            color: var(--text-primary);
+            font: 600 13px var(--font-sans);
+            white-space: nowrap;
+            cursor: pointer;
+            transition: border-color 160ms ease, background-color 160ms ease, transform 160ms ease;
+        }
+
+        .cookie-consent-button:hover {
+            border-color: var(--border-hover);
+            background: var(--bg-surface-hover);
+        }
+
+        .cookie-consent-button:active {
+            transform: translateY(1px);
+        }
+
+        .cookie-consent-button-primary {
+            border-color: var(--accent-main);
+            background: var(--accent-button);
+            color: #17120c;
+        }
+
+        .cookie-consent-button-primary:hover {
+            border-color: var(--accent-hover);
+            background: var(--accent-button-hover);
+        }
+
+        .cookie-consent-button:focus-visible,
+        .cookie-consent-description a:focus-visible {
+            outline: 2px solid var(--accent-hover);
+            outline-offset: 3px;
+        }
+
+        @media (max-width: 760px) {
+            .cookie-consent {
+                bottom: max(10px, env(safe-area-inset-bottom));
+                width: calc(100% - 20px);
+                max-height: calc(100dvh - 20px);
+                border-radius: 8px;
+            }
+
+            .cookie-consent-inner {
+                grid-template-columns: minmax(0, 1fr);
+                gap: 16px;
+                padding: 17px;
+            }
+
+            .cookie-consent-actions {
+                display: grid;
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+                width: 100%;
+            }
+
+            .cookie-consent-button {
+                width: 100%;
+                padding-inline: 10px;
+            }
+        }
+
+        @media (max-width: 420px) {
+            .cookie-consent-copy {
+                grid-template-columns: minmax(0, 1fr);
+                gap: 8px;
+            }
+
+            .cookie-consent-mark {
+                width: 34px;
+                height: 34px;
+                font-size: 10px;
+            }
+
+            .cookie-consent-actions {
+                grid-template-columns: minmax(0, 1fr);
+                gap: 8px;
+            }
+        }
+
         @keyframes menuDrop {
             from {
                 opacity: 0;
@@ -1645,6 +1822,23 @@
             </div>
         </div>
     </footer>
+
+    <section id="cookie-consent" class="cookie-consent" role="dialog" aria-modal="false" aria-labelledby="cookie-consent-title" aria-describedby="cookie-consent-description" hidden>
+        <div class="cookie-consent-inner">
+            <div class="cookie-consent-copy">
+                <span class="cookie-consent-mark" aria-hidden="true">VT</span>
+                <div>
+                    <p class="cookie-consent-label">Privacy preferences</p>
+                    <h2 id="cookie-consent-title">Your privacy, your choice.</h2>
+                    <p id="cookie-consent-description" class="cookie-consent-description">We use essential browser storage for security, sign-in, and saved preferences. Optional cookies are used only with your permission. Read our <a href="privacy.html">Privacy Policy</a>.</p>
+                </div>
+            </div>
+            <div class="cookie-consent-actions" aria-label="Cookie preferences">
+                <button class="cookie-consent-button" type="button" data-cookie-choice="essential">Essential only</button>
+                <button class="cookie-consent-button cookie-consent-button-primary" type="button" data-cookie-choice="all">Accept all</button>
+            </div>
+        </div>
+    </section>
 
 </body>
 </html>

@@ -681,9 +681,45 @@ body.vt-cli-page .cli-reference {
   }
 }
 
-/* Keep workspace overview headers concise on phones. This shared rule is
-   intentionally last so every authenticated workspace page uses one layout. */
-@media (max-width: 760px) {
+/* Keep overview surfaces concise on phones and compact tablets. This shared
+   rule is intentionally last so every applicable page uses one layout. */
+@media (max-width: 820px) {
+  /* Repetitive overview cards give way to the actionable content. */
+  html body.vt-dashboard-page .dashboard-head:not(.case-detail-head),
+  body.vt-tool-page .tool-topbar {
+    display: none;
+  }
+
+  /* Long-form pages retain their identity without carrying a full hero card. */
+  body.vt-learning-page .learning-hero[data-catalog-view],
+  body.vt-guide-page .ps-hero {
+    min-height: 0;
+    margin-bottom: 14px;
+    padding: 4px 2px 10px !important;
+    border: 0 !important;
+    background: transparent !important;
+    box-shadow: none !important;
+  }
+
+  body.vt-learning-page .learning-hero-copy,
+  body.vt-learning-page .learning-hero[data-catalog-view] .learning-actions,
+  body.vt-guide-page .ps-hero-copy > p,
+  body.vt-guide-page .ps-hero-actions,
+  body.vt-guide-page .ps-terminal-card {
+    display: none;
+  }
+
+  body.vt-learning-page .learning-hero[data-catalog-view] h1,
+  body.vt-guide-page .ps-hero h1 {
+    max-width: 100%;
+    font-size: clamp(24px, 7vw, 31px) !important;
+    line-height: 1.1;
+  }
+
+  body.vt-guide-page .ps-kicker {
+    margin-bottom: 8px;
+  }
+
   html body.vt-dashboard-page .dashboard-head {
     grid-template-columns: minmax(0, 1fr) auto;
     align-items: end;
