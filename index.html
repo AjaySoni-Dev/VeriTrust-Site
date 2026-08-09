@@ -1322,6 +1322,12 @@
             transition: border-color 160ms ease, background-color 160ms ease, transform 160ms ease;
         }
 
+        /* Keep all homepage copy at a consistent regular weight. */
+        body,
+        body * {
+            font-weight: 400 !important;
+        }
+
         .cookie-consent-button:hover {
             border-color: var(--border-hover);
             background: var(--bg-surface-hover);
