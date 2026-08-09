@@ -3002,6 +3002,12 @@ p {
   }
 }
 
+/* Site-wide typography: all visible copy uses a regular, non-bold weight. */
+html body,
+html body * {
+  font-weight: 400 !important;
+}
+
 /* Unified page chrome: shared by every public, product, workspace, and legal page. */
 .vt-site-header .tool-header-inner {
   max-width: 1240px;
