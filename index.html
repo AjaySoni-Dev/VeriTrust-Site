@@ -1418,9 +1418,628 @@
             }
         }
     </style>
-  <link rel="stylesheet" href="/assets/css/base/glass-system.css">
+    <link rel="stylesheet" href="/assets/css/base/glass-system.css">
+    <style id="home-light-reference-theme">
+        /*
+         * Index-only visual layer inspired by the supplied Z Sphere reference.
+         * Existing VeriTrust content, routes, element IDs, and JavaScript contracts
+         * remain unchanged; these rules intentionally load after the shared system.
+         */
+        body.vt-home-light {
+            --home-bg: #f7f9fc;
+            --home-surface: #ffffff;
+            --home-hero: #edf3ff;
+            --home-soft: #f2f5fa;
+            --home-navy: #13264a;
+            --home-navy-hover: #1d3768;
+            --home-blue: #315fba;
+            --home-text: #172033;
+            --home-body: #5d6678;
+            --home-muted: #7f899a;
+            --home-line: #e2e7ef;
+            --home-shadow: 0 18px 50px rgba(19, 38, 74, 0.10);
+            --home-shadow-hover: 0 24px 58px rgba(19, 38, 74, 0.15);
+
+            /* Tokens consumed by the existing hero console and SVG. */
+            --bg-main: var(--home-bg);
+            --bg-panel: var(--home-surface);
+            --bg-elevated: var(--home-surface);
+            --text-primary: var(--home-text);
+            --text-secondary: var(--home-body);
+            --text-muted: var(--home-muted);
+            --border-subtle: var(--home-line);
+            --border-strong: #cbd5e3;
+            --accent-main: var(--home-blue);
+            --accent-hover: var(--home-navy);
+            --accent-soft: #e4edff;
+            --danger-soft: #feecec;
+            --status-danger: #c2414b;
+            --console-bg: #f8faff;
+            --console-panel: #ffffff;
+            --console-fill: #e5edfb;
+            --console-border: #d9e2f0;
+            --console-grid: #e9eef6;
+            --console-text: #253450;
+            --console-muted: #748098;
+
+            margin: 0;
+            background: var(--home-bg) !important;
+            color: var(--home-text) !important;
+            font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            line-height: 1.6;
+        }
+
+        .home-skip-link {
+            position: fixed;
+            top: 12px;
+            left: 12px;
+            z-index: 10000;
+            padding: 10px 14px;
+            border-radius: 8px;
+            color: #fff;
+            background: var(--home-navy);
+            transform: translateY(-160%);
+            transition: transform 180ms ease;
+        }
+
+        .home-skip-link:focus { transform: translateY(0); }
+
+        body.vt-home-light .container,
+        body.vt-home-light .nav-container,
+        body.vt-home-light .tool-header-inner,
+        body.vt-home-light .vt-footer-inner {
+            width: min(1180px, calc(100% - 48px));
+            max-width: 1180px;
+            margin-inline: auto;
+        }
+
+        /* Original header and the shared header injected by site.js. */
+        body.vt-home-light :is(#header, .vt-site-header) {
+            position: sticky !important;
+            top: 0;
+            z-index: 1000;
+            min-height: 76px;
+            border: 0 !important;
+            border-bottom: 1px solid rgba(226, 231, 239, 0.92) !important;
+            background: rgba(255, 255, 255, 0.94) !important;
+            box-shadow: none !important;
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+        }
+
+        body.vt-home-light :is(.nav-container, .tool-header-inner) {
+            min-height: 76px;
+            padding: 0 !important;
+        }
+
+        body.vt-home-light :is(.logo, .tool-header-brand) {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            min-height: 42px;
+            padding: 6px 12px;
+            border-radius: 10px;
+            color: #fff !important;
+            background: var(--home-navy);
+            box-shadow: none !important;
+            text-decoration: none;
+        }
+
+        body.vt-home-light :is(.logo img, .tool-header-brand img) {
+            width: auto;
+            max-width: 154px;
+            height: 30px;
+            object-fit: contain;
+        }
+
+        body.vt-home-light .tool-header-context { display: none !important; }
+
+        body.vt-home-light :is(.nav-links, .tool-header-links) {
+            gap: 6px;
+        }
+
+        body.vt-home-light :is(.nav-links a, .tool-header-links a) {
+            position: relative;
+            padding: 9px 11px;
+            border: 0 !important;
+            border-radius: 8px;
+            color: var(--home-body) !important;
+            background: transparent !important;
+            font-size: 0.9rem;
+            font-weight: 650;
+            text-decoration: none;
+            transition: color 180ms ease, background 180ms ease;
+        }
+
+        body.vt-home-light :is(.nav-links a, .tool-header-links a):hover,
+        body.vt-home-light :is(.nav-links a.active, .tool-header-links a.active) {
+            color: var(--home-navy) !important;
+            background: var(--home-soft) !important;
+        }
+
+        body.vt-home-light :is(.login-link, .tool-header-login) {
+            color: var(--home-navy) !important;
+            border-color: var(--home-line) !important;
+            background: #fff !important;
+        }
+
+        body.vt-home-light :is(.header-dashboard, .tool-header-dashboard) {
+            color: #fff !important;
+            border-color: var(--home-navy) !important;
+            background: var(--home-navy) !important;
+        }
+
+        body.vt-home-light :is(.mobile-menu-btn, .tool-header-menu) {
+            color: var(--home-navy) !important;
+            border-color: var(--home-line) !important;
+            background: #fff !important;
+        }
+
+        /* Hero: pale-blue field, editorial typography, and light evidence console. */
+        body.vt-home-light .hero {
+            position: relative;
+            min-height: auto !important;
+            padding: 108px 0 130px !important;
+            overflow: hidden;
+            border-bottom: 1px solid var(--home-line);
+            background:
+                radial-gradient(circle at 84% 18%, rgba(49, 95, 186, 0.12), transparent 31%),
+                radial-gradient(circle at 7% 87%, rgba(255, 255, 255, 0.92), transparent 31%),
+                var(--home-hero) !important;
+        }
+
+        body.vt-home-light .hero::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+            opacity: 0.38;
+            background-image:
+                linear-gradient(rgba(49, 95, 186, 0.045) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(49, 95, 186, 0.045) 1px, transparent 1px);
+            background-size: 44px 44px;
+            mask-image: linear-gradient(to bottom, #000, transparent 78%);
+        }
+
+        body.vt-home-light .hero-grid {
+            position: relative;
+            z-index: 1;
+            display: grid;
+            grid-template-columns: minmax(0, 1.02fr) minmax(380px, 0.98fr);
+            align-items: center;
+            gap: 72px;
+        }
+
+        body.vt-home-light .hero-content {
+            max-width: 680px;
+        }
+
+        body.vt-home-light .hero h1 {
+            margin: 0 0 24px;
+            color: var(--home-text) !important;
+            font-size: clamp(3.15rem, 5.8vw, 5.35rem);
+            font-weight: 790;
+            letter-spacing: -0.055em;
+            line-height: 0.98;
+            text-wrap: balance;
+        }
+
+        body.vt-home-light .hero h1 em {
+            display: block;
+            margin-top: 10px;
+            color: var(--home-navy) !important;
+            font-style: normal;
+            font-weight: 820;
+        }
+
+        body.vt-home-light .hero-subtitle {
+            max-width: 620px;
+            margin: 0 0 32px;
+            color: var(--home-body) !important;
+            font-size: clamp(1.03rem, 1.4vw, 1.18rem);
+            line-height: 1.75;
+        }
+
+        body.vt-home-light .hero-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        body.vt-home-light .btn {
+            min-height: 44px;
+            padding: 11px 18px;
+            border-radius: 9px !important;
+            box-shadow: none !important;
+            font-weight: 700;
+            letter-spacing: 0;
+            transition: transform 180ms ease, box-shadow 180ms ease, color 180ms ease, background 180ms ease !important;
+        }
+
+        body.vt-home-light .btn:hover { transform: translateY(-2px); }
+
+        body.vt-home-light .btn-primary {
+            color: #fff !important;
+            border-color: var(--home-navy) !important;
+            background: var(--home-navy) !important;
+        }
+
+        body.vt-home-light .btn-primary:hover {
+            background: var(--home-navy-hover) !important;
+            box-shadow: 0 10px 24px rgba(19, 38, 74, 0.18) !important;
+        }
+
+        body.vt-home-light .btn-secondary {
+            color: var(--home-navy) !important;
+            border-color: #cfd7e4 !important;
+            background: rgba(255, 255, 255, 0.84) !important;
+        }
+
+        body.vt-home-light .btn-secondary:hover {
+            border-color: var(--home-navy) !important;
+            background: #fff !important;
+        }
+
+        body.vt-home-light .hero-illustration {
+            padding: 0 !important;
+            border: 1px solid #d8e1ef !important;
+            border-radius: 22px !important;
+            background: #fff !important;
+            box-shadow: var(--home-shadow) !important;
+            transform: none !important;
+        }
+
+        body.vt-home-light .hero-illustration::before,
+        body.vt-home-light .hero-illustration::after { display: none !important; }
+
+        body.vt-home-light .illustration-header {
+            border-bottom-color: var(--home-line) !important;
+            background: #f7f9fc !important;
+        }
+
+        body.vt-home-light .illustration-title,
+        body.vt-home-light .illustration-body { color: var(--home-text) !important; }
+
+        /* Trust row doubles as the reference page's floating bridge card. */
+        body.vt-home-light .trust-section {
+            position: relative;
+            z-index: 4;
+            margin-top: -55px;
+            padding: 0 !important;
+            background: transparent !important;
+        }
+
+        body.vt-home-light .trust-grid {
+            padding: 26px 30px;
+            border: 1px solid var(--home-line);
+            border-radius: 18px;
+            background: #fff;
+            box-shadow: var(--home-shadow);
+        }
+
+        body.vt-home-light .trust-badge {
+            color: var(--home-body) !important;
+        }
+
+        body.vt-home-light .trust-badge svg,
+        body.vt-home-light .trust-badge i {
+            color: var(--home-navy) !important;
+            stroke: var(--home-navy) !important;
+        }
+
+        /* Spacious white/off-white content bands and restrained cards. */
+        body.vt-home-light main > section:not(.hero):not(.trust-section):not(.stats-section):not(.cta-section) {
+            padding: 96px 0 !important;
+            background: var(--home-bg) !important;
+        }
+
+        body.vt-home-light main > section:nth-of-type(even):not(.trust-section):not(.stats-section):not(.cta-section) {
+            border-block: 1px solid var(--home-line);
+            background: #fff !important;
+        }
+
+        body.vt-home-light .section-header {
+            max-width: 780px;
+            margin: 0 auto 48px;
+            text-align: center;
+        }
+
+        body.vt-home-light :is(.section-title, .section-header h2) {
+            margin: 0 0 14px;
+            color: var(--home-text) !important;
+            font-size: clamp(2.05rem, 4vw, 3.15rem);
+            font-weight: 780;
+            letter-spacing: -0.04em;
+            line-height: 1.08;
+        }
+
+        body.vt-home-light :is(.section-title, .section-header h2)::after { display: none !important; }
+
+        body.vt-home-light :is(.section-subtitle, .section-header p) {
+            max-width: 680px;
+            margin-inline: auto;
+            color: var(--home-body) !important;
+            font-size: 1.05rem;
+            line-height: 1.7;
+        }
+
+        body.vt-home-light :is(.solutions-grid, .steps-grid, .pricing-grid, .grid-3, .grid-4) {
+            gap: 22px;
+        }
+
+        body.vt-home-light :is(.card, .solution-card, .step-card, .pricing-card) {
+            border: 1px solid var(--home-line) !important;
+            border-radius: 16px !important;
+            background: #fff !important;
+            box-shadow: 0 8px 28px rgba(19, 38, 74, 0.055) !important;
+            transition: transform 220ms ease, border-color 220ms ease, box-shadow 220ms ease !important;
+        }
+
+        body.vt-home-light :is(.card, .solution-card, .step-card, .pricing-card):hover {
+            border-color: #b9c9e5 !important;
+            box-shadow: var(--home-shadow-hover) !important;
+            transform: translateY(-6px) !important;
+        }
+
+        body.vt-home-light :is(.card, .solution-card) {
+            padding: 30px !important;
+        }
+
+        body.vt-home-light .solution-icon,
+        body.vt-home-light .feature-icon {
+            color: var(--home-navy) !important;
+            border: 1px solid #dce6f7 !important;
+            border-radius: 12px !important;
+            background: #eaf1ff !important;
+        }
+
+        body.vt-home-light :is(.card h3, .card h4, .solution-card h3, .step-card h3, .feature-item h3, .feature-item h4, .pricing-card h3) {
+            color: var(--home-text) !important;
+        }
+
+        body.vt-home-light :is(.card p, .solution-card p, .step-card p, .feature-item p, .pricing-card p) {
+            color: var(--home-body) !important;
+        }
+
+        body.vt-home-light .solution-list li {
+            color: var(--home-body) !important;
+        }
+
+        body.vt-home-light .solution-list li::before {
+            color: var(--home-navy) !important;
+        }
+
+        body.vt-home-light .step-number {
+            color: var(--home-navy) !important;
+            border-color: #dce6f7 !important;
+            background: #eaf1ff !important;
+        }
+
+        body.vt-home-light .features-grid {
+            gap: 18px;
+        }
+
+        body.vt-home-light .feature-item {
+            padding: 24px;
+            border: 1px solid var(--home-line);
+            border-radius: 14px;
+            background: #fff;
+            transition: transform 200ms ease, border-color 200ms ease, box-shadow 200ms ease;
+        }
+
+        body.vt-home-light .feature-item:hover {
+            border-color: #bdcce6;
+            box-shadow: 0 14px 34px rgba(19, 38, 74, 0.08);
+            transform: translateY(-4px);
+        }
+
+        body.vt-home-light .stats-section {
+            padding: 68px 0 !important;
+            border-block: 1px solid #dce5f2;
+            background: var(--home-hero) !important;
+        }
+
+        body.vt-home-light .stat-number {
+            color: var(--home-navy) !important;
+            text-shadow: none !important;
+        }
+
+        body.vt-home-light .stat-label { color: var(--home-body) !important; }
+
+        body.vt-home-light .pricing-card.popular {
+            border: 2px solid var(--home-navy) !important;
+            transform: translateY(-8px) !important;
+        }
+
+        body.vt-home-light .pricing-card.popular:hover {
+            transform: translateY(-12px) !important;
+        }
+
+        body.vt-home-light .popular-badge {
+            color: #fff !important;
+            background: var(--home-navy) !important;
+        }
+
+        body.vt-home-light :is(.price, .price-amount) { color: var(--home-navy) !important; }
+
+        body.vt-home-light .pricing-features li {
+            color: var(--home-body) !important;
+            border-bottom-color: var(--home-line) !important;
+        }
+
+        body.vt-home-light .cta-section {
+            padding: 86px 0 !important;
+            border-top: 1px solid var(--home-line);
+            background: var(--home-hero) !important;
+        }
+
+        body.vt-home-light .cta-container {
+            max-width: 860px;
+            padding: 0 !important;
+            border: 0 !important;
+            background: transparent !important;
+            box-shadow: none !important;
+            text-align: center;
+        }
+
+        body.vt-home-light .cta-container::before,
+        body.vt-home-light .cta-container::after { display: none !important; }
+
+        body.vt-home-light .cta-section h2 {
+            color: var(--home-text) !important;
+            font-size: clamp(2rem, 4vw, 3.2rem);
+            letter-spacing: -0.04em;
+        }
+
+        body.vt-home-light .cta-section p { color: var(--home-body) !important; }
+
+        /* Both static and runtime-injected footer structures. */
+        body.vt-home-light :is(.footer, .vt-site-footer) {
+            padding: 52px 0 24px !important;
+            color: var(--home-body) !important;
+            border-top: 1px solid var(--home-line) !important;
+            background: #fff !important;
+        }
+
+        body.vt-home-light :is(.footer h3, .footer h4, .vt-site-footer h3, .vt-site-footer h4) {
+            color: var(--home-text) !important;
+        }
+
+        body.vt-home-light :is(.footer a, .vt-site-footer a) {
+            color: var(--home-body) !important;
+        }
+
+        body.vt-home-light :is(.footer a, .vt-site-footer a):hover {
+            color: var(--home-navy) !important;
+        }
+
+        body.vt-home-light :is(.footer-bottom, .vt-footer-bottom) {
+            border-top-color: var(--home-line) !important;
+            color: var(--home-muted) !important;
+        }
+
+        body.vt-home-light #cookieConsent {
+            color: var(--home-body) !important;
+            border: 1px solid var(--home-line) !important;
+            border-radius: 14px !important;
+            background: #fff !important;
+            box-shadow: var(--home-shadow) !important;
+        }
+
+        body.vt-home-light #cookieConsent a { color: var(--home-navy) !important; }
+
+        /* Existing home.js adds .active as blocks enter the viewport. */
+        body.vt-home-light .reveal {
+            opacity: 0;
+            transform: translateY(18px);
+            transition: opacity 650ms ease, transform 650ms cubic-bezier(.2, .7, .2, 1);
+        }
+
+        body.vt-home-light .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        @media (max-width: 1024px) {
+            body.vt-home-light .hero-grid {
+                grid-template-columns: 1fr;
+                gap: 48px;
+            }
+
+            body.vt-home-light .hero-content {
+                max-width: 790px;
+                text-align: center;
+                margin-inline: auto;
+            }
+
+            body.vt-home-light .hero-subtitle { margin-inline: auto; }
+            body.vt-home-light .hero-actions { justify-content: center; }
+            body.vt-home-light .hero-illustration { width: min(760px, 100%); margin-inline: auto; }
+        }
+
+        @media (max-width: 900px) {
+            body.vt-home-light .tool-header-links.is-open,
+            body.vt-home-light .nav-links.active {
+                top: calc(100% + 1px) !important;
+                width: min(100%, 420px);
+                padding: 16px !important;
+                border: 1px solid var(--home-line) !important;
+                border-radius: 0 0 14px 14px;
+                background: #fff !important;
+                box-shadow: var(--home-shadow) !important;
+            }
+
+            body.vt-home-light :is(.tool-header-links.is-open a, .nav-links.active a) {
+                width: 100%;
+                padding: 11px 12px;
+            }
+        }
+
+        @media (max-width: 760px) {
+            body.vt-home-light .container,
+            body.vt-home-light .nav-container,
+            body.vt-home-light .tool-header-inner,
+            body.vt-home-light .vt-footer-inner {
+                width: min(100% - 32px, 1180px);
+            }
+
+            body.vt-home-light .hero {
+                padding: 78px 0 106px !important;
+            }
+
+            body.vt-home-light .hero h1 {
+                font-size: clamp(2.55rem, 12vw, 4rem);
+            }
+
+            body.vt-home-light .trust-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+                gap: 20px;
+                padding: 22px;
+            }
+
+            body.vt-home-light main > section:not(.hero):not(.trust-section):not(.stats-section):not(.cta-section) {
+                padding: 74px 0 !important;
+            }
+
+            body.vt-home-light :is(.solutions-grid, .steps-grid, .features-grid, .pricing-grid, .grid-3, .grid-4) {
+                grid-template-columns: 1fr !important;
+            }
+
+            body.vt-home-light .pricing-card.popular,
+            body.vt-home-light .pricing-card.popular:hover {
+                transform: none !important;
+            }
+        }
+
+        @media (max-width: 520px) {
+            body.vt-home-light .hero-actions,
+            body.vt-home-light .hero-actions .btn { width: 100%; }
+            body.vt-home-light .hero-actions .btn { justify-content: center; }
+            body.vt-home-light .trust-grid { grid-template-columns: 1fr; }
+            body.vt-home-light .trust-badge { justify-content: flex-start; }
+            body.vt-home-light :is(.logo, .tool-header-brand) { padding-inline: 9px; }
+            body.vt-home-light :is(.logo img, .tool-header-brand img) { max-width: 130px; }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            body.vt-home-light *,
+            body.vt-home-light *::before,
+            body.vt-home-light *::after {
+                scroll-behavior: auto !important;
+                transition-duration: 0.01ms !important;
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+            }
+
+            body.vt-home-light .reveal {
+                opacity: 1;
+                transform: none;
+            }
+        }
+    </style>
 </head>
-<body>
+<body class="vt-home-light">
+    <a href="#main-content" class="home-skip-link">Skip to main content</a>
 
     <header id="header">
         <div class="container nav-container">
@@ -1447,7 +2066,7 @@
         </div>
     </header>
 
-    <main>
+    <main id="main-content">
         <section class="hero">
             <div class="container hero-grid">
                 <div class="hero-content reveal">
