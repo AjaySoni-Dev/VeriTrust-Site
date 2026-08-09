@@ -520,10 +520,8 @@
             text-wrap: balance;
         }
 
-        .hero-content h1 em {
+        .hero-content h1 .hero-accent {
             color: var(--accent-main);
-            font-style: italic;
-            font-weight: inherit;
         }
 
         .hero-content p {
@@ -1322,11 +1320,6 @@
             transition: border-color 160ms ease, background-color 160ms ease, transform 160ms ease;
         }
 
-        /* Keep all homepage copy at a consistent regular weight. */
-        body,
-        body * {
-            font-weight: 400 !important;
-        }
 
         .cookie-consent-button:hover {
             border-color: var(--border-hover);
@@ -1460,7 +1453,7 @@
         <section class="hero">
             <div class="container hero-grid">
                 <div class="hero-content reveal">
-                    <h1>AI-assisted review for <em>suspicious digital content.</em></h1>
+                    <h1>AI-assisted review for <span class="hero-accent">suspicious digital content.</span></h1>
                     <p>Review face images, messages, emails, and URLs with model scores, rule-based indicators, and clear limitations. Sign in to run checks and save web scan results.</p>
                     <div class="hero-actions">
     <a href="gateway.html" class="btn btn-primary">Open Unified Gateway</a>
