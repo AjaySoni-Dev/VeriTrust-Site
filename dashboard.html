@@ -160,29 +160,19 @@
 
     body.vt-dashboard-page .dashboard-head {
       position: relative;
-      isolation: isolate;
-      overflow: hidden;
+      isolation: auto;
+      overflow: visible;
       gap: 20px;
-      min-height: 160px;
+      min-height: 0;
       margin-bottom: 14px;
-      padding: clamp(21px, 3vw, 30px);
+      padding: 0;
       border: 0;
-      border-radius: 4px;
-      background: var(--dashboard-surface);
+      border-radius: 0;
+      background: transparent;
     }
 
     body.vt-dashboard-page .dashboard-head::after {
-      content: '';
-      position: absolute;
-      z-index: -1;
-      top: -115px;
-      right: -80px;
-      width: 280px;
-      height: 280px;
-      border-radius: 50%;
-      background: rgba(37, 99, 235, 0.08);
-      filter: blur(44px);
-      pointer-events: none;
+      content: none;
     }
 
     body.vt-dashboard-page .dashboard-head > div {
@@ -191,12 +181,12 @@
     }
 
     body.vt-dashboard-page .dashboard-head .eyebrow {
-      width: fit-content;
-      margin-bottom: 9px;
-      padding: 4px 8px;
+      width: auto;
+      margin-bottom: 14px;
+      padding: 0;
       border: 0;
-      border-radius: 2px;
-      background: var(--dashboard-accent-soft);
+      border-radius: 0;
+      background: transparent;
       color: var(--dashboard-blue-soft);
       font-family: var(--mono);
       font-size: 9px;
@@ -215,7 +205,7 @@
 
     body.vt-dashboard-page .dashboard-head .lead {
       max-width: 720px;
-      margin: 11px 0 0;
+      margin: 8px 0 14px;
       color: var(--dashboard-text);
       font-size: clamp(12.5px, 1.35vw, 14px);
       line-height: 1.58;
