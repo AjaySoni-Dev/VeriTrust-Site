@@ -756,10 +756,12 @@ body.vt-tool-page.vt-gateway-page.vt-graphite-theme .gateway-mode {
 
 body.vt-tool-page.vt-gateway-page.vt-graphite-theme .gateway-powershell-feature {
   grid-template-columns: minmax(0, 1fr) auto;
-  gap: 24px;
+  gap: 20px;
   margin-bottom: 14px;
-  padding: 19px 22px;
-  border-left-width: 1px !important;
+  padding: 0;
+  overflow: visible;
+  border: 0 !important;
+  background: transparent !important;
 }
 
 body.vt-tool-page.vt-gateway-page.vt-graphite-theme .gateway-powershell-feature::after {
@@ -767,7 +769,7 @@ body.vt-tool-page.vt-gateway-page.vt-graphite-theme .gateway-powershell-feature:
 }
 
 body.vt-tool-page.vt-gateway-page.vt-graphite-theme .gateway-powershell-copy .eyebrow {
-  margin-bottom: 4px;
+  margin-bottom: 14px;
 }
 
 body.vt-tool-page.vt-gateway-page.vt-graphite-theme .gateway-powershell-copy h2 {
@@ -775,7 +777,7 @@ body.vt-tool-page.vt-gateway-page.vt-graphite-theme .gateway-powershell-copy h2 
 }
 
 body.vt-tool-page.vt-gateway-page.vt-graphite-theme .gateway-powershell-copy > p:not(.eyebrow) {
-  margin-top: 5px;
+  margin-top: 8px;
   font-style: normal !important;
   line-height: 1.5;
 }
@@ -832,7 +834,7 @@ body.vt-tool-page.vt-gateway-page.vt-graphite-theme :where(.gateway-upload, .gat
   body.vt-tool-page.vt-gateway-page.vt-graphite-theme .gateway-powershell-feature {
     grid-template-columns: 1fr;
     gap: 15px;
-    padding: 18px;
+    padding: 0;
   }
 
   body.vt-tool-page.vt-gateway-page.vt-graphite-theme .gateway-powershell-action {
