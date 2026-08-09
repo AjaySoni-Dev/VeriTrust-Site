@@ -29,6 +29,47 @@
   <script src="/assets/js/core/site.js" defer></script>
   <script src="/assets/js/pages/gateway.js" defer></script>
   <link rel="stylesheet" href="/assets/css/base/glass-system.css">
+  <style>
+    /* Match the plain introductory treatment used on detection.html. */
+    html body.vt-gateway-page .gateway-powershell-feature {
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 20px;
+      min-height: 0;
+      margin-bottom: 20px;
+      padding: 0 !important;
+      overflow: visible;
+      border: 0 !important;
+      border-radius: 0 !important;
+      background: transparent !important;
+      background-color: transparent !important;
+      background-image: none !important;
+      box-shadow: none !important;
+      backdrop-filter: none !important;
+      -webkit-backdrop-filter: none !important;
+    }
+
+    html body.vt-gateway-page .gateway-powershell-feature::after {
+      content: none !important;
+    }
+
+    html body.vt-gateway-page .gateway-powershell-copy .eyebrow {
+      margin: 0 0 14px;
+      padding: 0;
+      border: 0;
+      background: transparent;
+    }
+
+    html body.vt-gateway-page .gateway-powershell-copy > p:not(.eyebrow) {
+      margin: 8px 0 0;
+    }
+
+    @media (max-width: 600px) {
+      html body.vt-gateway-page .gateway-powershell-feature {
+        grid-template-columns: minmax(0, 1fr);
+        gap: 15px;
+      }
+    }
+  </style>
 </head>
 <body class="vt-tool-page vt-gateway-page vt-graphite-theme">
   <header class="tool-header-shell vt-page-header">
