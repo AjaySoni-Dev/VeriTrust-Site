@@ -1,6 +1,6 @@
 <h1 align="center">VeriTrust</h1>
 
-<p align="center">
+<p align="center"> 
   <strong>AI-Powered Digital Trust and Threat Detection Platform</strong><br>
   Static security frontend, Vercel serverless APIs, Hugging Face model routing, workspace review, and phishing, link, image, and gateway analysis.
 </p>
