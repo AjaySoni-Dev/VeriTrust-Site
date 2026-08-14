@@ -8,6 +8,8 @@ tmp/
 coverage/
 scripts/
 docs/
+inputs/
+outputs/
 openapi/
 private/
 *.md
