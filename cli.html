@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#1A1A1A">
+  <link rel="icon" href="/favicon.ico" type="image/x-icon">
+  <link rel="icon" href="/favicon-32.png" type="image/png" sizes="32x32">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png" sizes="180x180">
+  <title>Web CLI | VeriTrust</title>
+  <meta name="description" content="Authenticated VeriTrust command workspace for link, phishing, image, and unified gateway scans.">
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/base/veritrust.css">
+  <link rel="stylesheet" href="/assets/css/base/graphite-orange-theme.css">
+  <link rel="stylesheet" href="/assets/css/pages/cli.css">
+  <script src="/assets/js/core/config.js" defer></script>
+  <script src="/assets/js/core/supabase-client.js" defer></script>
+  <script src="/assets/js/core/site.js" defer></script>
+  <script src="/assets/js/core/cli-core.js" defer></script>
+  <script src="/assets/js/pages/cli.js" defer></script>
+  <link rel="stylesheet" href="/assets/css/base/glass-system.css">
+</head>
+<body class="vt-graphite-theme vt-cli-page">
+  <header class="tool-header-shell vt-page-header">
+    <div class="tool-header-inner">
+      <a href="index.html" class="tool-header-brand" aria-label="VeriTrust home">
+        <img src="/assets/images/logo.png" alt="" class="tool-header-mark">
+        <img src="/assets/images/brand.png" alt="VeriTrust" class="tool-header-word">
+      </a>
+      <nav class="tool-header-links" aria-label="Primary">
+        <a href="index.html">Home</a>
+        <a href="detection.html">GUI Detection</a>
+        <a href="cli.html" class="active" aria-current="page">Web CLI</a>
+        <a href="developers.html">Developers</a>
+        <a href="docs.html">Docs</a>
+      </nav>
+      <div class="tool-header-actions">
+        <a href="detection.html" class="tool-header-login">Open GUI</a>
+        <a href="dashboard.html" class="tool-header-dashboard">Dashboard</a>
+        <button class="tool-menu-toggle" aria-label="Open page menu" aria-expanded="false" type="button">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+            <circle cx="12" cy="5" r="1.8"/><circle cx="12" cy="12" r="1.8"/><circle cx="12" cy="19" r="1.8"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main class="cli-shell">
+    <section class="cli-mobile-block" aria-labelledby="cli-mobile-title">
+      <p class="eyebrow">GUI required</p>
+      <h1 id="cli-mobile-title">Use the detection workspace on mobile.</h1>
+      <p>The command interface is intentionally unavailable on small screens. The graphical workflow provides the supported mobile experience.</p>
+      <a class="btn btn-primary" href="detection.html">Open GUI Detection</a>
+    </section>
+
+    <div class="cli-desktop-workspace">
+      <section class="cli-intro" aria-labelledby="cli-title">
+        <div>
+          <p class="eyebrow">Security operations</p>
+          <h1 id="cli-title">Command Console</h1>
+          <p class="cli-intro-copy">Run authenticated VeriTrust checks from a controlled, allowlisted interface.</p>
+        </div>
+        <div class="cli-mode-actions">
+          <span id="cli-session-badge" class="cli-session-badge">Session verified</span>
+          <a class="btn btn-secondary" href="detection.html">Open visual workspace</a>
+        </div>
+      </section>
+
+      <div class="cli-layout">
+        <section class="cli-terminal" aria-label="VeriTrust command terminal">
+          <div class="cli-terminal-header">
+            <div class="cli-terminal-identity">
+              <strong class="cli-terminal-title">VeriTrust CLI</strong>
+              <span>Allowlisted commands only</span>
+            </div>
+            <div class="cli-terminal-controls">
+              <button type="button" data-cli-command="clear">Clear</button>
+              <span id="cli-busy" class="cli-terminal-state">Ready</span>
+            </div>
+          </div>
+
+          <div id="cli-output" class="cli-output" role="log" aria-live="polite" aria-relevant="additions"></div>
+
+          <div class="cli-attachment-bar">
+            <span class="cli-attachment-title">Attachment</span>
+            <strong id="cli-attachment-label">None selected</strong>
+            <button class="cli-attachment-action" type="button" data-cli-command="attach">Select file</button>
+            <input id="cli-file" type="file" hidden accept="image/jpeg,image/png,image/webp,image/bmp,audio/mpeg,audio/wav,audio/ogg,audio/mp4,video/mp4,video/webm,video/quicktime">
+          </div>
+
+          <form id="cli-form" class="cli-command-form" autocomplete="off">
+            <label class="sr-only" for="cli-input">VeriTrust command</label>
+            <span class="cli-prompt" aria-hidden="true">vt&gt;</span>
+            <textarea id="cli-input" class="cli-command-input" rows="1" spellcheck="false" autocapitalize="off" autocomplete="off" placeholder="Type help to see commands"></textarea>
+            <button id="cli-submit" class="cli-run-button" type="submit" aria-label="Run command">Run</button>
+          </form>
+        </section>
+
+        <aside class="cli-reference" aria-labelledby="cli-reference-title">
+          <header class="cli-reference-header">
+            <p class="cli-section-label">Reference</p>
+            <h2 id="cli-reference-title">Quick commands</h2>
+            <p>Select a command to place it in the prompt.</p>
+          </header>
+
+          <div class="cli-command-catalog">
+            <section class="cli-command-group" aria-labelledby="cli-workspace-commands">
+              <h3 id="cli-workspace-commands">Workspace</h3>
+              <div class="cli-command-list">
+                <button class="cli-command-row" type="button" data-cli-command="help"><span><code>help</code><small>Command and keyboard reference</small></span><b aria-hidden="true">Use</b></button>
+                <button class="cli-command-row" type="button" data-cli-command="status"><span><code>status</code><small>Verify the active workspace</small></span><b aria-hidden="true">Use</b></button>
+                <button class="cli-command-row" type="button" data-cli-command="history --limit 10"><span><code>history --limit 10</code><small>Show recent saved checks</small></span><b aria-hidden="true">Use</b></button>
+              </div>
+            </section>
+
+            <section class="cli-command-group" aria-labelledby="cli-scan-commands">
+              <h3 id="cli-scan-commands">Detection</h3>
+              <div class="cli-command-list">
+                <button class="cli-command-row" type="button" data-cli-command="scan link https://example.com"><span><code>scan link https://example.com</code><small>Review an HTTP or HTTPS URL</small></span><b aria-hidden="true">Use</b></button>
+                <button class="cli-command-row" type="button" data-cli-command="scan phishing &quot;Review this suspicious message&quot;"><span><code>scan phishing &quot;message&quot;</code><small>Review email or message text</small></span><b aria-hidden="true">Use</b></button>
+                <button class="cli-command-row" type="button" data-cli-command="scan image --model pixel"><span><code>scan image --model pixel</code><small>Review the selected image</small></span><b aria-hidden="true">Use</b></button>
+                <button class="cli-command-row" type="button" data-cli-command="scan gateway --text &quot;Review this message&quot; --url https://example.com"><span><code>scan gateway --text &quot;message&quot; --url https://example.com</code><small>Correlate message and URL evidence</small></span><b aria-hidden="true">Use</b></button>
+              </div>
+            </section>
+          </div>
+
+          <footer class="cli-reference-footer">
+            <p><strong>Controlled execution</strong></p>
+            <p>This console cannot run operating-system commands. Input is parsed into documented VeriTrust API actions only.</p>
+          </footer>
+        </aside>
+      </div>
+    </div>
+  </main>
+
+  <footer class="legal-footer">
+    <a href="privacy.html">Privacy</a><span aria-hidden="true">&middot;</span><a href="security.html">Security</a><span aria-hidden="true">&middot;</span><a href="docs.html">Docs</a><span aria-hidden="true">&middot;</span><a href="developers.html">Developers</a>
+  </footer>
+</body>
+</html>

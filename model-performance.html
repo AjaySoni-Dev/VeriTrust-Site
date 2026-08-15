@@ -1,0 +1,148 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" href="/favicon.ico" type="image/x-icon">
+  <link rel="icon" href="/favicon-32.png" type="image/png" sizes="32x32">
+  <link rel="icon" href="/favicon-48.png" type="image/png" sizes="48x48">
+  <link rel="icon" href="/favicon-96.png" type="image/png" sizes="96x96">
+  <link rel="icon" href="/favicon-192.png" type="image/png" sizes="192x192">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png" sizes="180x180">
+  <title>Model Performance | VeriTrust</title>
+  <meta name="description" content="Current VeriTrust evaluation status, scoring limitations, and the benchmark evidence that has not yet been published.">
+  <link rel="canonical" href="https://www.veritrustlab.in/model-performance">
+  <meta name="robots" content="index, follow, max-image-preview:large">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="VeriTrust">
+  <meta property="og:title" content="Model Performance | VeriTrust">
+  <meta property="og:description" content="Current VeriTrust evaluation status, scoring limitations, and the benchmark evidence that has not yet been published.">
+  <meta property="og:url" content="https://www.veritrustlab.in/model-performance">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Model Performance | VeriTrust">
+  <meta name="twitter:description" content="Current VeriTrust evaluation status, scoring limitations, and the benchmark evidence that has not yet been published.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@500;600&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/base/veritrust.css">
+  <link rel="stylesheet" href="/assets/css/base/graphite-orange-theme.css">
+  <script src="/assets/js/core/config.js" defer></script>
+  <script src="/assets/js/core/supabase-client.js" defer></script>
+  <script src="/assets/js/core/site.js" defer></script>
+  <script src="/assets/js/pages/model-performance.js" defer></script>
+  <link rel="stylesheet" href="/assets/css/base/glass-system.css">
+</head>
+<body class="vt-graphite-theme">
+    <header class="tool-header-shell vt-page-header">
+    <div class="tool-header-inner">
+      <a href="index.html" class="tool-header-brand" aria-label="VeriTrust home">
+        <img src="/assets/images/logo.png" alt="" class="tool-header-mark">
+        <img src="/assets/images/brand.png" alt="VeriTrust" class="tool-header-word">
+      </a>
+      <nav class="tool-header-links" aria-label="Primary">
+        <a href="index.html">Home</a>
+        <a href="detection.html">Detection</a>
+        <a href="developers.html">Developers</a>
+        <a href="docs.html">Docs</a>
+        <a href="model-performance.html" class="active">Model Performance</a>
+      </nav>
+      <div class="tool-header-actions">
+        <a href="auth.html" class="tool-header-login">Log in</a>
+        <a href="dashboard.html" class="tool-header-dashboard">Dashboard</a>
+        <button class="tool-menu-toggle" aria-label="Open page menu" aria-expanded="false" type="button">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+            <circle cx="12" cy="5" r="1.8"/>
+            <circle cx="12" cy="12" r="1.8"/>
+            <circle cx="12" cy="19" r="1.8"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main class="container docs-layout">
+    <aside class="toc">
+      <a href="#overview">Overview</a>
+      <a href="#deepfake">Deepfake</a>
+      <a href="#phishing">Phishing</a>
+      <a href="#link">Link Intelligence</a>
+      <a href="#metrics">Required Metrics</a>
+      <a href="#datasets">Dataset Notes</a>
+      <a href="#limitations">Limitations</a>
+    </aside>
+
+    <article class="doc-content">
+      <section id="overview" class="doc-section">
+        <p class="eyebrow">Model performance</p>
+        <h1>No VeriTrust benchmark is currently published.</h1>
+        <p>The repository does not contain a controlled labeled evaluation, confusion matrix, or verified accuracy, precision, recall, or F1 result. Accordingly, the site makes no numerical performance claim.</p>
+        <p>Current scan output is an AI-assisted triage signal. A provider model&apos;s confidence value is not a VeriTrust accuracy measurement and is not legal, forensic, cybersecurity, or final proof.</p>
+        <div class="model-governance-summary" data-model-governance aria-live="polite" aria-busy="true"><strong>Checking the model-card registry</strong><p>Published evidence will appear only after an evaluated model card has been approved.</p></div>
+      </section>
+
+      <section id="published-cards" class="doc-section">
+        <h2>Published model cards</h2>
+        <div class="model-card-grid" data-model-cards><div class="model-card-empty"><strong>Loading governance records</strong><p>No metric is displayed until its supporting model card is published.</p></div></div>
+      </section>
+
+      <section id="deepfake" class="doc-section">
+        <h2>Deepfake model evaluation</h2>
+        <p>VeriTrust Pixel and VeriTrust Prism use server-configured hosted inference paths. Provider repository identifiers are intentionally kept out of client responses and public pages. VeriTrust has not established that one is more accurate than the other.</p>
+        <ul>
+          <li>A valid evaluation would separate real-image and synthetic-image classes on held-out labeled data.</li>
+          <li>It would document image quality, face visibility, optional crop preprocessing, and dataset source limits.</li>
+          <li>Model scores will remain probability-style signals, not visual forensic findings.</li>
+        </ul>
+      </section>
+
+      <section id="phishing" class="doc-section">
+        <h2>Phishing model evaluation</h2>
+        <p>The current message paths are VeriTrust MailGuard, a hosted text classifier, and VeriTrust Cortex, a hosted instruction model. The displayed phishing score combines model output with deterministic indicators, so it is not a raw model benchmark.</p>
+        <ul>
+          <li>A valid evaluation would report email, SMS, URL, and short-message subsets separately.</li>
+          <li>It would assess model-only predictions separately from the combined rule score.</li>
+          <li>Any benchmark must state that a low-risk result does not prove a message is safe.</li>
+        </ul>
+      </section>
+
+      <section id="link" class="doc-section">
+        <h2>Link Intelligence evaluation</h2>
+        <p>The available link path uses a server-configured VeriTrust Swift classifier plus deterministic URL-string indicators. If hosted inference fails, the route returns a disclosed local URL-pattern fallback. It does not fetch pages, resolve redirects, query WHOIS, or use live reputation feeds.</p>
+        <ul>
+          <li>No VeriTrust link-classification benchmark is currently published.</li>
+          <li>Classifier output and deterministic URL indicators would need separate evaluation.</li>
+          <li>Fallback frequency and URL-pattern-only outcomes must be measured separately from hosted-classifier results.</li>
+        </ul>
+      </section>
+
+      <section id="metrics" class="doc-section">
+        <h2>Metrics required before a performance claim</h2>
+        <ul>
+          <li>Accuracy, precision, recall, and F1 score on documented labeled test sets.</li>
+          <li>False positive and false negative rates by scan type.</li>
+          <li>Confusion matrices for each evaluated model and dataset split.</li>
+          <li>Latency and fallback frequency under production-like conditions.</li>
+        </ul>
+      </section>
+
+      <section id="datasets" class="doc-section">
+        <h2>Dataset notes</h2>
+        <p>Any future benchmark would need to identify its dataset source, labeling process, sampling approach, train/test separation, known bias, exclusions, preprocessing, and evaluation date. Without those details, a headline accuracy figure would not be reliable.</p>
+      </section>
+
+      <section id="limitations" class="doc-section">
+        <h2>Limitations</h2>
+        <ul>
+          <li>False positives can incorrectly flag benign content as suspicious.</li>
+          <li>False negatives can miss risky content, especially when attackers change wording, domains, or visual generation methods.</li>
+          <li>Model fallback can change score distributions because a different model handled the request.</li>
+          <li>High-impact cases should include manual review and trusted source verification.</li>
+        </ul>
+      </section>
+    </article>
+  </main>
+  <footer class="legal-footer">
+    <a href="privacy.html">Privacy</a><span aria-hidden="true">&middot;</span><a href="terms.html">Terms</a><span aria-hidden="true">&middot;</span><a href="security.html">Security</a><span aria-hidden="true">&middot;</span><a href="disclaimer.html">Disclaimer</a><span aria-hidden="true">&middot;</span><a href="docs.html">Docs</a><span aria-hidden="true">&middot;</span><a href="developers.html">Developers</a><span aria-hidden="true">&middot;</span><a href="model-performance.html">Model Performance</a>
+  </footer>
+</body>
+</html>

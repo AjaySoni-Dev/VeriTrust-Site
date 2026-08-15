@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Course | VeriTrust Learning</title>
+  <meta name="description" content="Review a VeriTrust learning course, its modules, outcomes, estimated effort, labs, assessments, and enrollment options.">
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="theme-color" content="#060910">
+  <link rel="icon" href="/favicon.ico">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@500;600&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/base/veritrust.css">
+  <link rel="stylesheet" href="/assets/css/base/tool-pages.css">
+  <link rel="stylesheet" href="/assets/css/base/graphite-orange-theme.css">
+  <link rel="stylesheet" href="/assets/css/pages/learning.css">
+  <link rel="stylesheet" href="/assets/css/base/glass-system.css">
+  <script src="/assets/js/core/config.js" defer></script><script src="/assets/js/core/supabase-client.js" defer></script><script src="/assets/js/core/site.js" defer></script><script src="/assets/js/core/learning-api.js" defer></script><script src="/assets/js/pages/course.js" defer></script>
+</head>
+<body class="vt-tool-page vt-graphite-theme vt-learning-page learning-data-loading">
+  <header></header>
+  <main class="learning-shell">
+    <section class="learning-page-title">
+      <p class="learning-kicker">Course overview</p>
+      <h1 id="course-title">Loading course…</h1>
+      <p id="course-summary">Review the learning path before enrolling.</p>
+      <ul class="learning-meta"><li id="course-level">—</li><li id="course-duration">—</li><li id="course-count">—</li></ul>
+      <div class="learning-actions"><button id="course-enroll" class="learning-btn learning-btn-primary" type="button">Enroll</button><a id="course-continue" class="learning-btn learning-btn-primary" href="/learn/my-learning" hidden>Start learning</a><a id="course-assessment" class="learning-btn" href="/learn/my-learning" hidden>Open assessment</a><a class="learning-btn" href="/learn/catalog">Back to catalog</a></div>
+    </section>
+    <div id="course-message" class="learning-message" role="status">Loading the published course…</div>
+    <section class="course-layout">
+      <article class="learning-panel"><p class="learning-kicker">Curriculum</p><h2>Course modules</h2><div id="course-modules"></div></article>
+      <aside class="learning-panel"><p class="learning-kicker">How it works</p><h2>Learn, practice, verify</h2><p>Complete lessons and training labs, then pass the required assessment. Training activity is kept separate from production scan analytics and billing.</p><p>Assessment timers and scoring are enforced on the server. Correct answers are never sent to the browser.</p></aside>
+    </section>
+  </main>
+  <footer></footer>
+</body>
+</html>

@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Learning & Certification | VeriTrust</title>
+  <meta name="description" content="Build practical digital-trust skills with structured VeriTrust courses, security labs, assessments, and verifiable credentials.">
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="theme-color" content="#060910">
+  <link rel="icon" href="/favicon.ico">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@500;600&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/base/veritrust.css">
+  <link rel="stylesheet" href="/assets/css/base/tool-pages.css">
+  <link rel="stylesheet" href="/assets/css/base/graphite-orange-theme.css">
+  <link rel="stylesheet" href="/assets/css/pages/learning.css">
+  <link rel="stylesheet" href="/assets/css/base/glass-system.css">
+  <script src="/assets/js/core/config.js" defer></script>
+  <script src="/assets/js/core/supabase-client.js" defer></script>
+  <script src="/assets/js/core/site.js" defer></script>
+  <script src="/assets/js/core/learning-api.js" defer></script>
+  <script src="/assets/js/pages/learning.js" defer></script>
+</head>
+<body class="vt-tool-page vt-graphite-theme vt-learning-page learning-data-loading">
+  <header></header>
+  <main class="learning-shell">
+    <section class="learning-hero" data-catalog-view>
+      <div class="learning-hero-main">
+        <p class="learning-kicker">Learning &amp; certification</p>
+        <h1>Build practical digital-trust skills.</h1>
+        <p class="learning-hero-copy">Complete concise lessons, guided training labs, secure assessments, and verifiable credentials.</p>
+        <div class="learning-actions">
+          <a class="learning-btn learning-btn-primary" href="/learn/catalog">View catalog</a>
+          <a class="learning-btn" href="/learn/my-learning">My learning</a>
+        </div>
+      </div>
+    </section>
+
+    <section class="learning-page-title" data-my-view hidden>
+      <p class="learning-kicker">My learning</p>
+      <h1>Welcome back, <span id="learning-name">learner</span>.</h1>
+      <p>Continue active coursework, review completed learning, and open your issued credentials.</p>
+      <div class="learning-actions"><a class="learning-btn" href="/learn/catalog">Browse catalog</a><a class="learning-btn" href="/certificates">My certificates</a></div>
+    </section>
+
+    <section class="learning-section learning-catalog-panel" aria-labelledby="learning-heading">
+      <div class="learning-section-heading">
+        <div><p id="learning-section-kicker" class="learning-kicker">Course catalog</p><h2 id="learning-heading">Available courses</h2></div>
+      </div>
+      <form id="learning-filter" class="learning-filter" data-catalog-view role="search">
+        <label><span class="sr-only">Search courses</span><input id="learning-search" class="learning-input" type="search" maxlength="80" placeholder="Search courses"></label>
+        <label><span class="sr-only">Course level</span><select id="learning-level" class="learning-select"><option value="">All levels</option><option value="foundation">Foundation</option><option value="intermediate">Intermediate</option><option value="advanced">Advanced</option></select></label>
+        <button class="learning-btn" type="submit">Apply filters</button>
+      </form>
+      <div id="learning-message" class="learning-message" role="status">Loading learning…</div>
+      <div id="learning-grid" class="learning-grid" aria-live="polite" aria-busy="true"></div>
+    </section>
+  </main>
+  <footer></footer>
+</body>
+</html>
