@@ -1,0 +1,16 @@
+.env*
+*.log
+.github/
+.git*
+node_modules/
+output/
+tmp/
+coverage/
+scripts/
+docs/
+inputs/
+outputs/
+openapi/
+private/
+*.md
+LICENSE
