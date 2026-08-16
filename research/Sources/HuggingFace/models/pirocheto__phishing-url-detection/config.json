@@ -1,0 +1,14 @@
+{
+    "sklearn": {
+        "environment": [
+            "scikit-learn=1.3.2",
+            "joblib=1.3.2"
+        ],
+        "model": {
+            "file": "model.pkl"
+        },
+        "model_format": "pickle",
+        "task": "text-classification",
+        "use_intelex": false
+    }
+}

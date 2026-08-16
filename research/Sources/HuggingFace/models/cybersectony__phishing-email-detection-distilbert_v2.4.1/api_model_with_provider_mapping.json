@@ -1,0 +1,1 @@
+{"_id":"671e95bbb91f5a4a2436a3c4","id":"cybersectony/phishing-email-detection-distilbert_v2.4.1","inferenceProviderMapping":{"hf-inference":{"status":"live","providerId":"cybersectony/phishing-email-detection-distilbert_v2.4.1","task":"text-classification","isModelAuthor":false}}}
