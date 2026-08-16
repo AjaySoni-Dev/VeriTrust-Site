@@ -4,6 +4,7 @@
 .git*
 node_modules/
 output/
+research/
 tmp/
 coverage/
 scripts/
