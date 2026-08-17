@@ -366,6 +366,23 @@ header,
   font-weight: 500;
 }
 
+.tool-header-login {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 40px;
+  padding: 0.5rem 1rem;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  background-color: var(--bg-surface-light);
+  color: var(--text-primary);
+  line-height: 1.2;
+}
+
+.tool-header-login[hidden] {
+  display: none !important;
+}
+
 .tool-header-links a:hover,
 .tool-header-login:hover {
   color: var(--text-primary);
@@ -373,15 +390,8 @@ header,
 
 .tool-header-login.is-logout {
   order: 2;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0.5rem 1rem;
-  border: 1px solid var(--border-hover);
-  border-radius: 6px;
+  border-color: var(--border-hover);
   background-color: var(--bg-surface-hover);
-  color: var(--text-primary);
-  line-height: 1.2;
 }
 
 .tool-header-login.is-logout:hover {
