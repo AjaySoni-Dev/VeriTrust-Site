@@ -569,9 +569,9 @@
           }
 
           .risk-medium {
-            color: #fde68a;
-            background: rgba(245, 158, 11, 0.13);
-            border: 1px solid rgba(245, 158, 11, 0.38);
+            color: #01afaf;
+            background: rgba(1, 175, 175, 0.13);
+            border: 1px solid rgba(1, 175, 175, 0.38);
           }
 
           .risk-high,

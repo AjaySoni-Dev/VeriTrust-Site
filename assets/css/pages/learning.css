@@ -3,7 +3,7 @@
   --learning-blue-strong: #2563eb;
   --learning-cyan: #38bdf8;
   --learning-success: #34d399;
-  --learning-warning: #fbbf24;
+  --learning-warning: #01afaf;
 }
 
 body.vt-learning-page {
@@ -1013,7 +1013,7 @@ body.vt-learning-page .learning-message {
 body.vt-learning-page .learning-message[data-tone="warning"] {
   border-color: rgba(251, 191, 36, 0.25);
   background: rgba(120, 83, 10, 0.12);
-  color: #fde68a;
+  color: #01afaf;
 }
 
 body.vt-learning-page .learning-btn.is-complete,

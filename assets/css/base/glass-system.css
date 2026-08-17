@@ -385,8 +385,8 @@ body:not(.vt-graphite-theme) :where(
 }
 
 body :where(input, textarea, select):focus {
-  border-color: rgba(222, 145, 56, 0.7) !important;
-  box-shadow: 0 0 0 3px rgba(222, 145, 56, 0.13) !important;
+  border-color: rgba(1, 175, 175, 0.7) !important;
+  box-shadow: 0 0 0 3px rgba(1, 175, 175, 0.13) !important;
 }
 
 /* Landing page: retain visual rhythm while matching the product surfaces. */
@@ -401,7 +401,7 @@ body:not(.vt-graphite-theme) .stats-section {
 }
 
 body:not(.vt-graphite-theme) .pricing-card.popular {
-  border-color: rgba(222, 145, 56, 0.62) !important;
+  border-color: rgba(1, 175, 175, 0.62) !important;
 }
 
 /* Reading pages: calm measure, clear section hierarchy, usable table of contents. */

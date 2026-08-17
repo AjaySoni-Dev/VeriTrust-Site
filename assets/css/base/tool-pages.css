@@ -665,9 +665,9 @@ body.vt-tool-page {
 }
 
 .risk-badge-medium {
-  color: #fde68a;
-  border-color: rgba(245, 158, 11, 0.45);
-  background: rgba(245, 158, 11, 0.08);
+  color: #01afaf;
+  border-color: rgba(1, 175, 175, 0.45);
+  background: rgba(1, 175, 175, 0.08);
 }
 
 .risk-badge-high {
@@ -769,7 +769,7 @@ body.vt-tool-page {
 
 .fallback-notice {
   margin-top: 8px;
-  color: #fde68a;
+  color: #01afaf;
 }
 
 .signal-list {

@@ -22,17 +22,17 @@ body.vt-graphite-theme {
   --text-secondary: #c2c2c2;
   --text-tertiary: #929292;
   --text-muted: #c2c2c2;
-  --blue: #de9138;
-  --blue-2: #de9138;
-  --teal: #de9138;
-  --accent: #de9138;
-  --accent-main: #de9138;
-  --accent-hover: #e6a050;
-  --accent-button: #de9138;
-  --accent-button-hover: #c47c2e;
-  --accent-glow: rgba(222, 145, 56, 0.15);
-  --accent-soft: rgba(222, 145, 56, 0.085);
-  --accent-border: rgba(222, 145, 56, 0.3);
+  --blue: #01afaf;
+  --blue-2: #01afaf;
+  --teal: #01afaf;
+  --accent: #01afaf;
+  --accent-main: #01afaf;
+  --accent-hover: #01afaf;
+  --accent-button: #01afaf;
+  --accent-button-hover: #01afaf;
+  --accent-glow: rgba(1, 175, 175, 0.15);
+  --accent-soft: rgba(1, 175, 175, 0.085);
+  --accent-border: rgba(1, 175, 175, 0.3);
   --radius: 10px;
   --radius-sm: 6px;
   --radius-md: 10px;
@@ -55,7 +55,7 @@ body.vt-graphite-theme ::selection {
 
 body.vt-graphite-theme :where(a, button, input, select, textarea, summary):focus-visible {
   outline: none;
-  box-shadow: 0 0 0 3px rgba(222, 145, 56, 0.3) !important;
+  box-shadow: 0 0 0 3px rgba(1, 175, 175, 0.3) !important;
 }
 
 body.vt-graphite-theme :where(.tool-header-shell, .vt-page-header) {
@@ -147,7 +147,7 @@ body.vt-graphite-theme :where(.input, .select, .textarea, .form-input) {
 body.vt-graphite-theme :where(.input, .select, .textarea, .form-input):focus {
   border-color: var(--accent-main) !important;
   background: var(--bg-surface-light) !important;
-  box-shadow: 0 0 0 2px rgba(222, 145, 56, 0.22) !important;
+  box-shadow: 0 0 0 2px rgba(1, 175, 175, 0.22) !important;
 }
 
 body.vt-graphite-theme :where(.eyebrow, .ps-kicker) {
@@ -173,7 +173,7 @@ body.vt-graphite-theme .api-key-created {
 
 body.vt-graphite-theme :where(.model-select-trigger:hover, .model-select.open .model-select-trigger) {
   border-color: var(--accent-main) !important;
-  box-shadow: 0 0 0 2px rgba(222, 145, 56, 0.22) !important;
+  box-shadow: 0 0 0 2px rgba(1, 175, 175, 0.22) !important;
 }
 
 body.vt-graphite-theme :where(.tool-hub > .lead, .gateway-heading p:not(.eyebrow), .ps-hero-copy > p, .ps-lead, .auth-header p, .dashboard-head .lead) {
@@ -461,15 +461,15 @@ body.vt-dashboard-page.vt-graphite-theme {
   --dashboard-surface-soft: #262626;
   --dashboard-border: #363636;
   --dashboard-border-strong: #4a4a4a;
-  --dashboard-accent-soft: rgba(222, 145, 56, 0.085);
-  --dashboard-accent-border: rgba(222, 145, 56, 0.3);
+  --dashboard-accent-soft: rgba(1, 175, 175, 0.085);
+  --dashboard-accent-border: rgba(1, 175, 175, 0.3);
   --dashboard-text-strong: #fafafa;
   --dashboard-text: #c2c2c2;
   --dashboard-muted: #929292;
-  --dashboard-blue: #de9138;
-  --dashboard-blue-strong: #de9138;
-  --dashboard-blue-button-hover: #c47c2e;
-  --dashboard-blue-soft: #de9138;
+  --dashboard-blue: #01afaf;
+  --dashboard-blue-strong: #01afaf;
+  --dashboard-blue-button-hover: #01afaf;
+  --dashboard-blue-soft: #01afaf;
   background-color: var(--dashboard-canvas) !important;
   background-image: none !important;
 }
@@ -566,7 +566,7 @@ body.vt-graphite-theme .tool-header-cli {
 
 body.vt-graphite-theme .tool-header-cli:hover {
   border-color: var(--accent-main);
-  background: rgba(222, 145, 56, 0.13);
+  background: rgba(1, 175, 175, 0.13);
   color: var(--accent-hover);
 }
 
@@ -620,7 +620,7 @@ body.vt-graphite-theme .tool-header-cli:hover {
 
 .scan-mode-eyebrow {
   margin: 0 0 10px;
-  color: #de9138;
+  color: #01afaf;
   font-size: 0.76rem;
   font-weight: 800;
   letter-spacing: 0.14em;
@@ -665,13 +665,13 @@ body.vt-graphite-theme .tool-header-cli:hover {
 }
 
 .scan-mode-option-featured {
-  border-color: rgba(222, 145, 56, 0.42);
-  background: linear-gradient(145deg, rgba(222, 145, 56, 0.075), #262626 60%);
+  border-color: rgba(1, 175, 175, 0.42);
+  background: linear-gradient(145deg, rgba(1, 175, 175, 0.075), #262626 60%);
 }
 
 .scan-mode-option:hover,
 .scan-mode-option:focus-visible {
-  border-color: #de9138;
+  border-color: #01afaf;
   outline: 0;
   background-color: #2b2926;
   transform: translateY(-2px);
@@ -682,7 +682,7 @@ body.vt-graphite-theme .tool-header-cli:hover {
   align-items: center;
   justify-content: space-between;
   gap: 8px;
-  color: #de9138;
+  color: #01afaf;
   font-size: 0.76rem;
   font-weight: 800;
   letter-spacing: 0.1em;
@@ -716,7 +716,7 @@ body.vt-graphite-theme .tool-header-cli:hover {
 .scan-mode-option b {
   margin-top: auto;
   padding-top: 20px;
-  color: #de9138;
+  color: #01afaf;
   font-size: 0.78rem;
 }
 
