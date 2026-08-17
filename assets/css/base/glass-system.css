@@ -439,6 +439,41 @@ body.vt-guide-page :where(.ps-guide-section, .ps-terminal-card, .ps-code-card) {
   border-radius: 8px;
 }
 
+/* Keep every workspace section intro consistent with the detection-page header. */
+html body.vt-dashboard-page.vt-graphite-theme .workspace-page > .dashboard-head:not(.case-detail-head) {
+  position: relative;
+  isolation: auto;
+  overflow: visible;
+  min-height: 0;
+  margin-bottom: 20px;
+  padding: 0 !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  background-color: transparent !important;
+  background-image: none !important;
+  box-shadow: none !important;
+  -webkit-backdrop-filter: none !important;
+  backdrop-filter: none !important;
+}
+
+html body.vt-dashboard-page.vt-graphite-theme .workspace-page > .dashboard-head:not(.case-detail-head)::after {
+  content: none !important;
+}
+
+html body.vt-dashboard-page.vt-graphite-theme .workspace-page > .dashboard-head:not(.case-detail-head) .eyebrow {
+  width: fit-content;
+  margin: 0 0 14px;
+  padding: 0 !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+}
+
+html body.vt-dashboard-page.vt-graphite-theme .workspace-page > .dashboard-head:not(.case-detail-head) .lead {
+  margin: 8px 0 14px;
+}
+
 body.vt-detection-page .choice-card {
   min-height: 0;
 }
