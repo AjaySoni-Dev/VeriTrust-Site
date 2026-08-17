@@ -253,8 +253,11 @@ const VeriTrustSiteChrome = (() => {
       header.querySelector('.tool-header-dashboard')?.setAttribute('aria-current', 'page');
     }
     if (page === 'auth') {
-      header.querySelector('.tool-header-login')?.classList.add('active');
-      header.querySelector('.tool-header-login')?.setAttribute('aria-current', 'page');
+      const loginAction = header.querySelector('.tool-header-login');
+      if (loginAction) {
+        loginAction.hidden = true;
+        loginAction.setAttribute('aria-hidden', 'true');
+      }
     }
     return header;
   };
@@ -417,6 +420,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     const authLinks = document.querySelectorAll('.tool-header-login, .login-link, .nav-actions a[href="/auth"]');
     const dashboardLinks = document.querySelectorAll('.tool-header-dashboard, a[href="/dashboard"]');
     const toolHeaderLinks = document.querySelector('.tool-header-links, #primary-navigation');
+    const isAuthPage = currentPage() === 'auth';
 
     const closeToolMenu = () => {
       const menuToggle = document.querySelector('.tool-menu-toggle, .menu-toggle');
@@ -426,6 +430,12 @@ document.addEventListener('DOMContentLoaded', async () => {
     };
 
     const showAuthLink = (link) => {
+      if (isAuthPage && link.classList.contains('tool-header-login')) {
+        link.hidden = true;
+        link.setAttribute('aria-hidden', 'true');
+        return;
+      }
+
       link.hidden = false;
       link.removeAttribute('aria-hidden');
       link.href = '/auth';
@@ -477,6 +487,11 @@ document.addEventListener('DOMContentLoaded', async () => {
       }
 
       let authAction = wrap.querySelector('[data-mobile-auth-action]');
+      if (!sessionActive && isAuthPage) {
+        authAction?.remove();
+        return wrap;
+      }
+
       if (!authAction) {
         authAction = document.createElement('a');
         authAction.dataset.mobileAuthAction = 'true';
