@@ -1,0 +1,228 @@
+openapi: 3.1.0
+info:
+  title: VeriTrust MailGraph Email Investigation API
+  version: 2.0.0
+  description: >-
+    Tenant-scoped email threat and forensic evidence ingestion. Specialist
+    states express uncertainty and capability limits; no response is a safety
+    certificate. Raw EML retention is private and temporary.
+servers:
+  - url: https://www.veritrustlab.in
+security:
+  - bearerAuth: []
+paths:
+  /api/v2/phishing/analyze-text:
+    post:
+      operationId: analyzeEmailText
+      summary: Investigate pasted email or SMS content
+      parameters:
+        - $ref: '#/components/parameters/IdempotencyKey'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/PlainTextInput' }
+      responses:
+        '200':
+          description: Final evidence bundle; header and SMTP capabilities are unavailable
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/InvestigationResponse' }
+        '400': { $ref: '#/components/responses/InvalidRequest' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '413': { $ref: '#/components/responses/UnsupportedLimit' }
+  /api/v2/phishing/analyze-eml:
+    post:
+      operationId: analyzeRawEml
+      summary: Investigate the exact raw bytes of an RFC 822 email
+      parameters:
+        - $ref: '#/components/parameters/IdempotencyKey'
+        - in: header
+          name: X-Retention-Policy
+          required: false
+          schema: { type: string, enum: [ephemeral_24h, temporary_file], default: ephemeral_24h }
+      requestBody:
+        required: true
+        content:
+          message/rfc822:
+            schema:
+              type: string
+              contentMediaType: message/rfc822
+              maxLength: 10485760
+      responses:
+        '200':
+          description: Final evidence bundle; historical SPF remains unavailable without trusted SMTP facts
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/InvestigationResponse' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '413': { $ref: '#/components/responses/UnsupportedLimit' }
+        '415':
+          description: Content-Type must be message/rfc822
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/ErrorResponse' }
+  /api/v2/phishing/evidence/{scan_id}:
+    get:
+      operationId: getEmailEvidence
+      summary: Reconstruct tenant-scoped normalized email evidence
+      parameters:
+        - in: path
+          name: scan_id
+          required: true
+          schema: { type: string, format: uuid }
+      responses:
+        '200':
+          description: Reconstructed email evidence and Gateway decisions
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [ok, evidence]
+                properties:
+                  ok: { const: true }
+                  evidence: { $ref: '#/components/schemas/EvidenceBundle' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { description: No email evidence exists in the authenticated organization }
+  /internal/v2/phishing/receiver-event:
+    post:
+      operationId: receiveTrustedEmailEvent
+      summary: Add trusted SMTP facts to a previously uploaded raw EML object
+      description: Server-to-server only. Requires Gateway authentication and a separate receiver secret.
+      parameters:
+        - $ref: '#/components/parameters/IdempotencyKey'
+        - in: header
+          name: X-VeriTrust-Receiver-Secret
+          required: true
+          schema: { type: string, minLength: 32 }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/ReceiverEvent' }
+      responses:
+        '200':
+          description: Final evidence bundle with trusted SMTP facts available to SPF
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/InvestigationResponse' }
+        '400': { $ref: '#/components/responses/InvalidRequest' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      description: Supabase session or scoped VeriTrust API key with Gateway permission.
+  parameters:
+    IdempotencyKey:
+      in: header
+      name: Idempotency-Key
+      required: true
+      schema: { type: string, minLength: 1, maxLength: 200 }
+  responses:
+    InvalidRequest:
+      description: Strict request schema validation failed
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/ErrorResponse' }
+    Unauthorized:
+      description: Authentication failed
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/ErrorResponse' }
+    Forbidden:
+      description: Organization or integration authorization failed
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/ErrorResponse' }
+    UnsupportedLimit:
+      description: A raw byte, header, MIME, decoded content, or attachment limit was exceeded
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/ErrorResponse' }
+  schemas:
+    PlainTextInput:
+      type: object
+      additionalProperties: false
+      anyOf:
+        - required: [subject]
+        - required: [body]
+      properties:
+        subject: { type: string, maxLength: 998 }
+        body: { type: string, maxLength: 12000 }
+        channel: { type: string, enum: [email, sms], default: email }
+        locale_hint: { type: [string, 'null'], maxLength: 32 }
+        retention_policy: { type: string, enum: [none, metadata_only, temporary_file, retained_file], default: metadata_only }
+        org_id: { type: [string, 'null'], format: uuid }
+        integration_id: { type: [string, 'null'], format: uuid }
+    ReceiverEvent:
+      type: object
+      additionalProperties: false
+      required: [org_id, integration_id, raw_eml_ref, client_ip, mail_from, helo, receiver_id, authserv_id, received_at]
+      properties:
+        org_id: { type: string, format: uuid }
+        integration_id: { type: string, format: uuid }
+        raw_eml_ref: { type: string, pattern: '^gateway-uploads:' }
+        client_ip: { type: string }
+        mail_from: { type: string }
+        helo: { type: string }
+        receiver_id: { type: string }
+        authserv_id: { type: string }
+        received_at: { type: string, format: date-time }
+    InvestigationResponse:
+      type: object
+      required: [ok, scan_id, status, gateway_decision, evidence]
+      properties:
+        ok: { const: true }
+        request_id: { type: [string, 'null'] }
+        scan_id: { type: string, format: uuid }
+        status: { const: completed }
+        gateway_decision: { $ref: '#/components/schemas/GatewayDecision' }
+        evidence: { $ref: '#/components/schemas/EvidenceBundle' }
+    GatewayDecision:
+      type: object
+      required: [risk, severity, verdict, recommendation, degraded, reason_codes, correlation_version]
+      properties:
+        risk: { type: number, minimum: 0, maximum: 1 }
+        severity: { type: string, enum: [low, medium, high, critical] }
+        verdict: { type: string }
+        recommendation: { type: string, enum: [allow, warn, manual_review, quarantine, block, hold] }
+        degraded: { type: boolean }
+        reason_codes: { type: array, items: { type: string } }
+        correlation_version: { const: gateway-correlation-v2 }
+    EvidenceBundle:
+      type: object
+      required: [schema_version, artifact_id, input_mode, state, capabilities, observations, relationships, infrastructure, limitations]
+      properties:
+        schema_version: { const: phishing-evidence-2 }
+        artifact_id: { type: string, format: uuid }
+        input_mode: { type: string, enum: [plain_text, raw_eml, trusted_receiver_event] }
+        state: { type: string, enum: [LIKELY_BENIGN, LIKELY_PHISHING, UNCERTAIN, UNSUPPORTED, FAILED] }
+        capabilities:
+          type: object
+          additionalProperties: { type: boolean }
+        observations: { type: array, items: { type: object } }
+        model_evidence: { type: array, items: { type: object } }
+        relationships: { type: array, items: { type: object } }
+        infrastructure: { type: array, items: { type: object } }
+        children: { type: array, items: { type: object } }
+        limitations: { type: array, items: { type: string } }
+        started_at: { type: string, format: date-time }
+        completed_at: { type: string, format: date-time }
+    ErrorResponse:
+      type: object
+      required: [ok, error]
+      properties:
+        ok: { const: false }
+        request_id: { type: [string, 'null'] }
+        error:
+          type: object
+          required: [code, message]
+          properties:
+            code: { type: string }
+            message: { type: string }

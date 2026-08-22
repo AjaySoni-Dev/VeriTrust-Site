@@ -1,7 +1,7 @@
 {
   "name": "VeriTrust",
   "short_name": "VeriTrust",
-  "description": "AI-assisted image, message, link, and unified gateway review.",
+  "description": "AI-assisted security review platform.",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#060910",

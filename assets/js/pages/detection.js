@@ -866,7 +866,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
   });
 
-  qs('#phishingForm')?.addEventListener('submit', async (event) => {
+  qs('#phishingForm:not([data-email-workbench])')?.addEventListener('submit', async (event) => {
     event.preventDefault();
     const button = qs('#phishingSubmit');
     try {

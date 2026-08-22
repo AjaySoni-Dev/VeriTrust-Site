@@ -4,13 +4,21 @@
   "private": true,
   "description": "VeriTrust static web application and Vercel API",
   "scripts": {
-    "check": "node scripts/verify.js && node scripts/test-modules.js",
+    "check": "node scripts/verify.js && node scripts/test-modules.js && node --test tests/*.test.js",
+    "test": "node --test tests/*.test.js",
     "ci": "npm run check && npm audit --omit=dev --audit-level=high",
     "worker": "node worker/index.js",
     "start": "vercel dev"
   },
   "dependencies": {
-    "busboy": "^1.6.0"
+    "busboy": "^1.6.0",
+    "iconv-lite": "0.7.3",
+    "mailauth": "5.0.2",
+    "mailparser": "3.9.15",
+    "tldts": "7.4.10"
+  },
+  "overrides": {
+    "deepmerge-ts": "8.0.1"
   },
   "engines": {
     "node": "24.x"

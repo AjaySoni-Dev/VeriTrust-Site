@@ -61,7 +61,7 @@
       ]
     },
     {
-      "source": "/deepfake.html",
+      "source": "/:module(deepfake|phishing|link-check|gateway|gateway-powershell)",
       "headers": [
         {
           "key": "Cache-Control",
@@ -70,11 +70,20 @@
       ]
     },
     {
-      "source": "/deepfake",
+      "source": "/:module(deepfake|phishing|link-check|gateway|gateway-powershell).html",
       "headers": [
         {
           "key": "Cache-Control",
           "value": "no-store, no-cache, must-revalidate"
+        }
+      ]
+    },
+    {
+      "source": "/config/modules.json",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "no-store, max-age=0, must-revalidate"
         }
       ]
     },
@@ -169,6 +178,10 @@
     {
       "source": "/api/learning-access",
       "destination": "/api/system?route=learning-access"
+    },
+    {
+      "source": "/sitemap.xml",
+      "destination": "/api/system?route=sitemap"
     },
     {
       "source": "/api/learning/verify/:code",
@@ -289,6 +302,22 @@
     {
       "source": "/api/client-config",
       "destination": "/api/system?route=client-config"
+    },
+    {
+      "source": "/api/v2/phishing/analyze-text",
+      "destination": "/api/gateway?resource=email-text"
+    },
+    {
+      "source": "/api/v2/phishing/analyze-eml",
+      "destination": "/api/gateway?resource=email-eml"
+    },
+    {
+      "source": "/api/v2/phishing/evidence/:id",
+      "destination": "/api/gateway?resource=email-evidence&id=:id"
+    },
+    {
+      "source": "/internal/v2/phishing/receiver-event",
+      "destination": "/api/gateway?resource=email-receiver"
     },
     {
       "source": "/api/v1/gateway/policies/:id/activate",

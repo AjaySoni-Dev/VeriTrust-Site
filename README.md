@@ -314,6 +314,8 @@ VERITRUST_WEBHOOK_ALLOWED_HOSTS=
 VERITRUST_GATEWAY_SYNC_BUDGET_MS=12000
 VERITRUST_GATEWAY_SERVERLESS_BATCH=1
 VERITRUST_GATEWAY_WORKER_ID=veritrust-worker-1
+VERITRUST_EMAIL_RECEIVER_SECRET=
+VERITRUST_TRUSTED_AUTHSERV_IDS=
 
 VERITRUST_ADMIN_SECRET=
 STRIPE_SECRET_KEY=
@@ -331,7 +333,7 @@ STRIPE_WEBHOOK_SECRET=
 npm run check
 ```
 
-This checks JavaScript syntax, local page links, SEO metadata, crawler files, Vercel function limits, security controls, common committed-secret patterns, and obsolete artifacts.
+This checks JavaScript syntax, local page links, SEO metadata, crawler files, Vercel function limits, security controls, common committed-secret patterns, module boundaries, and the adversarial email-forensics suite.
 
 ### 4. Start the local Vercel runtime
 
@@ -357,9 +359,9 @@ A configured runtime returns a public health response without exposing private d
 
 ### Database requirement
 
-The application expects an existing Supabase project that matches [`docs/database-schema.json`](docs/database-schema.json). The cleaned repository intentionally excludes local seed SQL, experimental migrations, rollback samples, and database test queries.
+The application expects an existing Supabase project that matches [`docs/database-schema.json`](docs/database-schema.json). The forward-only SIH26106 email evidence migration is [`migrations/202608220001_sih26106_email_forensics.sql`](migrations/202608220001_sih26106_email_forensics.sql); review and apply it through the controlled database project after testing it against a restored inventory snapshot. No repository command applies it remotely.
 
-The schema inventory is documentation, not an executable migration. Manage production database changes through the controlled database project that owns the deployed schema.
+The supplied schema inventory remains the deployed parent contract. [`migrations/verify/202608220001_email_forensics_assertions.sql`](migrations/verify/202608220001_email_forensics_assertions.sql) provides post-migration RLS and privilege assertions for staging.
 
 ---
 
@@ -460,6 +462,19 @@ The gateway is available under `/api/v1/gateway`.
 - `GET /api/v1/gateway/reports/{id}` returns the unified audit report.
 
 The machine-readable contract is [`openapi/veritrust-gateway-v1.yaml`](openapi/veritrust-gateway-v1.yaml).
+
+### MailGraph Email Investigation
+
+The email specialist is implemented inside the Gateway with three explicit capability modes:
+
+```text
+POST /api/v2/phishing/analyze-text
+POST /api/v2/phishing/analyze-eml
+GET  /api/v2/phishing/evidence/{scan_id}
+POST /internal/v2/phishing/receiver-event
+```
+
+Plain text makes no header or authentication claims. Raw EML is hashed before bounded streaming MIME parsing and uses private temporary storage. Trusted receiver events add verifiable SMTP facts. Deepfake is disabled and never receives email attachments; Link remains the URL specialist. See [`docs/SIH26106_EMAIL_FORENSICS.md`](docs/SIH26106_EMAIL_FORENSICS.md) and [`openapi/veritrust-email-v2.yaml`](openapi/veritrust-email-v2.yaml).
 
 ### Health Check
 
