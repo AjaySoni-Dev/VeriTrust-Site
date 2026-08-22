@@ -24,6 +24,11 @@ async function handleMedia(job) {
   const artifactView = { ...artifact, type: artifact.artifact_type };
   const route = routeArtifacts([artifactView], policy)[0];
 
+  if (!route) {
+    await completeArtifact(job.org_id, job.scan_id, artifact.id);
+    return;
+  }
+
   if (artifact.artifact_type === 'image' && !(reportBefore.evidence || []).some((row) => row.artifact_id === artifact.id)) {
     const object = await downloadObject(artifact.storage_bucket, artifact.storage_path);
     const mimeType = validateImageBytes(object.buffer, artifact.mime_type);
