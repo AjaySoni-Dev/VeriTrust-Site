@@ -1,5 +1,17 @@
+import moduleConfig from './config/modules.json';
+
 const COOKIE_NAME = 'veritrust_learning_access';
 const MAX_AGE_SECONDS = 8 * 60 * 60;
+
+const MODULES = moduleConfig;
+
+const MODULE_PAGE: Record<string, keyof typeof MODULES> = {
+  deepfake: 'deepfake',
+  phishing: 'phishing',
+  'link-check': 'link',
+  gateway: 'gateway',
+  'gateway-powershell': 'gateway',
+};
 
 export const config = {
   matcher: [
@@ -10,6 +22,16 @@ export const config = {
     '/assessment',
     '/learning-admin',
     '/certificates',
+    '/deepfake',
+    '/deepfake.html',
+    '/phishing',
+    '/phishing.html',
+    '/link-check',
+    '/link-check.html',
+    '/gateway',
+    '/gateway.html',
+    '/gateway-powershell',
+    '/gateway-powershell.html',
   ],
 };
 
@@ -64,6 +86,21 @@ async function validAccessToken(token, secret) {
 }
 
 export default async function learningPreviewMiddleware(request) {
+  const page = new URL(request.url).pathname.split('/').filter(Boolean).pop()?.replace(/\.html$/iu, '') || '';
+  const moduleName = MODULE_PAGE[page];
+  if (moduleName && !MODULES[moduleName]) {
+    return new Response('Not Found', {
+      status: 404,
+      headers: {
+        'Cache-Control': 'no-store',
+        'Content-Type': 'text/plain; charset=utf-8',
+        'X-Robots-Tag': 'noindex, nofollow, nosnippet',
+      },
+    });
+  }
+
+  if (moduleName) return;
+
   const secret = String(process.env.VERITRUST_LEARNING_ACCESS_KEY || '');
   const unlocked = secret.length >= 32
     && await validAccessToken(cookieValue(request, COOKIE_NAME), secret);

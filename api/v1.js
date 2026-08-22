@@ -2,6 +2,7 @@ const {
   handleOptions,
   sendJson,
 } = require('../lib/veritrust-api');
+const { requireModuleEnabled } = require('../lib/modules');
 
 const routes = {
   deepfake: require('../lib/routes/v1/deepfake'),
@@ -33,6 +34,19 @@ module.exports = async function handler(req, res) {
       },
     });
     return;
+  }
+
+  if (route !== 'usage') {
+    try {
+      requireModuleEnabled(route === 'link-check' ? 'link' : route);
+    } catch {
+      sendJson(res, 404, {
+        ok: false,
+        request_id: `vt_req_${Date.now().toString(36)}`,
+        error: { code: 'NOT_FOUND', message: 'The requested resource was not found.' },
+      });
+      return;
+    }
   }
 
   return routeHandler(req, res);

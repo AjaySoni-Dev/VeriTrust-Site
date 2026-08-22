@@ -60,7 +60,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@500;600&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/assets/css/base/veritrust.css">
-    <script src="/assets/js/core/config.js" defer></script>
+    <script src="/assets/js/core/config.js"></script>
     <script src="/assets/js/core/supabase-client.js" defer></script>
     <script src="/assets/js/core/site.js" defer></script>
     <script src="/assets/js/pages/home.js" defer></script>
@@ -1517,7 +1517,7 @@
                 </div>
                 
                 <div class="grid-3">
-                    <div class="card">
+                    <div class="card" data-module="deepfake">
                         <div class="solution-icon">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
                         </div>
@@ -1530,7 +1530,7 @@
                         </ul>
                     </div>
 
-                    <div class="card">
+                    <div class="card" data-module="phishing">
                         <div class="solution-icon">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><path d="M22 6l-10 7L2 6"/></svg>
                         </div>
@@ -1543,7 +1543,7 @@
                         </ul>
                     </div>
 
-                    <div class="card">
+                    <div class="card" data-module="link">
                         <div class="solution-icon">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 18l6-6-6-6M8 6l-6 6 6 6"/></svg>
                         </div>
@@ -1599,21 +1599,21 @@
                 </div>
                 
                 <div class="features-grid">
-                    <div class="feature-item">
+                    <div class="feature-item" data-module="deepfake">
                         <div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></div>
                         <div class="feature-content">
                             <h4>Deepfake Detection</h4>
                             <p>Classify JPG, PNG, WEBP, or BMP images up to 4 MB using one of two configured image models.</p>
                         </div>
                     </div>
-                    <div class="feature-item">
+                    <div class="feature-item" data-module="phishing">
                         <div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></svg></div>
                         <div class="feature-content">
                             <h4>Phishing Detection</h4>
                             <p>Check 8 to 12,000 characters of email, SMS, URL, or message text with model and rule signals.</p>
                         </div>
                     </div>
-                    <div class="feature-item">
+                    <div class="feature-item" data-module="link">
                         <div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg></div>
                         <div class="feature-content">
                             <h4>Link Intelligence</h4>

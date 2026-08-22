@@ -26,7 +26,7 @@
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@500;600&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/assets/css/base/veritrust.css">
   <link rel="stylesheet" href="/assets/css/base/graphite-orange-theme.css">
-  <script src="/assets/js/core/config.js" defer></script>
+  <script src="/assets/js/core/config.js"></script>
   <script src="/assets/js/core/supabase-client.js" defer></script>
   <script src="/assets/js/core/site.js" defer></script>
   <script src="/assets/js/pages/model-performance.js" defer></script>
@@ -85,7 +85,7 @@
         <div class="model-card-grid" data-model-cards><div class="model-card-empty"><strong>Loading governance records</strong><p>No metric is displayed until its supporting model card is published.</p></div></div>
       </section>
 
-      <section id="deepfake" class="doc-section">
+      <section id="deepfake" class="doc-section" data-module="deepfake">
         <h2>Deepfake model evaluation</h2>
         <p>VeriTrust Pixel and VeriTrust Prism use server-configured hosted inference paths. Provider repository identifiers are intentionally kept out of client responses and public pages. VeriTrust has not established that one is more accurate than the other.</p>
         <ul>
@@ -95,7 +95,7 @@
         </ul>
       </section>
 
-      <section id="phishing" class="doc-section">
+      <section id="phishing" class="doc-section" data-module="phishing">
         <h2>Phishing model evaluation</h2>
         <p>The current message paths are VeriTrust MailGuard, a hosted text classifier, and VeriTrust Cortex, a hosted instruction model. The displayed phishing score combines model output with deterministic indicators, so it is not a raw model benchmark.</p>
         <ul>
@@ -105,7 +105,7 @@
         </ul>
       </section>
 
-      <section id="link" class="doc-section">
+      <section id="link" class="doc-section" data-module="link">
         <h2>Link Intelligence evaluation</h2>
         <p>The available link path uses a server-configured VeriTrust Swift classifier plus deterministic URL-string indicators. If hosted inference fails, the route returns a disclosed local URL-pattern fallback. It does not fetch pages, resolve redirects, query WHOIS, or use live reputation feeds.</p>
         <ul>

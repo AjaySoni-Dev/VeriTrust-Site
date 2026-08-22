@@ -5,6 +5,7 @@ const routes = Object.freeze({
   'client-config': require('../lib/routes/system/client-config'),
   'learning-access': require('../lib/routes/system/learning-access'),
   'model-cards': require('../lib/routes/system/model-cards'),
+  sitemap: require('../lib/routes/system/sitemap'),
 });
 
 function routeName(req) {

@@ -4,7 +4,7 @@
   "private": true,
   "description": "VeriTrust static web application and Vercel API",
   "scripts": {
-    "check": "node scripts/verify.js",
+    "check": "node scripts/verify.js && node scripts/test-modules.js",
     "ci": "npm run check && npm audit --omit=dev --audit-level=high",
     "worker": "node worker/index.js",
     "start": "vercel dev"

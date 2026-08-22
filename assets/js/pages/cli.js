@@ -11,6 +11,13 @@
   if (!core || !client) return;
 
   const apiConfig = global.VeriTrust_CONFIG?.api || {};
+  const moduleEnabled = (name) => global.VeriTrustModules?.isEnabled(name) !== false;
+  const scanChoices = () => [
+    ...(moduleEnabled('link') ? ['link'] : []),
+    ...(moduleEnabled('phishing') ? ['phishing'] : []),
+    ...(moduleEnabled('deepfake') ? ['image'] : []),
+    ...(moduleEnabled('gateway') ? ['gateway'] : []),
+  ];
   const terminal = document.getElementById('cli-output');
   const form = document.getElementById('cli-form');
   const input = document.getElementById('cli-input');
@@ -29,37 +36,36 @@
     sessionContext: null,
   };
 
+  const helpOverview = [
+    'VeriTrust CLI - allowlisted security commands in one authenticated shell.',
+    '',
+    'Core commands',
+    ...(moduleEnabled('link') ? ['  scan link <url> [--context "text"] [--json]'] : []),
+    ...(moduleEnabled('phishing') ? ['  scan phishing "message" [--model mailguard|cortex] [--json]'] : []),
+    ...((moduleEnabled('deepfake') || moduleEnabled('gateway')) ? ['  attach'] : []),
+    ...(moduleEnabled('deepfake') ? ['  scan image [--model pixel|prism] [--json]'] : []),
+    ...(moduleEnabled('gateway') ? ['  scan gateway [--text "message"] [--url <url>]... [--no-wait] [--json]'] : []),
+    '',
+    'Workspace commands',
+    '  status                    Show the signed-in workspace',
+    '  models                    List available models',
+    '  history [--limit 10]      Show recent saved scans',
+    ...(moduleEnabled('gateway') ? ['  gateway get <scan-id>     Read a scan', '  gateway cancel <scan-id>  Request scan cancellation'] : []),
+    ...((moduleEnabled('deepfake') || moduleEnabled('gateway')) ? ['  detach                    Remove the current attachment'] : []),
+    '  open gui [module]         Open an available graphical workflow',
+    '  clear | version | exit',
+    '',
+    'Use quotes around text. Press Shift+Enter inside quotes for multiline content.',
+    'Press Up/Down for command history, Tab for completion, Ctrl+L to clear, and Ctrl+C to cancel.',
+  ].join('\n');
   const HELP = Object.freeze({
-    overview: [
-      'VeriTrust CLI — allowlisted security commands in one authenticated shell.',
-      '',
-      'Core commands',
-      '  scan link <url> [--context "text"] [--json]',
-      '  scan phishing "message" [--model mailguard|cortex] [--json]',
-      '  attach',
-      '  scan image [--model pixel|prism] [--json]',
-      '  scan gateway [--text "message"] [--url <url>]... [--context general|credential|financial|identity] [--no-wait] [--json]',
-      '',
-      'Workspace commands',
-      '  status                    Show the signed-in workspace',
-      '  models                    List available models',
-      '  history [--limit 10]      Show recent saved scans',
-      '  gateway get <scan-id>     Read a unified gateway scan',
-      '  gateway cancel <scan-id>  Request gateway cancellation',
-      '  detach                    Remove the current attachment',
-      '  open gui [module]         Open detection, link, image, phishing, or gateway GUI',
-      '  clear | version | exit',
-      '',
-      'Short aliases: link, phish, image, unified.',
-      'Use quotes around text. Press Shift+Enter inside quotes for multiline content.',
-      'Press ↑/↓ for command history, Tab for completion, Ctrl+L to clear, and Ctrl+C to cancel.',
-    ].join('\n'),
-    link: 'scan link <http-or-https-url> [--context "why this link was received"] [--model swift] [--json]',
-    phishing: 'scan phishing "message text" [--model mailguard|cortex] [--json]\nAlias: phish "message text"',
-    image: 'attach\nscan image [--model pixel|prism] [--json]\nThe browser securely asks you to choose the local file; paths are never accepted as command text.',
-    gateway: 'scan gateway [--text "message"] [--url <url>]... [--context general|credential|financial|identity] [--no-wait] [--json]\nThe current attachment is included automatically when supported.',
+    overview: helpOverview,
+    ...(moduleEnabled('link') ? { link: 'scan link <http-or-https-url> [--context "why this link was received"] [--model swift] [--json]' } : {}),
+    ...(moduleEnabled('phishing') ? { phishing: 'scan phishing "message text" [--model mailguard|cortex] [--json]\nAlias: phish "message text"' } : {}),
+    ...(moduleEnabled('deepfake') ? { image: 'attach\nscan image [--model pixel|prism] [--json]\nThe browser securely asks you to choose the local file; paths are never accepted as command text.' } : {}),
+    ...(moduleEnabled('gateway') ? { gateway: 'scan gateway [--text "message"] [--url <url>]... [--context general|credential|financial|identity] [--no-wait] [--json]' } : {}),
     history: 'history [--limit 10]\nLimit must be an integer from 1 to 50.',
-    open: 'open gui [detection|link|image|phishing|gateway]\nOpens the standard graphical workflow.',
+    open: 'open gui [module]\nOpens an available graphical workflow.',
   });
 
   function write(message, tone = 'info', marker = '') {
@@ -345,12 +351,10 @@
   function showModels() {
     write([
       'Available models',
-      'Link      swift       VeriTrust Swift',
-      'Phishing  mailguard   VeriTrust MailGuard (fast classifier)',
-      'Phishing  cortex      VeriTrust Cortex (robust instruction model)',
-      'Image     pixel       VeriTrust Pixel (fast)',
-      'Image     prism       VeriTrust Prism (robust)',
-      'Gateway   automatic   Routes applicable models and policy correlation',
+      ...(moduleEnabled('link') ? ['Link      swift       VeriTrust Swift'] : []),
+      ...(moduleEnabled('phishing') ? ['Phishing  mailguard   VeriTrust MailGuard (fast classifier)', 'Phishing  cortex      VeriTrust Cortex (robust instruction model)'] : []),
+      ...(moduleEnabled('deepfake') ? ['Image     pixel       VeriTrust Pixel (fast)', 'Image     prism       VeriTrust Prism (robust)'] : []),
+      ...(moduleEnabled('gateway') ? ['Gateway   automatic   Routes applicable models and policy correlation'] : []),
     ].join('\n'), 'info');
   }
 
@@ -400,11 +404,10 @@
     const destinations = {
       detection: 'detection.html',
       gui: 'detection.html',
-      link: 'link-check.html',
-      image: 'deepfake.html',
-      deepfake: 'deepfake.html',
-      phishing: 'phishing.html',
-      gateway: 'gateway.html',
+      ...(moduleEnabled('link') ? { link: 'link-check.html' } : {}),
+      ...(moduleEnabled('deepfake') ? { image: 'deepfake.html', deepfake: 'deepfake.html' } : {}),
+      ...(moduleEnabled('phishing') ? { phishing: 'phishing.html' } : {}),
+      ...(moduleEnabled('gateway') ? { gateway: 'gateway.html' } : {}),
     };
     if (!destinations[target]) throw new Error(`Unknown GUI module: ${target}.`);
     global.location.assign(destinations[target]);
@@ -435,7 +438,7 @@
     }
     if (name === 'history') return showHistory(normalized);
     if (name === 'open') return openGui(normalized);
-    if (name === 'gateway') return gatewayCommand(normalized);
+    if (name === 'gateway' && moduleEnabled('gateway')) return gatewayCommand(normalized);
     if (name === 'version') {
       write('VeriTrust Web CLI 1.0.0\nCommand schema 1.0 · Gateway schema 1.0', 'info');
       return;
@@ -445,7 +448,7 @@
       return;
     }
     if (name === 'scan') {
-      const type = core.requireChoice(args[0], ['link', 'phishing', 'image', 'gateway'], 'Scan type');
+      const type = core.requireChoice(args[0], scanChoices(), 'Scan type');
       if (type === 'link') return scanLink(normalized);
       if (type === 'phishing') return scanPhishing(normalized);
       if (type === 'image') return scanImage(normalized);
@@ -512,7 +515,13 @@
       return;
     }
     if (event.key === 'Tab' && !input.value.trim().includes(' ')) {
-      const candidates = core.completionCandidates(input.value);
+      const disabledCommands = new Set([
+        ...(!moduleEnabled('link') ? ['link'] : []),
+        ...(!moduleEnabled('phishing') ? ['phish'] : []),
+        ...(!moduleEnabled('deepfake') ? ['image'] : []),
+        ...(!moduleEnabled('gateway') ? ['gateway', 'unified'] : []),
+      ]);
+      const candidates = core.completionCandidates(input.value).filter((candidate) => !disabledCommands.has(candidate));
       if (candidates.length === 1) {
         event.preventDefault();
         input.value = `${candidates[0]} `;
@@ -538,11 +547,16 @@
   attachmentInput.addEventListener('change', () => {
     const file = attachmentInput.files?.[0] || null;
     updateAttachment(file);
-    if (file) write(`Attached ${file.name}. Run "scan image" or "scan gateway".`, 'success');
+    if (file) write(`Attached ${file.name}. Run an available media scan.`, 'success');
     input.focus();
   });
 
   document.querySelectorAll('[data-cli-command]').forEach((button) => {
+    const command = String(button.dataset.cliCommand || '').toLowerCase();
+    if (command.includes('phishing')) button.dataset.module = 'phishing';
+    else if (command.includes('gateway')) button.dataset.module = 'gateway';
+    else if (command.includes('image') || command === 'attach') button.dataset.module = moduleEnabled('deepfake') ? 'deepfake' : 'gateway';
+    else if (command.includes('link')) button.dataset.module = 'link';
     button.addEventListener('click', () => {
       if (button.classList.contains('cli-attachment-action')) {
         openFilePicker();
@@ -560,7 +574,7 @@
     const access = await global.VeriTrustPageAccess;
     if (!access?.allowed) return;
     write('VeriTrust Web CLI 1.0.0', 'success');
-    write('One authenticated shell for link, phishing, image, and unified gateway scans. Run "help" to begin.', 'info');
+    write('One authenticated shell for the available security workflows. Run "help" to begin.', 'info');
     updateAttachment(null);
     resizeInput();
     input.focus();

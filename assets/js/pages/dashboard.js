@@ -364,10 +364,10 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (!filters) return;
     const options = [
       ['all', 'All'],
-      ['deepfake', 'Deepfake'],
-      ['phishing', 'Phishing'],
-      ['link', 'Link'],
-      ['gateway', 'Gateway'],
+      ...(window.VeriTrustModules?.isEnabled('deepfake') !== false ? [['deepfake', 'Deepfake']] : []),
+      ...(window.VeriTrustModules?.isEnabled('phishing') !== false ? [['phishing', 'Phishing']] : []),
+      ...(window.VeriTrustModules?.isEnabled('link') !== false ? [['link', 'Link']] : []),
+      ...(window.VeriTrustModules?.isEnabled('gateway') !== false ? [['gateway', 'Gateway']] : []),
       ['high', 'High Risk'],
     ];
     filters.innerHTML = options.map(([value, label]) => `
@@ -684,7 +684,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     const table = document.querySelector('[data-recent-scans]');
     if (!table) return;
     table.removeAttribute('aria-busy');
-    const nextScans = scans || [];
+    const nextScans = window.VeriTrustModules?.filterRecords(scans || []) || scans || [];
     if (nextScans !== cachedScans) visibleScanLimit = SCAN_BATCH_SIZE;
     cachedScans = nextScans;
     renderFilters();
@@ -813,7 +813,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     const billing = context.billing || {};
     const usage = stats.usage_today || {};
     const monthlyWebUsage = billing.usage?.web_by_type || {};
-    const scans = context.scans || [];
+    const scans = window.VeriTrustModules?.filterRecords(context.scans || []) || context.scans || [];
     const apiKeys = context.api_keys || [];
 
     setSessionPill(true);

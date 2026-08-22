@@ -27,7 +27,7 @@
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@500;600&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/assets/css/base/veritrust.css">
   <link rel="stylesheet" href="/assets/css/base/graphite-orange-theme.css">
-  <script src="/assets/js/core/config.js" defer></script>
+  <script src="/assets/js/core/config.js"></script>
   <script src="/assets/js/core/supabase-client.js" defer></script>
   <script src="/assets/js/core/reporting.js" defer></script>
   <script src="/assets/js/core/site.js" defer></script>
@@ -68,12 +68,12 @@
     <p class="lead">Each check returns an AI-assisted risk signal for triage, not proof of authenticity or safety.</p>
 
     <section class="choice-grid" aria-label="Detection modules">
-      <a class="choice-card" href="gateway.html">
+      <a class="choice-card" href="gateway.html" data-module="gateway">
         <span class="module-icon">G</span>
         <span><h2>Unified Security Gateway</h2><p>Combine message, URL, and media checks into one decision.</p></span>
         <span class="choice-footer"><span>Multimodal gateway</span><span class="choice-action">Open</span></span>
       </a>
-      <a class="choice-card" href="deepfake.html">
+      <a class="choice-card" href="deepfake.html" data-module="deepfake">
         <span class="module-icon">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="10" r="2"/><path d="M21 16l-5-5L5 20"/></svg>
         </span>
@@ -84,7 +84,7 @@
         <span class="choice-footer"><span>Image check</span><span class="choice-action">Open</span></span>
       </a>
 
-      <a class="choice-card" href="phishing.html">
+      <a class="choice-card" href="phishing.html" data-module="phishing">
         <span class="module-icon">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M9.5 12.5l1.8 1.8 3.7-4.1"/></svg>
         </span>
@@ -95,7 +95,7 @@
         <span class="choice-footer"><span>Message check</span><span class="choice-action">Open</span></span>
       </a>
 
-      <a class="choice-card" href="link-check.html">
+      <a class="choice-card" href="link-check.html" data-module="link">
         <span class="module-icon">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 0 0 7.1 0l2-2a5 5 0 0 0-7.1-7.1l-1.1 1.1"/><path d="M14 11a5 5 0 0 0-7.1 0l-2 2a5 5 0 0 0 7.1 7.1l1.1-1.1"/></svg>
         </span>

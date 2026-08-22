@@ -29,6 +29,7 @@ const {
 } = require('../lib/gateway/persistence');
 const serverlessWorker = require('../lib/routes/gateway/worker');
 const { hasDispatchSignatureHeaders } = require('../lib/gateway/worker-auth');
+const { isModuleEnabled } = require('../lib/modules');
 
 function route(req) {
   const url = new URL(req.url || '/', 'http://localhost');
@@ -66,6 +67,10 @@ function sendError(res, error, requestId) {
 }
 
 module.exports = async function handler(req, res) {
+  if (!isModuleEnabled('gateway')) {
+    sendJson(res, 404, { ok: false, error: { code: 'NOT_FOUND', message: 'The requested resource was not found.' } });
+    return;
+  }
   const target = route(req);
   if (target.resource === 'worker') {
     if (req.method === 'POST' && !hasDispatchSignatureHeaders(req)) {

@@ -132,7 +132,7 @@
 
     body.vt-dashboard-page .tool-header-dashboard,
     body.vt-dashboard-page .tool-header-login.is-logout {
-      min-height: 36px;
+      min-height: 40px;
       border: 0;
       border-radius: 2px;
       transition: background-color 180ms ease, color 180ms ease;
@@ -714,7 +714,7 @@
     }
   </style>
   <link rel="stylesheet" href="/assets/css/base/graphite-orange-theme.css">
-  <script src="/assets/js/core/config.js" defer></script>
+  <script src="/assets/js/core/config.js"></script>
   <script src="/assets/js/core/supabase-client.js" defer></script>
   <script src="/assets/js/core/site.js" defer></script>
   <script src="/assets/js/core/reporting.js" defer></script>
@@ -791,9 +791,9 @@
         </div>
         <div class="usage-grid">
           <div class="usage-stat"><span>Web scans this month</span><strong data-usage-total-scans>0</strong></div>
-          <div class="usage-stat"><span>Deepfake this month</span><strong data-usage-images>0</strong></div>
-          <div class="usage-stat"><span>Phishing this month</span><strong data-usage-messages>0</strong></div>
-          <div class="usage-stat"><span>Link this month</span><strong data-usage-links>0</strong></div>
+          <div class="usage-stat" data-module="deepfake"><span>Deepfake this month</span><strong data-usage-images>0</strong></div>
+          <div class="usage-stat" data-module="phishing"><span>Phishing this month</span><strong data-usage-messages>0</strong></div>
+          <div class="usage-stat" data-module="link"><span>Link this month</span><strong data-usage-links>0</strong></div>
           <div class="usage-stat"><span>High risk recent</span><strong data-usage-high-risk>0</strong></div>
           <div class="usage-stat"><span>API today</span><strong data-usage-api-today>0</strong></div>
           <div class="usage-stat"><span>API remaining</span><strong data-usage-api-remaining>100</strong></div>
@@ -812,7 +812,7 @@
         <a class="scan-mode-option scan-mode-option-featured" href="cli.html">
           <span class="scan-mode-label">Web CLI <em>Desktop</em></span>
           <strong>Command-driven workspace</strong>
-          <small>Run link, phishing, image, and unified gateway scans with history, aliases, attachments, and JSON output.</small>
+          <small>Run available security workflows with history, aliases, attachments, and JSON output.</small>
           <b>Open Web CLI &rarr;</b>
         </a>
         <a class="scan-mode-option" href="detection.html">
@@ -830,4 +830,3 @@
   </footer>
 </body>
 </html>
-

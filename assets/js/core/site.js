@@ -306,6 +306,7 @@ const VeriTrustSiteChrome = (() => {
     const existingFooter = directChild('footer');
     if (existingFooter) existingFooter.replaceWith(footer);
     else document.body.appendChild(footer);
+    window.VeriTrustModules?.filter(document);
   };
 
   return { currentPage, render };
@@ -403,6 +404,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   };
 
   normalizePrimaryNavigation();
+  window.VeriTrustModules?.filter(document);
 
   bindMenu('.menu-toggle', '.nav-links');
   bindMenu('.tool-menu-toggle', '.tool-header-links');

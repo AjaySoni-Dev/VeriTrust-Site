@@ -146,6 +146,25 @@ For a deeper technical breakdown, see [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE
 
 ---
 
+## Module switches
+
+The four product modules are controlled from [`config/modules.json`](config/modules.json):
+
+```json
+{
+  "phishing": true,
+  "deepfake": true,
+  "link": true,
+  "gateway": true
+}
+```
+
+Set a module to `false` and redeploy. Disabled modules are removed from navigation, landing and documentation content, model metadata, API-key scopes, dashboard history, cases, CLI help, and the generated sitemap. Direct page access is rejected, public endpoints return a generic not-found response, and the gateway does not route artifacts through disabled detectors. The browser reads the same file as a local fallback when the runtime client-config endpoint is unavailable.
+
+Run `npm run check` after changing the switches. The module test suite validates all four disabled states independently without changing the committed configuration.
+
+---
+
 ## Design Philosophy
 
 VeriTrust focuses on:

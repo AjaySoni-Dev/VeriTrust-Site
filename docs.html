@@ -26,7 +26,7 @@
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@500;600&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/assets/css/base/veritrust.css">
   <link rel="stylesheet" href="/assets/css/base/graphite-orange-theme.css">
-  <script src="/assets/js/core/config.js" defer></script>
+  <script src="/assets/js/core/config.js"></script>
   <script src="/assets/js/core/supabase-client.js" defer></script>
   <script src="/assets/js/core/site.js" defer></script>
   <link rel="stylesheet" href="/assets/css/base/glass-system.css">
@@ -91,7 +91,7 @@
         </ul>
       </section>
 
-      <section id="image-checks" class="doc-section">
+      <section id="image-checks" class="doc-section" data-module="deepfake">
         <h2>Image Checks</h2>
         <p>Image Check sends a supported image to the selected real-versus-synthetic classifier. It accepts JPG, PNG, WEBP, or BMP files up to 4 MB; it does not perform a full visual-forensics examination.</p>
         <ul>
@@ -102,7 +102,7 @@
         </ul>
       </section>
 
-      <section id="message-checks" class="doc-section">
+      <section id="message-checks" class="doc-section" data-module="phishing">
         <h2>Message Checks</h2>
         <p>Message Check accepts 8 to 12,000 characters of email, SMS, URL, or suspicious text. It combines the selected phishing model score with implemented language, credential, payment, sender, and link indicators.</p>
         <ul>
@@ -113,7 +113,7 @@
         </ul>
       </section>
 
-      <section id="link-checks" class="doc-section">
+      <section id="link-checks" class="doc-section" data-module="link">
         <h2>Link Intelligence</h2>
         <p>Link Intelligence sends the normalized URL string to the available classifier and combines that output with deterministic URL-pattern checks. The current version does not fetch webpages, resolve shortened links, or follow redirects.</p>
         <ul>

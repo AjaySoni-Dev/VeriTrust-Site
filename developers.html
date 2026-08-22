@@ -26,7 +26,7 @@
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@500;600&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/assets/css/base/veritrust.css">
   <link rel="stylesheet" href="/assets/css/base/graphite-orange-theme.css">
-  <script src="/assets/js/core/config.js" defer></script>
+  <script src="/assets/js/core/config.js"></script>
   <script src="/assets/js/core/supabase-client.js" defer></script>
   <script src="/assets/js/core/site.js" defer></script>
   <link rel="stylesheet" href="/assets/css/base/glass-system.css">
@@ -119,7 +119,7 @@
         <p>Common error codes include <code>MISSING_API_KEY</code>, <code>INVALID_API_KEY</code>, <code>REVOKED_API_KEY</code>, <code>INSUFFICIENT_SCOPE</code>, <code>RATE_LIMITED</code>, <code>API_NOT_INCLUDED</code>, <code>MONTHLY_API_LIMIT_REACHED</code>, <code>SUBSCRIPTION_INACTIVE</code>, <code>INVALID_INPUT</code>, <code>INVALID_MODEL</code>, <code>MODEL_ERROR</code>, and <code>INTERNAL_ERROR</code>.</p>
       </section>
 
-      <section id="deepfake" class="doc-section">
+      <section id="deepfake" class="doc-section" data-module="deepfake">
         <h2>Deepfake API</h2>
         <p><code>POST /api/v1/deepfake</code> accepts <code>multipart/form-data</code> with a JPG, PNG, WEBP, or BMP <code>image</code> up to 4 MB. Model values are <code>fast</code>/<code>pixel</code> and <code>robust</code>/<code>prism</code>. Optional <code>crop=true</code> attempts face preprocessing through the configured crop service and falls back to the original image if cropping is unavailable.</p>
         <pre class="code-block"><code>curl -X POST "https://YOUR_DOMAIN/api/v1/deepfake" \
@@ -129,7 +129,7 @@
   -F "crop=true"</code></pre>
       </section>
 
-      <section id="phishing" class="doc-section">
+      <section id="phishing" class="doc-section" data-module="phishing">
         <h2>Phishing API</h2>
         <p><code>POST /api/v1/phishing</code> accepts JSON with 8 to 12,000 characters in <code>text</code> and an optional <code>model</code>. Use <code>fast</code>/<code>mailguard</code> for the text classifier or <code>robust</code>/<code>cortex</code> for the instruction model. The final score also includes implemented deterministic message indicators.</p>
         <pre class="code-block"><code>curl -X POST "https://YOUR_DOMAIN/api/v1/phishing" \
@@ -138,7 +138,7 @@
   -d '{"text":"Your account will be blocked. Verify your password now.","model":"fast"}'</code></pre>
       </section>
 
-      <section id="link" class="doc-section">
+      <section id="link" class="doc-section" data-module="link">
         <h2>Link Intelligence API</h2>
         <p><code>POST /api/v1/link-check</code> accepts JSON with an HTTP or HTTPS <code>url</code>, optional <code>context</code>, and optional <code>model</code>. The implemented model value is <code>swift</code>. The route analyzes the URL string and does not fetch the target page or follow redirects.</p>
         <pre class="code-block"><code>curl -X POST "https://YOUR_DOMAIN/api/v1/link-check" \
@@ -155,7 +155,7 @@
         <p><code>GET /api/v1/usage</code> requires <code>usage:read</code> and returns the key&apos;s daily usage, masked key metadata, and available workspace billing snapshot. Usage lookups are themselves recorded as API usage events.</p>
       </section>
 
-      <section id="gateway" class="doc-section">
+      <section id="gateway" class="doc-section" data-module="gateway">
         <h2>Unified Gateway API</h2>
         <p>The implemented gateway base path is <code>/api/v1/gateway</code>. Default API keys include scan, read, and cancel scopes. Every submission requires an <code>Idempotency-Key</code> header so a retry cannot create a duplicate scan.</p>
         <ul>
@@ -184,7 +184,7 @@
         <p>For a complete Windows workflow with polling, image upload, report retrieval, and safe key handling, use the <a href="gateway-powershell.html">PowerShell Gateway Guide</a>.</p>
       </section>
 
-      <section id="examples" class="doc-section">
+      <section id="examples" class="doc-section" data-module="link">
         <h2>Python Example</h2>
         <pre class="code-block"><code>import os
 import requests
