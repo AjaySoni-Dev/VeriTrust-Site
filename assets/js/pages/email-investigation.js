@@ -2,6 +2,7 @@
   'use strict';
 
   const MAX_EML_BYTES = 10 * 1024 * 1024;
+  const CONFIGURATION_FAILURE_CODES = new Set(['GATEWAY_POLICY_INVALID', 'GATEWAY_POLICY_UNAVAILABLE', 'SERVER_CONFIG_ERROR']);
   const STATE_LABELS = Object.freeze({
     LIKELY_PHISHING: 'Likely phishing',
     LIKELY_BENIGN: 'Likely benign',
@@ -33,6 +34,19 @@
     target.textContent = message || '';
     target.hidden = !message;
     if (message) target.focus();
+  }
+
+  function failureGuidance(error) {
+    if (CONFIGURATION_FAILURE_CODES.has(error?.code)) {
+      return {
+        summary: 'The investigation service needs an administrator configuration correction. Your message is not the cause.',
+        detail: 'Your message was accepted, but the investigation service needs an administrator configuration correction. Retry after the deployment is updated.',
+      };
+    }
+    return {
+      summary: error?.message || 'The investigation could not be completed.',
+      detail: 'Check the input and retry. If the failure continues, give support the error code below.',
+    };
   }
 
   function setBusy(busy) {
@@ -93,6 +107,7 @@
       const message = error.message || payload?.message || `The investigation could not be completed (status ${response.status}).`;
       const failure = new Error(message);
       failure.code = error.code || 'EMAIL_REQUEST_FAILED';
+      failure.meta = error.meta || null;
       throw failure;
     }
     return payload;
@@ -225,7 +240,8 @@
     const shell = one('#emailInvestigationResult');
     const target = one('#phishingResult');
     if (!shell || !target) return;
-    target.innerHTML = `<article class="email-result-hero" data-state="FAILED"><div><p class="email-result-kicker">Investigation state</p><h2 id="emailResultTitle">Analysis failed</h2><p>${escapeHtml(error.message)} No failure was converted into a benign result. Correct the input or configuration and retry.</p></div><div class="email-result-state"><span>Error code</span><strong>${escapeHtml(error.code || 'EMAIL_ANALYSIS_FAILED')}</strong><small>Evidence may be incomplete</small></div></article>`;
+    const guidance = failureGuidance(error);
+    target.innerHTML = `<article class="email-result-hero" data-state="FAILED"><div><p class="email-result-kicker">Investigation state</p><h2 id="emailResultTitle">Analysis failed</h2><p>${escapeHtml(error.message)} No failure was converted into a benign result. ${escapeHtml(guidance.detail)}</p></div><div class="email-result-state"><span>Error code</span><strong>${escapeHtml(error.code || 'EMAIL_ANALYSIS_FAILED')}</strong><small>Evidence may be incomplete</small></div></article>`;
     shell.hidden = false;
   }
 
@@ -267,7 +283,7 @@
         setStatus('Investigation complete. Review coverage and limitations.');
       } catch (error) {
         renderFailure(error);
-        setError(error.message);
+        setError(failureGuidance(error).summary);
         setStatus('Investigation failed. No benign conclusion was inferred.');
       } finally {
         setBusy(false);
