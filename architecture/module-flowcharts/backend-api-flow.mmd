@@ -1,0 +1,31 @@
+%%{init: {"theme":"base","themeVariables":{"primaryColor":"#e8f1ff","primaryBorderColor":"#3b82f6","lineColor":"#64748b","fontFamily":"Inter, Segoe UI, sans-serif"}}}%%
+flowchart LR
+  A(["HTTP request"]) --> B["vercel.json rewrite"]
+  B --> C{"Aggregator"}
+  C --> A1["account.js<br/>auth · account · cases · keys"]
+  C --> A2["billing.js<br/>subscription · checkout · portal · webhook"]
+  C --> A3["detection.js<br/>browser detection"]
+  C --> A4["v1.js<br/>developer API"]
+  C --> A5["gateway.js<br/>gateway + MailGraph"]
+  C --> A6["learning.js<br/>learning platform"]
+  C --> A7["system.js<br/>config · health · cards · sitemap"]
+  A1 & A2 & A3 & A4 & A5 & A6 & A7 --> D["Shared request ID, CORS, method,<br/>content type, and body-size checks"]
+  D --> E{"Authentication mode"}
+  E -- browser --> F["Supabase access cookie → profile context"]
+  E -- developer --> G["Bearer vtg_* → key hash, scopes, quotas"]
+  E -- gateway --> H["Cookie user or integration API key"]
+  E -- signed callback --> I["Stripe / worker / receiver secret verification"]
+  E -- public --> J["Only explicitly public handler"]
+  F & G & H & I & J --> K{"Module, role, plan,<br/>scope, rate, quota allowed?"}
+  K -- no --> L["JSON error: 400/401/403/404/409/413/415/429/500"]
+  K -- yes --> M["Route-specific service"]
+  M --> N["Supabase PostgREST / RPC / Storage"]
+  M --> O["External provider when required"]
+  M --> P["Queue durable work when required"]
+  N & O & P --> Q["Sanitize response and attach request_id"]
+  Q --> R(["JSON / redirect / signed upload response"])
+
+  classDef decision fill:#fff8e6,stroke:#f59e0b;
+  classDef error fill:#fff1f2,stroke:#e11d48;
+  class C,E,K decision;
+  class L error;

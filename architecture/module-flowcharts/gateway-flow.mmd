@@ -1,0 +1,39 @@
+%%{init: {"theme":"base","themeVariables":{"primaryColor":"#e8f1ff","primaryBorderColor":"#3b82f6","lineColor":"#64748b","fontFamily":"Inter, Segoe UI, sans-serif"}}}%%
+flowchart TD
+  A(["Gateway UI, API integration, or MailGraph"]) --> B["Authorize requested gateway action"]
+  B --> C["Validate content: text ≤12k, URLs ≤20,<br/>media ≤10, metadata ≤16 KiB"]
+  C --> D{"Media included?"}
+  D -- yes --> E["Register upload → signed PUT → complete"]
+  D -- no --> F["Continue"]
+  E & F --> G["Canonical request hash + Idempotency-Key"]
+  G --> H{"Prior request exists?"}
+  H -- yes, same hash --> I["Return existing scan"]
+  H -- yes, different hash --> J["409 idempotency conflict"]
+  H -- no --> K["Create/claim scan and compile policy"]
+  K --> L["Build text, URL, and media artifacts"]
+  L --> M["Move completed uploads into retention-managed storage"]
+  L --> N["Route text → MailGuard"]
+  L --> O["Route URL → Swift"]
+  L --> P{"deepfake module enabled?"}
+  P -- no, current --> Q["Omit image/audio/video routes"]
+  P -- yes, image --> R["Pixel route; synchronous or queued"]
+  P -- yes, audio/video --> S["Unsupported route state"]
+  N & O & R & S --> T["Persist model evidence and route status"]
+  T --> U{"Heavy/queued work remains?"}
+  U -- yes --> V["202 preliminary decision; queue lease-backed job"]
+  V --> W["Worker processes, retries, and finalizes"]
+  U -- no --> X["Correlate evidence into normalized risk score"]
+  W --> X
+  Q --> X
+  X --> Y["Policy recommendation: allow, warn,<br/>manual review, quarantine, block"]
+  Y --> Z["Advisory block guard and reviewer override rules"]
+  Z --> AA["Persist decision and audit event"]
+  AA --> AB["Return/poll report and optionally enqueue webhook"]
+  I --> AB
+
+  classDef decision fill:#fff8e6,stroke:#f59e0b;
+  classDef error fill:#fff1f2,stroke:#e11d48;
+  classDef disabled fill:#f1f5f9,stroke:#94a3b8,stroke-dasharray:6 4;
+  class D,H,P,U decision;
+  class J error;
+  class Q disabled;

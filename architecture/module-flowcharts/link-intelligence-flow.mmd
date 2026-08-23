@@ -1,0 +1,26 @@
+%%{init: {"theme":"base","themeVariables":{"primaryColor":"#e8f1ff","primaryBorderColor":"#3b82f6","lineColor":"#64748b","fontFamily":"Inter, Segoe UI, sans-serif"}}}%%
+flowchart TD
+  A(["URL or text submitted"]) --> B["Extract first HTTP(S) URL; reject credentials / malformed input"]
+  B --> C{"Swift enabled and authorized?"}
+  C -- no --> X["404 / 400 / 401 / 403 / 429"]
+  C -- yes --> D["Canonicalize URL and compute deterministic indicators"]
+  D --> E["Rule score from severity, total weight, and density"]
+  D --> F["Qualified Swift classifier contract"]
+  F --> G["HF inference → benign / phishing / malware / defacement"]
+  G --> H["Threat probability = max non-benign class"]
+  E & H --> I["Combined score = 0.62 model + 0.38 rules<br/>with high-risk floors and low-risk cap"]
+  I --> J{"Final score and evidence"}
+  J -- "≥ .90 + malicious model" --> K["MALICIOUS"]
+  J -- "≥ .75 + phishing support" --> L["PHISHING"]
+  J -- "≥ .45" --> M["SUSPICIOUS"]
+  J -- lower --> N["SAFE"]
+  H & I --> O["Confidence = max model confidence,<br/>combined score, inverse combined score"]
+  K & L & M & N & O --> P{"Browser or v1"}
+  P -- browser --> Q["Persist scan lifecycle"]
+  P -- v1 --> R["Finalize metered usage"]
+  Q & R --> S(["Return label, risk, confidence,<br/>rules, model output, request_id"])
+
+  classDef decision fill:#fff8e6,stroke:#f59e0b;
+  classDef error fill:#fff1f2,stroke:#e11d48;
+  class C,J,P decision;
+  class X error;

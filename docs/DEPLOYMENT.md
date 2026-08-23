@@ -31,18 +31,21 @@ Use the environment inventory in `README.md` and add values through Vercel Proje
 At minimum, an authenticated production deployment normally needs:
 
 - Supabase URL, anonymous key, and service-role key;
-- a Hugging Face token and the model identifiers for enabled detectors;
-- canonical site URL and allowed origins;
+- a Hugging Face token with Inference Providers permission; the MailGuard and Swift model identities are pinned in source;
+- the source-pinned canonical site URL and allowed origins must match the deployed domains;
 - learning access key when preview routes remain enabled;
 - gateway integrity, dispatch, and encryption keys when the gateway is enabled.
 
 Add Stripe variables only when billing endpoints are enabled. Use different restricted values for Preview and Production where appropriate.
+
+Run `npm run config:check` with the target environment loaded before deployment. After changing a Vercel environment variable, create a new deployment; existing deployments retain their prior environment snapshot.
 
 ## 4. Verify external services
 
 - Confirm the deployed Supabase schema matches `database-schema.json`.
 - Confirm storage buckets and row-level security match the production database policy.
 - Confirm model tokens can access every configured provider repository.
+- Confirm the MailGuard repository revision and live provider task match `docs/MODEL_REGISTRY.md`; the runtime rejects revision drift and provider/task mismatch.
 - Confirm each enabled model is approved for its exact scientific role, pinned to an immutable revision, and uses the reviewed processor, label map, adapter, benchmark, calibrator, and license record described in `output/pdfs/VeriTrust_Hugging_Face_Model_Research_and_Acquisition_Guide.pdf`.
 - Confirm approved webhook hosts are explicit and controlled.
 - Configure the Stripe webhook destination as `/api/billing/webhook` when billing is enabled.
@@ -55,7 +58,7 @@ The repository currently uses `https://www.veritrustlab.in` as its canonical ori
 - JSON-LD in `index.html`;
 - `robots.txt`;
 - `sitemap.xml`;
-- `VERITRUST_SITE_URL` and `VERITRUST_ALLOWED_ORIGINS`;
+- the pinned values in `lib/config.js` (`siteUrl` and `allowedOrigins`);
 - the public-page verification map in `scripts/verify.js`.
 
 Choose one canonical host in Vercel and redirect the other host to it.

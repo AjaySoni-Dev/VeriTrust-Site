@@ -1,0 +1,45 @@
+%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eefbf4","primaryBorderColor":"#22c55e","lineColor":"#64748b","fontFamily":"Inter, Segoe UI, sans-serif"}}}%%
+flowchart LR
+  subgraph CLIENTS["Callers"]
+    B["Browser with HttpOnly auth cookies"]
+    D["Developer with bearer API key"]
+    W["Worker with service credentials"]
+  end
+  subgraph SERVICES["Application services"]
+    A["Identity and organization context"]
+    S["Scan lifecycle and evidence"]
+    G["Gateway orchestration"]
+    L["Learning progress and credentials"]
+    C["Cases and collaboration"]
+    P["Plans, billing, usage, entitlements"]
+  end
+  subgraph SUPABASE["Supabase"]
+    AUTH[("Auth users and sessions")]
+    CORE[("profiles · organizations · memberships · plans")]
+    DET[("scans · inputs · model_runs · results")]
+    CASE[("cases · evidence · decisions · events")]
+    GW[("gateway scans · artifacts · routes · evidence<br/>policies · webhooks · reviews · jobs")]
+    EMAIL[("email details · auth · identity graph · hops")]
+    LEARN[("courses · enrollments · lessons · attempts · certificates")]
+    METER[("api_keys · usage · billing · outbox · rate limits")]
+    OBJECTS[("Storage: avatars + private gateway-uploads")]
+    RPC[("PostgREST / RPC transaction boundaries")]
+  end
+  B --> A & S & G & L & C & P
+  D --> S & G
+  W --> G & P
+  A --> AUTH & CORE
+  S --> DET
+  C --> CASE
+  G --> GW & EMAIL & OBJECTS
+  L --> LEARN
+  P --> METER
+  CORE & DET & CASE & GW & EMAIL & LEARN & METER --> RPC
+  RPC --> S & G & L & C & P
+  OBJECTS --> G
+
+  NOTE["Repository contains a schema inventory only;<br/>referenced SQL migrations are not present,<br/>so deployed DDL/RLS cannot be independently verified"]
+  NOTE -.-> SUPABASE
+
+  classDef note fill:#fff8e6,stroke:#f59e0b;
+  class NOTE note;

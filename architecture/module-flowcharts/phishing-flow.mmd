@@ -1,0 +1,32 @@
+%%{init: {"theme":"base","themeVariables":{"primaryColor":"#e8f1ff","primaryBorderColor":"#3b82f6","lineColor":"#64748b","fontFamily":"Inter, Segoe UI, sans-serif"}}}%%
+flowchart TD
+  A(["Text submitted to browser or v1 phishing endpoint"]) --> B{"Module enabled and request authorized?"}
+  B -- no --> X["404 / 401 / 403 / 429"]
+  B -- yes --> C["Validate JSON ≤16 KiB; text 8–12,000 chars"]
+  C --> D{"Selected model"}
+  D -- MailGuard --> E["Load qualified pinned classifier contract"]
+  E --> F["HF inference with softmax and all labels"]
+  F --> G["Validate exact label set, duplicates, and probability sum"]
+  G --> H["p_phish and p_benign"]
+  H --> I{"p_phish threshold"}
+  I -- "≥ 0.70" --> J["LIKELY_PHISHING"]
+  I -- "≤ 0.20" --> K["LIKELY_BENIGN"]
+  I -- between --> L["UNCERTAIN"]
+  H --> M["Confidence = max probability<br/>risk from phishing probability"]
+  C --> N["Compute deterministic indicators and rule_score"]
+  N -. "reported separately; not combined<br/>into active phishing verdict" .-> M
+  D -- Cortex --> O["Load qualified semantic chat contract"]
+  O --> P["HF chat completion requests strict JSON"]
+  P --> Q{"Schema, enum, and evidence spans valid?"}
+  Q -- no --> X
+  Q -- yes --> R["Semantic findings only<br/>state UNCERTAIN, no confidence or risk score"]
+  J & K & L & M & R --> S{"Browser lifecycle or developer adapter?"}
+  S -- browser --> T["Persist scan, input, model run, result"]
+  S -- v1 --> U["Finalize usage reservation and billable units"]
+  T & U --> V["Return sanitized JSON with request_id"]
+  V --> W(["UI verdict / API result"])
+
+  classDef decision fill:#fff8e6,stroke:#f59e0b;
+  classDef error fill:#fff1f2,stroke:#e11d48;
+  class B,D,I,Q,S decision;
+  class X error;

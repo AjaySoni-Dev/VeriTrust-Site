@@ -1,0 +1,33 @@
+%%{init: {"theme":"base","themeVariables":{"primaryColor":"#e8f1ff","primaryBorderColor":"#3b82f6","lineColor":"#64748b","fontFamily":"Inter, Segoe UI, sans-serif"}}}%%
+flowchart LR
+  U(["User / integration"]) --> I["1. Input<br/>text, URL, EML, metadata, or uploaded media"]
+  I --> V{"2. Boundary validation<br/>type · size · origin · auth · rate · quota"}
+  V -- reject --> ERR["Structured error<br/>request_id + safe message"]
+  V -- accept --> C["3. Canonicalize<br/>normalize content + hash idempotency key"]
+  C --> A[("4. Persist request<br/>scan + input/artifact + usage reservation")]
+  A --> R{"5. Route by content and module gate"}
+  R -- text --> P["MailGuard / Cortex"]
+  R -- URL --> L["Swift + URL rules"]
+  R -- EML --> M["MailGraph parsing, auth,<br/>identity, URLs, MailGuard"]
+  R -- image when enabled --> D["Pixel / Prism"]
+  R -- media while disabled --> O["No model route"]
+  P & L & M & D --> E["6. Normalize evidence<br/>probabilities, indicators, status"]
+  O --> E
+  E --> S[("7. Persist model runs, evidence,<br/>results, usage, and audit events")]
+  S --> K["8. Correlate risk and apply policy"]
+  K --> Q{"9. Outcome"}
+  Q --> ALLOW["allow"]
+  Q --> WARN["warn"]
+  Q --> REVIEW["manual review"]
+  Q --> QUAR["quarantine"]
+  Q --> BLOCK["block"]
+  ALLOW & WARN & REVIEW & QUAR & BLOCK --> F["10. Finalize scan / usage"]
+  F --> RESP["11. UI/API report with request_id"]
+  F --> WH["12. Optional signed webhook / queued delivery"]
+
+  classDef decision fill:#fff8e6,stroke:#f59e0b;
+  classDef error fill:#fff1f2,stroke:#e11d48;
+  classDef data fill:#eefbf4,stroke:#22c55e;
+  class V,R,Q decision;
+  class ERR error;
+  class A,S data;

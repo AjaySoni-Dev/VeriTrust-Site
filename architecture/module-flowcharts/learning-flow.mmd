@@ -1,0 +1,26 @@
+%%{init: {"theme":"base","themeVariables":{"primaryColor":"#e8f1ff","primaryBorderColor":"#3b82f6","lineColor":"#64748b","fontFamily":"Inter, Segoe UI, sans-serif"}}}%%
+flowchart TD
+  A(["Open learning route"]) --> B{"Preview gate locked?"}
+  B -- yes --> C["Validate access key; set signed 8-hour cookie"]
+  B -- no --> D["Continue"]
+  C --> D
+  D --> E{"Operation"}
+  E -- public credential verification --> F["GET /api/certificates/:code/verify"]
+  F --> G["Return consented public credential fields only"]
+  E -- catalog/course --> H["Read learning catalog under preview gate"]
+  E -- personalized --> I["Require Supabase learner context + rate limit"]
+  I --> J{"Action"}
+  J --> K["Enroll in entitled course"]
+  J --> L["Read lesson and record progress event"]
+  J --> M["Start / save / submit assessment attempt"]
+  J --> N["List earned certificates"]
+  J --> O["Owner/admin learning administration"]
+  K & L & M & N & O --> P["Supabase views, tables, and RPCs"]
+  M --> Q{"Submission result"}
+  Q -- pass --> R["Issue certificate / expose verification code"]
+  Q -- fail --> S["Persist attempt and permitted retry state"]
+  R --> N
+  P --> T(["Updated UI state"])
+
+  classDef decision fill:#fff8e6,stroke:#f59e0b;
+  class B,E,J,Q decision;

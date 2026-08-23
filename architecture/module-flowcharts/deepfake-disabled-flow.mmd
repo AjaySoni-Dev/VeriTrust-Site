@@ -1,0 +1,26 @@
+%%{init: {"theme":"base","themeVariables":{"primaryColor":"#f1f5f9","primaryBorderColor":"#94a3b8","lineColor":"#64748b","fontFamily":"Inter, Segoe UI, sans-serif"}}}%%
+flowchart TD
+  A(["Deepfake route or image input"]) --> B{"modules.deepfake"}
+  B -- "CURRENT: false" --> C["Middleware hides page; API module guard returns 404"]
+  C --> D["Gateway router omits image, audio, and video model routes"]
+  D --> E(["No deepfake inference in deployed configuration"])
+
+  B -. "if enabled later" .-> F["Validate multipart image ≤4 MiB and magic bytes"]
+  F --> G["Optional face crop for v1; original image on crop failure"]
+  G --> H["Load selected Pixel or Prism qualified contract"]
+  H --> I["HF binary image classification"]
+  I --> J{"Provider/model succeeds?"}
+  J -- yes --> K["Normalize real/fake; infer missing complement"]
+  J -- no --> L["Try other qualified deepfake model"]
+  L --> M{"Fallback succeeds?"}
+  M -- yes --> K
+  M -- no --> N["Model error; never convert failure to benign"]
+  K --> O["Fake if p_fake ≥ p_real<br/>confidence = max probability<br/>risk from p_fake"]
+  O --> P["Persist result or finalize v1 usage"]
+
+  classDef disabled fill:#f1f5f9,color:#475569,stroke:#94a3b8,stroke-dasharray:6 4;
+  classDef decision fill:#fff8e6,stroke:#f59e0b;
+  classDef error fill:#fff1f2,stroke:#e11d48;
+  class A,B,C,D,E disabled;
+  class J,M decision;
+  class N error;

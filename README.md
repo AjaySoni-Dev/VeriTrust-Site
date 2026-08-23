@@ -294,26 +294,19 @@ SUPABASE_URL=
 SUPABASE_ANON_KEY=
 SUPABASE_SERVICE_ROLE_KEY=
 
-HF_TOKEN=
+HF_ACCESS_TOKEN=
 HF_DEEPFAKE_PIXEL_MODEL=
 HF_DEEPFAKE_PRISM_MODEL=
-HF_PHISHING_MAILGUARD_MODEL=
 HF_PHISHING_CORTEX_MODEL=
-HF_LINK_SWIFT_MODEL=
-HF_MODEL_CONTRACTS=
 HF_MODEL_PATHS=
 HF_MODEL_PATH=
 
-VERITRUST_SITE_URL=https://www.veritrustlab.in
-VERITRUST_ALLOWED_ORIGINS=https://www.veritrustlab.in,https://veritrustlab.in
 VERITRUST_LEARNING_ACCESS_KEY=
 
 VERITRUST_CONTENT_HMAC_KEY=
 VERITRUST_GATEWAY_DISPATCH_SECRET=
 VERITRUST_WEBHOOK_ENCRYPTION_KEY=
 VERITRUST_WEBHOOK_ALLOWED_HOSTS=
-VERITRUST_GATEWAY_SYNC_BUDGET_MS=12000
-VERITRUST_GATEWAY_SERVERLESS_BATCH=1
 VERITRUST_GATEWAY_WORKER_ID=veritrust-worker-1
 VERITRUST_EMAIL_RECEIVER_SECRET=
 VERITRUST_TRUSTED_AUTHSERV_IDS=
@@ -323,7 +316,7 @@ STRIPE_SECRET_KEY=
 STRIPE_WEBHOOK_SECRET=
 ```
 
-`HF_ACCESS_TOKEN` may be used instead of `HF_TOKEN`; `HF_TOKEN` takes precedence when both are present. `HF_MODEL_CONTRACTS` holds qualified, pinned server-only contracts for standalone phishing and transitional Gateway fallback; see [`docs/MODEL_REGISTRY.md`](docs/MODEL_REGISTRY.md). Model paths can alternatively be supplied through `HF_MODEL_PATHS`, with `HF_MODEL_PATH` retained only as a legacy Pixel fallback. A model path by itself is not a qualification contract. Keep every populated value in Vercel Environment Variables or an ignored local environment file.
+Use exactly one of `HF_ACCESS_TOKEN` or `HF_TOKEN`; `HF_TOKEN` takes precedence if both are present. MailGuard and Swift repository IDs, immutable revisions, label maps, site origin, allowed origins, and Gateway execution limits are pinned in source and require no Vercel variables; see [`docs/MODEL_REGISTRY.md`](docs/MODEL_REGISTRY.md). Model paths can alternatively be supplied through `HF_MODEL_PATHS`, with `HF_MODEL_PATH` retained only as a legacy Pixel fallback. Keep every populated value in Vercel Environment Variables or an ignored local environment file.
 
 > [!WARNING]
 > Never expose Supabase service credentials, provider tokens, Stripe secrets, gateway keys, or learning-preview secrets in browser JavaScript.
@@ -362,7 +355,7 @@ A configured runtime returns a public health response without exposing private d
 
 ### Database requirement
 
-The application expects an existing Supabase project compatible with [`docs/database-schema.json`](docs/database-schema.json). This ZIP contains a read-only schema inventory, not the SQL migrations or seed rows represented by that inventory. Obtain the reviewed database migration bundle from the controlled database release workflow; do not reconstruct or apply production SQL from the inventory file.
+The application expects an existing Supabase project compatible with [`docs/database-schema.json`](docs/database-schema.json). Apply the reviewed migrations in [`migrations/`](migrations/), including the final direct-module alignment migration, through the controlled database release workflow. Do not reconstruct production SQL from a schema inventory.
 
 ---
 
@@ -623,10 +616,10 @@ Use a lowercase Vercel project name such as `veritrust-site`. The canonical prod
 https://www.veritrustlab.in
 ```
 
-If the production domain changes, update page canonicals, JSON-LD, `robots.txt`, `sitemap.xml`, `VERITRUST_SITE_URL`, allowed origins, and the public-page map in `scripts/verify.js` together.
+If the production domain changes, update page canonicals, JSON-LD, `robots.txt`, `sitemap.xml`, the pinned site URL and allowed origins in `lib/config.js`, and the public-page map in `scripts/verify.js` together.
 
 Complete deployment instructions are available in [`docs/DEPLOYMENT.md`](docs/DEPLOYMENT.md).
-The MailGraph model-contract and degraded-risk repair is documented in [`docs/GATEWAY_REPAIR_REPORT.md`](docs/GATEWAY_REPAIR_REPORT.md).
+The final MailGraph direct-module release is documented in [`docs/PHISHING_GATEWAY_RELEASE.md`](docs/PHISHING_GATEWAY_RELEASE.md).
 
 ---
 
@@ -659,7 +652,7 @@ Result is normalized and saved for review
 ## Current Limitations
 
 - Authentication, persistence, quotas, and case management require the deployed Supabase schema and environment variables.
-- This repository documents the expected schema but does not contain executable migrations or seed SQL.
+- Supabase migrations must be applied in order and verified against the deployed project before application rollout.
 - Model inference depends on external provider availability, latency, and quotas.
 - Vercel functions are bounded to the Hobby-compatible execution window.
 - Optional face preparation depends on the configured external crop service.
