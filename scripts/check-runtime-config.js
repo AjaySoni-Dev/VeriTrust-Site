@@ -1,4 +1,4 @@
-const { getOptionalEnv, getOptionalEnvAliases } = require('../lib/config');
+const { getOptionalEnv, getOptionalEnvAliases, serverConfig } = require('../lib/config');
 const { isModuleEnabled } = require('../lib/modules');
 const { modelContractReadiness } = require('../lib/model-contracts');
 
@@ -47,6 +47,13 @@ if (isModuleEnabled('gateway')) {
   minimumAliasLength(['VERITRUST_CONTENT_HMAC_KEY', 'CONTENT_HMAC'], 32);
   minimumAliasLength(['VERITRUST_GATEWAY_DISPATCH_SECRET', 'DISPATCH'], 32);
   minimumAliasLength(['VERITRUST_WEBHOOK_ENCRYPTION_KEY', 'WEBHOOK_ENCRYPTION'], 32);
+  try {
+    void serverConfig.gatewaySynchronousBudgetMs;
+    void serverConfig.gatewayModelConcurrency;
+    void serverConfig.gatewayServerlessBatch;
+  } catch (error) {
+    failures.push(`${error.code || 'CONFIG_INVALID'}: ${error.message}`);
+  }
   warnings.push('Database gateway_model_versions rows and Supabase migrations must also be verified against the deployed project');
 }
 
