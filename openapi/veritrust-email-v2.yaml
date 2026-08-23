@@ -199,7 +199,7 @@ components:
       type: object
       required: [schema_version, artifact_id, input_mode, state, capabilities, observations, relationships, infrastructure, limitations]
       properties:
-        schema_version: { const: phishing-evidence-4 }
+        schema_version: { const: phishing-evidence-5 }
         artifact_id: { type: string, format: uuid }
         input_mode: { type: string, enum: [plain_text, raw_eml, trusted_receiver_event] }
         state: { type: string, enum: [LIKELY_BENIGN, LIKELY_PHISHING, UNCERTAIN, UNSUPPORTED, FAILED] }
