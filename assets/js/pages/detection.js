@@ -551,8 +551,8 @@ function renderResult(targetId, data) {
   target.classList.add('result-ready');
   const result = data.result || {};
   const labelLower = String(result.label || '').toLowerCase();
-  const isError = labelLower === 'error';
-  const isBad = isError || ['fake', 'phishing'].includes(labelLower);
+  const isError = labelLower === 'error' || labelLower === 'analysis failed';
+  const isBad = isError || labelLower === 'fake' || labelLower.includes('phishing');
   const confidence = formatPercent(result.confidence);
   const primaryScore = data.type === 'deepfake'
     ? formatPercent(result.fake_score)
@@ -564,9 +564,9 @@ function renderResult(targetId, data) {
     explanation = result.summary || 'The image is likely synthetic based on the selected model score.';
   } else if (labelLower === 'real') {
     explanation = result.summary || 'The image is lower-risk based on the selected model score.';
-  } else if (labelLower === 'phishing') {
+  } else if (labelLower.includes('phishing')) {
     explanation = result.summary || 'This message has risk signals commonly seen in scams or phishing.';
-  } else if (labelLower === 'legitimate') {
+  } else if (labelLower.includes('benign') || labelLower === 'legitimate') {
     explanation = result.summary || 'No strong phishing indicators were found from the available signals.';
   } else if (isError) {
     explanation = result.explanation || 'The check could not be completed. Please try again.';
@@ -601,6 +601,10 @@ function renderResult(targetId, data) {
       <summary>Technical details</summary>
       <div class="result-meta">
         <span>Model: ${escapeHtml(modelLabel)}</span>
+        ${data.type === 'phishing' && result.model_score !== null && result.model_score !== undefined ? `<span>Model score: ${formatPercent(result.model_score)}</span>` : ''}
+        ${data.type === 'phishing' && result.rule_score !== null && result.rule_score !== undefined ? `<span>Rule score: ${formatPercent(result.rule_score)}</span>` : ''}
+        ${data.type === 'phishing' && result.decision_score !== null && result.decision_score !== undefined ? `<span>Decision score: ${formatPercent(result.decision_score)}</span>` : ''}
+        ${data.type === 'phishing' && result.model_state ? `<span>Model state: ${escapeHtml(result.model_state.replaceAll('_', ' '))}</span>` : ''}
         <span>Confidence band: ${escapeHtml(result.confidence_band || 'N/A')}</span>
         ${data.scan_id || data.scan?.id ? `<span>Scan ID: ${escapeHtml(data.scan_id || data.scan.id)}</span>` : ''}
       </div>

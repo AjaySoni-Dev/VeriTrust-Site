@@ -102,15 +102,36 @@ document.addEventListener('DOMContentLoaded', async () => {
     setText('[data-billing-plan]', plan.name || titleCase(planCode));
     setText('[data-billing-status]', status);
     setText('[data-billing-renewal]', periodEnd);
-    setText('[data-billing-summary]', `${plan.name || titleCase(planCode)} limits refresh monthly. API access is ${billing?.features?.allow_api_access === false ? 'not included' : 'enabled'}.`);
+    const gatewayEnabled = billing?.features?.gateway_enabled !== false;
+    const stripeConfigured = billing?.billing_provider?.stripe_configured === true;
+    setText('[data-billing-summary]', `${plan.name || titleCase(planCode)} limits refresh monthly. API access is ${billing?.features?.allow_api_access === false ? 'not included' : 'enabled'}; Gateway is ${gatewayEnabled ? 'enabled' : 'disabled'}.`);
     setMeter('[data-billing-web-label]', '[data-billing-web-bar]', usage.web_used || 0, limits.monthly_web_scan_limit || 100);
     setMeter('[data-billing-api-label]', '[data-billing-api-bar]', usage.api_used || 0, limits.monthly_api_limit || 100);
     setMeter('[data-billing-keys-label]', '[data-billing-keys-bar]', usage.api_keys_used || 0, limits.max_api_keys || 1);
+    setMeter('[data-billing-gateway-daily-label]', '[data-billing-gateway-daily-bar]', usage.gateway_used_today || 0, limits.daily_gateway_scan_limit || 0);
+    setMeter('[data-billing-gateway-monthly-label]', '[data-billing-gateway-monthly-bar]', usage.gateway_used_month || 0, limits.monthly_gateway_scan_limit || 0);
+    setText('[data-billing-gateway-artifacts]', String(limits.max_gateway_artifacts ?? '—'));
+    setText('[data-billing-gateway-parallel]', String(limits.max_gateway_parallel_models ?? '—'));
+    setText('[data-billing-gateway-retention]', limits.gateway_max_raw_retention_hours == null ? '—' : `${limits.gateway_max_raw_retention_hours}h`);
+    setText('[data-usage-gateway-today]', gatewayEnabled ? formatLimit(usage.gateway_used_today || 0, limits.daily_gateway_scan_limit || 0) : 'Disabled');
+    setText('[data-usage-gateway-month]', gatewayEnabled ? formatLimit(usage.gateway_used_month || 0, limits.monthly_gateway_scan_limit || 0) : 'Disabled');
+
+    const providerNote = document.querySelector('[data-billing-provider-note]');
+    if (providerNote) {
+      providerNote.hidden = stripeConfigured;
+      providerNote.textContent = 'Stripe is not configured in this deployment. Plan and quota telemetry remain available; checkout and portal actions are disabled.';
+    }
 
     const upgrade = document.querySelector('[data-billing-upgrade]');
     if (upgrade) {
-      upgrade.hidden = ['pro', 'business', 'enterprise'].includes(planCode);
+      upgrade.hidden = !stripeConfigured || ['pro', 'business', 'enterprise'].includes(planCode);
+      upgrade.disabled = !stripeConfigured;
       upgrade.textContent = planCode === 'developer' ? 'Upgrade plan' : 'Upgrade to Pro';
+    }
+    const portal = document.querySelector('[data-billing-portal]');
+    if (portal) {
+      portal.hidden = !stripeConfigured;
+      portal.disabled = !stripeConfigured;
     }
   };
 
