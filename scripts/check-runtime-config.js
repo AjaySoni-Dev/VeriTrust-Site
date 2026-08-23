@@ -1,4 +1,4 @@
-const { getOptionalEnv } = require('../lib/config');
+const { getOptionalEnv, getOptionalEnvAliases } = require('../lib/config');
 const { isModuleEnabled } = require('../lib/modules');
 const { modelContractReadiness } = require('../lib/model-contracts');
 
@@ -11,12 +11,13 @@ function present(name) {
   return configured;
 }
 
-function minimumLength(name, length) {
-  const value = getOptionalEnv(name, '');
+function minimumAliasLength(names, length) {
+  const value = getOptionalEnvAliases(names, '');
+  const label = names.join(' or ');
   if (!value) {
-    failures.push(`${name} is missing`);
+    failures.push(`${label} is missing`);
   } else if (Buffer.byteLength(value, 'utf8') < length) {
-    failures.push(`${name} must be at least ${length} bytes`);
+    failures.push(`${label} must be at least ${length} bytes`);
   }
 }
 
@@ -26,7 +27,11 @@ if (!getOptionalEnv('HF_TOKEN', '') && !getOptionalEnv('HF_ACCESS_TOKEN', '')) f
 if (isModuleEnabled('phishing')) {
   for (const key of ['mailguard']) {
     const readiness = modelContractReadiness(key);
-    if (!readiness.ready) failures.push(`HF_MODEL_CONTRACTS.${key} is not ready (${readiness.code})`);
+    if (!readiness.ready) {
+      failures.push(readiness.code === 'MODEL_CONTRACT_MISSING_FOR_CONFIGURED_PATH'
+        ? `HF_MODEL_CONTRACTS.${key} is missing even though its HF model repository is configured`
+        : `HF_MODEL_CONTRACTS.${key} is not ready (${readiness.code})`);
+    }
   }
   if (!modelContractReadiness('cortex').ready) warnings.push('Cortex is unavailable until a qualified cortex contract is configured');
 }
@@ -39,9 +44,9 @@ if (isModuleEnabled('link') && isModuleEnabled('gateway') && !modelContractReadi
 }
 
 if (isModuleEnabled('gateway')) {
-  minimumLength('VERITRUST_CONTENT_HMAC_KEY', 32);
-  minimumLength('VERITRUST_GATEWAY_DISPATCH_SECRET', 32);
-  minimumLength('VERITRUST_WEBHOOK_ENCRYPTION_KEY', 32);
+  minimumAliasLength(['VERITRUST_CONTENT_HMAC_KEY', 'CONTENT_HMAC'], 32);
+  minimumAliasLength(['VERITRUST_GATEWAY_DISPATCH_SECRET', 'DISPATCH'], 32);
+  minimumAliasLength(['VERITRUST_WEBHOOK_ENCRYPTION_KEY', 'WEBHOOK_ENCRYPTION'], 32);
   warnings.push('Database gateway_model_versions rows and Supabase migrations must also be verified against the deployed project');
 }
 
