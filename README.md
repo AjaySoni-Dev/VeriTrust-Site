@@ -300,6 +300,7 @@ HF_DEEPFAKE_PRISM_MODEL=
 HF_PHISHING_MAILGUARD_MODEL=
 HF_PHISHING_CORTEX_MODEL=
 HF_LINK_SWIFT_MODEL=
+HF_MODEL_CONTRACTS=
 HF_MODEL_PATHS=
 HF_MODEL_PATH=
 
@@ -322,7 +323,7 @@ STRIPE_SECRET_KEY=
 STRIPE_WEBHOOK_SECRET=
 ```
 
-`HF_ACCESS_TOKEN` may be used instead of `HF_TOKEN`; `HF_TOKEN` takes precedence when both are present. Model paths can alternatively be supplied through `HF_MODEL_PATHS`, with `HF_MODEL_PATH` retained only as a legacy Pixel fallback. Keep every populated value in Vercel Environment Variables or an ignored local environment file. The current aliases are not a safe configuration surface for target-state models until their dedicated adapters are implemented.
+`HF_ACCESS_TOKEN` may be used instead of `HF_TOKEN`; `HF_TOKEN` takes precedence when both are present. `HF_MODEL_CONTRACTS` holds qualified, pinned server-only contracts for standalone phishing and transitional Gateway fallback; see [`docs/MODEL_REGISTRY.md`](docs/MODEL_REGISTRY.md). Model paths can alternatively be supplied through `HF_MODEL_PATHS`, with `HF_MODEL_PATH` retained only as a legacy Pixel fallback. A model path by itself is not a qualification contract. Keep every populated value in Vercel Environment Variables or an ignored local environment file.
 
 > [!WARNING]
 > Never expose Supabase service credentials, provider tokens, Stripe secrets, gateway keys, or learning-preview secrets in browser JavaScript.
@@ -334,6 +335,8 @@ npm run check
 ```
 
 This checks JavaScript syntax, local page links, SEO metadata, crawler files, Vercel function limits, security controls, common committed-secret patterns, module boundaries, and the adversarial email-forensics suite.
+
+To audit deployment variables in an environment-loaded shell, run `npm run config:check`. This reports names and readiness states without printing secret values.
 
 ### 4. Start the local Vercel runtime
 
@@ -359,9 +362,7 @@ A configured runtime returns a public health response without exposing private d
 
 ### Database requirement
 
-The application expects an existing Supabase project that matches [`docs/database-schema.json`](docs/database-schema.json). The forward-only SIH26106 email evidence migration is [`migrations/202608220001_sih26106_email_forensics.sql`](migrations/202608220001_sih26106_email_forensics.sql); review and apply it through the controlled database project after testing it against a restored inventory snapshot. No repository command applies it remotely.
-
-The supplied schema inventory remains the deployed parent contract. [`migrations/verify/202608220001_email_forensics_assertions.sql`](migrations/verify/202608220001_email_forensics_assertions.sql) provides post-migration RLS and privilege assertions for staging.
+The application expects an existing Supabase project compatible with [`docs/database-schema.json`](docs/database-schema.json). This ZIP contains a read-only schema inventory, not the SQL migrations or seed rows represented by that inventory. Obtain the reviewed database migration bundle from the controlled database release workflow; do not reconstruct or apply production SQL from the inventory file.
 
 ---
 
@@ -474,7 +475,7 @@ GET  /api/v2/phishing/evidence/{scan_id}
 POST /internal/v2/phishing/receiver-event
 ```
 
-Plain text makes no header or authentication claims. Raw EML is hashed before bounded streaming MIME parsing and uses private temporary storage. Trusted receiver events add verifiable SMTP facts. Deepfake is disabled and never receives email attachments; Link remains the URL specialist. See [`docs/SIH26106_EMAIL_FORENSICS.md`](docs/SIH26106_EMAIL_FORENSICS.md) and [`openapi/veritrust-email-v2.yaml`](openapi/veritrust-email-v2.yaml).
+Plain text makes no header or authentication claims. Raw EML is hashed before bounded streaming MIME parsing and uses private temporary storage. Trusted receiver events add verifiable SMTP facts. Deepfake is disabled and never receives email attachments; Link remains the URL specialist. See [`docs/EMAIL_FORENSICS.md`](docs/EMAIL_FORENSICS.md) and [`openapi/veritrust-email-v2.yaml`](openapi/veritrust-email-v2.yaml).
 
 ### Health Check
 
@@ -625,6 +626,7 @@ https://www.veritrustlab.in
 If the production domain changes, update page canonicals, JSON-LD, `robots.txt`, `sitemap.xml`, `VERITRUST_SITE_URL`, allowed origins, and the public-page map in `scripts/verify.js` together.
 
 Complete deployment instructions are available in [`docs/DEPLOYMENT.md`](docs/DEPLOYMENT.md).
+The MailGraph model-contract and degraded-risk repair is documented in [`docs/GATEWAY_REPAIR_REPORT.md`](docs/GATEWAY_REPAIR_REPORT.md).
 
 ---
 

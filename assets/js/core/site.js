@@ -65,7 +65,9 @@ const VeriTrustPageAccess = (() => {
     let callback = null;
     let callbackError = null;
     let sessionError = null;
-    if (client?.isConfigured()) {
+    // Browser sessions are verified by our same-origin API and do not depend on
+    // the public Supabase configuration request succeeding in the browser.
+    if (client?.getSession) {
       try {
         callback = await client.consumeAuthCallback?.() || null;
       } catch (error) {
@@ -237,7 +239,7 @@ const VeriTrustSiteChrome = (() => {
           <a href="/docs">Docs</a>
         </nav>
         <div class="tool-header-actions">
-          <a href="/auth" class="tool-header-login">Log in</a>
+          <a href="/auth" class="tool-header-login" hidden aria-hidden="true">Log in</a>
           <a href="/dashboard" class="tool-header-dashboard">Dashboard</a>
           <button class="tool-menu-toggle" aria-label="Open page menu" aria-expanded="false" type="button">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
@@ -440,6 +442,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
       link.hidden = false;
       link.removeAttribute('aria-hidden');
+      link.removeAttribute('aria-label');
       link.href = '/auth';
       link.classList.remove('is-logout');
       link.textContent = link.classList.contains('login-link')
@@ -449,11 +452,19 @@ document.addEventListener('DOMContentLoaded', async () => {
           : 'Login';
     };
 
+    const hideAuthLink = (link) => {
+      link.hidden = true;
+      link.setAttribute('aria-hidden', 'true');
+      link.removeAttribute('href');
+      link.classList.remove('is-logout');
+    };
+
     const bindLogout = (link) => {
       link.hidden = false;
       link.removeAttribute('aria-hidden');
+      link.setAttribute('aria-label', 'Log out of VeriTrust');
       link.href = '#sign-out';
-      link.textContent = 'Logout';
+      link.textContent = 'Log out';
       link.classList.add('is-logout');
       if (!link.dataset.logoutBound) {
         link.dataset.logoutBound = 'true';
@@ -465,8 +476,10 @@ document.addEventListener('DOMContentLoaded', async () => {
       }
     };
 
-    const ensureMobileMenuActions = (sessionActive = false) => {
+    const ensureMobileMenuActions = (authState = 'signed-out') => {
       if (!toolHeaderLinks) return null;
+
+      const sessionActive = authState === 'authenticated';
 
       let wrap = toolHeaderLinks.querySelector('.tool-header-mobile-actions');
       if (!wrap) {
@@ -489,7 +502,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       }
 
       let authAction = wrap.querySelector('[data-mobile-auth-action]');
-      if (!sessionActive && isAuthPage) {
+      if (authState === 'unavailable' || (!sessionActive && isAuthPage)) {
         authAction?.remove();
         return wrap;
       }
@@ -513,11 +526,6 @@ document.addEventListener('DOMContentLoaded', async () => {
       return wrap;
     };
 
-    if (!window.VeriTrustSupabase?.isConfigured()) {
-      ensureMobileMenuActions(false);
-      return;
-    }
-
     const session = access.session;
 
     if (session) {
@@ -531,16 +539,17 @@ document.addEventListener('DOMContentLoaded', async () => {
           link.textContent = 'Dashboard';
         }
       });
-      ensureMobileMenuActions(true);
+      ensureMobileMenuActions('authenticated');
     } else if (access.sessionError) {
       document.body.classList.remove('vt-authenticated', 'vt-signed-out');
       document.body.classList.add('vt-session-unavailable');
-      ensureMobileMenuActions(false);
+      authLinks.forEach(hideAuthLink);
+      ensureMobileMenuActions('unavailable');
     } else {
-      document.body.classList.remove('vt-authenticated');
+      document.body.classList.remove('vt-authenticated', 'vt-session-unavailable');
       document.body.classList.add('vt-signed-out');
       authLinks.forEach(showAuthLink);
-      ensureMobileMenuActions(false);
+      ensureMobileMenuActions('signed-out');
     }
   };
 

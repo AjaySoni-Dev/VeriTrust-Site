@@ -194,7 +194,7 @@ components:
         recommendation: { type: string, enum: [allow, warn, manual_review, quarantine, block, hold] }
         degraded: { type: boolean }
         reason_codes: { type: array, items: { type: string } }
-        correlation_version: { const: gateway-correlation-v2 }
+        correlation_version: { const: gateway-correlation-v3 }
     EvidenceBundle:
       type: object
       required: [schema_version, artifact_id, input_mode, state, capabilities, observations, relationships, infrastructure, limitations]

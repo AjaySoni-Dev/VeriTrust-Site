@@ -44,10 +44,31 @@ function requireText(relativePath, expected) {
 const allFiles = walk().sort();
 const sourceFiles = allFiles.filter((file) => ['.js', '.ts'].includes(path.extname(file)));
 const htmlFiles = allFiles.filter((file) => path.dirname(file) === root && path.extname(file) === '.html');
+const markdownFiles = allFiles.filter((file) => path.extname(file) === '.md');
 
 for (const file of sourceFiles.filter((candidate) => path.extname(candidate) === '.js')) {
   const result = spawnSync(process.execPath, ['--check', file], { encoding: 'utf8' });
   if (result.status !== 0) failures.push(`${relative(file)} has invalid JavaScript syntax: ${result.stderr.trim()}`);
+  const source = fs.readFileSync(file, 'utf8');
+  for (const match of source.matchAll(/require\(["'](\.[^"']+)["']\)/gu)) {
+    const target = path.resolve(path.dirname(file), match[1]);
+    const candidates = [target, `${target}.js`, `${target}.json`, path.join(target, 'index.js')];
+    if (!candidates.some((candidate) => fs.existsSync(candidate))) {
+      failures.push(`${relative(file)} requires missing local module ${match[1]}`);
+    }
+  }
+}
+
+for (const file of markdownFiles) {
+  const source = fs.readFileSync(file, 'utf8');
+  for (const match of source.matchAll(/\[[^\]]*\]\(([^)]+)\)/gu)) {
+    const reference = match[1].trim().replace(/^<|>$/gu, '').split(/\s+["']/u)[0].split('#')[0].split('?')[0];
+    if (!reference || /^(?:[a-z]+:|\/\/)/iu.test(reference)) continue;
+    let decoded = reference;
+    try { decoded = decodeURIComponent(reference); } catch { /* invalid URLs are handled as missing paths */ }
+    const target = path.resolve(path.dirname(file), decoded);
+    if (!fs.existsSync(target)) failures.push(`${relative(file)} references missing local target ${reference}`);
+  }
 }
 
 const vercel = JSON.parse(read('vercel.json'));
