@@ -7,6 +7,7 @@
     "check": "node scripts/verify.js && node scripts/test-modules.js && node --test tests/*.test.js",
     "test": "node --test tests/*.test.js",
     "config:check": "node scripts/check-runtime-config.js",
+    "config:canary": "node scripts/print-canary-model-config.js",
     "ci": "npm run check && npm audit --omit=dev --audit-level=high",
     "worker": "node worker/index.js",
     "start": "vercel dev"
