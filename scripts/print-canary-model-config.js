@@ -1,9 +1,10 @@
 const contracts = require('../config/hf-model-contracts.canary.json');
 
 const values = {
-  HF_PHISHING_MAILGUARD_MODEL: contracts.mailguard.repository_id,
-  HF_LINK_SWIFT_MODEL: contracts.swift.repository_id,
-  HF_MODEL_CONTRACTS: JSON.stringify(contracts),
+  runtime_source: 'bundled-pinned',
+  module_contract_version: 'veritrust-module-command-1',
+  models: contracts,
+  required_secret: 'HF_TOKEN or HF_ACCESS_TOKEN',
 };
 
 console.log(JSON.stringify(values, null, 2));
