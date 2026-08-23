@@ -10,6 +10,7 @@
   let visibleHistoryCount = 5;
   let historySelectionPending = false;
   const HISTORY_PAGE_SIZE = 5;
+  const requestedScanId = new URLSearchParams(global.location.search).get('scan_id');
 
   function setError(message) { elements.error.textContent = message || ''; elements.error.hidden = !message; }
   function setBusy(busy, message) {
@@ -164,5 +165,14 @@
     visibleHistoryCount = Math.min(historyRows.length, visibleHistoryCount + HISTORY_PAGE_SIZE);
     renderHistory();
   });
-  api.getSession().then((session)=>{elements.auth.hidden=Boolean(session);form.querySelectorAll('input,textarea,select,button').forEach((item)=>item.disabled=!session);if(session)refreshHistory();});
+  api.getSession().then(async (session)=>{
+    elements.auth.hidden=Boolean(session);
+    form.querySelectorAll('input,textarea,select,button').forEach((item)=>item.disabled=!session);
+    if (!session) return;
+    await refreshHistory();
+    if (/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/iu.test(requestedScanId || '')) {
+      setBusy(true, 'Loading requested scanâ€¦');
+      poll(requestedScanId);
+    }
+  });
 })(window);

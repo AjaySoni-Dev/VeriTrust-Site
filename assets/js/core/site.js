@@ -424,7 +424,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     const authLinks = document.querySelectorAll('.tool-header-login, .login-link, .nav-actions a[href="/auth"]');
     const dashboardLinks = document.querySelectorAll('.tool-header-dashboard, a[href="/dashboard"]');
     const toolHeaderLinks = document.querySelector('.tool-header-links, #primary-navigation');
-    const isAuthPage = currentPage() === 'auth';
+    const isAuthPage = VeriTrustSiteChrome.currentPage() === 'auth';
 
     const closeToolMenu = () => {
       const menuToggle = document.querySelector('.tool-menu-toggle, .menu-toggle');
