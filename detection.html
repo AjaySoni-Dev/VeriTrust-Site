@@ -32,7 +32,7 @@
   <script src="/assets/js/core/reporting.js" defer></script>
   <script src="/assets/js/core/site.js" defer></script>
   <link rel="stylesheet" href="/assets/css/base/glass-system.css">
-  <link rel="stylesheet" href="/assets/css/pages/detection-hub.css?v=20260830-ui3">
+  <link rel="stylesheet" href="/assets/css/pages/detection-hub.css?v=20260830-structure">
 </head>
 <body class="vt-graphite-theme vt-detection-page">
     <header class="tool-header-shell vt-page-header">
@@ -64,45 +64,49 @@
   </header>
 
   <main class="tool-hub detection-hub">
-    <header class="detection-intro">
+    <section class="detection-intro" aria-labelledby="detection-page-title">
       <div>
         <p class="eyebrow">Detection platform</p>
-        <h1>Email threat detection and forensic intelligence.</h1>
+        <h1 id="detection-page-title">Email threat detection and forensic intelligence.</h1>
       </div>
       <p class="lead">Launch the primary email investigation workflow or choose a supporting module for wider evidence coverage.</p>
-    </header>
+    </section>
 
     <div class="detection-workspace">
       <section class="core-module" aria-labelledby="core-module-title">
-        <div class="core-module-heading">
-          <span class="core-module-icon" aria-hidden="true">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3.5 6.5h17v11h-17z"/><path d="m4 7 8 6 8-6"/><path d="M17.5 3.5 20 6l-2.5 2.5"/></svg>
-          </span>
-          <div>
-            <p class="core-label">Primary module <span>Operational</span></p>
-            <h2 id="core-module-title">AI Email Threat &amp; Forensic Intelligence</h2>
+        <div class="core-main">
+          <div class="core-module-heading">
+            <span class="core-module-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3.5 6.5h17v11h-17z"/><path d="m4 7 8 6 8-6"/><path d="M17.5 3.5 20 6l-2.5 2.5"/></svg>
+            </span>
+            <div>
+              <p class="core-label">Primary module <span>Operational</span></p>
+              <h2 id="core-module-title">AI Email Threat &amp; Forensic Intelligence</h2>
+            </div>
           </div>
+          <p class="core-summary">Investigate message content or raw <code>.eml</code> evidence with AI risk scoring, authentication checks, sender and URL analysis, infrastructure context, and available geolocation signals.</p>
+          <ul class="core-capabilities" aria-label="Core capabilities">
+            <li><span aria-hidden="true"></span>Email threat scoring</li>
+            <li><span aria-hidden="true"></span>SPF, DKIM &amp; DMARC evidence</li>
+            <li><span aria-hidden="true"></span>IP &amp; geolocation context</li>
+            <li><span aria-hidden="true"></span>Forensic evidence graph</li>
+          </ul>
         </div>
-        <p class="core-summary">Investigate message content or raw <code>.eml</code> evidence with AI risk scoring, authentication checks, sender and URL analysis, infrastructure context, and available geolocation signals.</p>
-        <ul class="core-capabilities" aria-label="Core capabilities">
-          <li><span aria-hidden="true"></span>Email threat scoring</li>
-          <li><span aria-hidden="true"></span>SPF, DKIM &amp; DMARC evidence</li>
-          <li><span aria-hidden="true"></span>IP &amp; geolocation context</li>
-          <li><span aria-hidden="true"></span>Forensic evidence graph</li>
-        </ul>
 
-        <dl class="core-coverage" aria-label="Investigation coverage">
-          <div><dt>Content</dt><dd>AI + rules</dd></div>
-          <div><dt>Authentication</dt><dd>SPF / DKIM / DMARC</dd></div>
-          <div><dt>Network</dt><dd>IP + GeoIP</dd></div>
-          <div><dt>Output</dt><dd>Evidence report</dd></div>
-        </dl>
-
-        <div class="core-actions">
-          <a class="btn btn-primary" href="phishing.html">Launch email investigation <span aria-hidden="true">&rarr;</span></a>
-          <a class="btn btn-secondary" href="gateway-powershell.html#phishing">Run with PowerShell</a>
+        <div class="core-side">
+          <p class="core-side-title">Investigation coverage</p>
+          <dl class="core-coverage" aria-label="Investigation coverage">
+            <div><dt>Content</dt><dd>AI + rules</dd></div>
+            <div><dt>Authentication</dt><dd>SPF / DKIM / DMARC</dd></div>
+            <div><dt>Network</dt><dd>IP + GeoIP</dd></div>
+            <div><dt>Output</dt><dd>Evidence report</dd></div>
+          </dl>
+          <div class="core-actions">
+            <a class="btn btn-primary" href="phishing.html">Launch email investigation <span aria-hidden="true">&rarr;</span></a>
+            <a class="btn btn-secondary" href="gateway-powershell.html#phishing">Run with PowerShell</a>
+          </div>
+          <p class="core-disclaimer">AI-assisted results support human review and are not proof of safety.</p>
         </div>
-        <p class="core-disclaimer">AI-assisted results support human review and are not proof of safety.</p>
       </section>
 
       <section class="additional-modules" aria-labelledby="additional-modules-title">
