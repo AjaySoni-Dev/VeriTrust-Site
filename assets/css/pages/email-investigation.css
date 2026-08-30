@@ -350,6 +350,23 @@
   text-align: right;
 }
 
+.email-coverage-link {
+  color: var(--accent);
+  text-decoration: underline;
+  text-decoration-color: color-mix(in srgb, var(--accent) 45%, transparent);
+  text-underline-offset: 3px;
+}
+
+.email-coverage-link:hover {
+  color: var(--text);
+}
+
+.email-coverage-link:focus-visible {
+  border-radius: 3px;
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+
 .email-boundary-note {
   margin-top: 10px;
   border-left: 2px solid var(--email-attention);

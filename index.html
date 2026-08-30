@@ -514,28 +514,6 @@
             text-align: center;
         }
 
-        .hero-problem-id {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.55rem;
-            margin: 0 0 1rem !important;
-            padding: 0.4rem 0.7rem;
-            border: 1px solid var(--accent-border);
-            border-radius: 999px;
-            background: var(--accent-soft);
-            color: var(--accent-main) !important;
-            font-family: var(--font-mono);
-            font-size: 0.72rem !important;
-            font-weight: 600;
-            line-height: 1.2 !important;
-            letter-spacing: 0.07em;
-            text-transform: uppercase;
-        }
-
-        .hero-problem-id span {
-            color: var(--text-tertiary);
-        }
-
         .hero-content h1 {
             margin-bottom: 1.25rem;
             font-size: clamp(1.85rem, 4.2vw, 3.1rem);
@@ -567,12 +545,12 @@
             white-space: nowrap;
         }
 
-        .hero-actions .btn-sih-core {
+        .hero-actions .btn-core {
             border-color: var(--accent-border);
             color: var(--accent-hover);
         }
 
-        .hero-actions .btn-sih-core:hover {
+        .hero-actions .btn-core:hover {
             border-color: var(--accent-main);
             background: var(--accent-soft);
         }
@@ -1126,7 +1104,7 @@
             }
 
             .hero-actions .btn:first-child {
-                grid-column: auto;
+                grid-column: 1 / -1;
             }
 
             .hero-actions .btn {
@@ -1511,12 +1489,12 @@
         <section class="hero">
             <div class="container hero-grid">
                 <div class="hero-content reveal">
-                    <p class="hero-problem-id">SIH26106 <span aria-hidden="true">/</span> AICTE</p>
                     <h1>AI-powered email threat detection, <span class="hero-accent">geolocation &amp; forensic intelligence.</span></h1>
                     <p>Investigate suspicious messages and raw email evidence with AI risk scoring, authentication analysis, infrastructure context, available geolocation signals, and analyst-ready forensic reporting.</p>
                     <div class="hero-actions">
-    <a href="gateway.html" class="btn btn-primary">Open Unified Gateway</a>
-    <a href="phishing.html" class="btn btn-secondary btn-sih-core">Launch Email Threat Intelligence</a>
+    <a href="phishing.html" class="btn btn-primary">Launch Email Threat Intelligence</a>
+    <a href="gateway.html" class="btn btn-secondary">Open Unified Gateway</a>
+    <a href="detection.html" class="btn btn-secondary btn-core">Browse All Modules</a>
 </div>
                 </div>
             </div>

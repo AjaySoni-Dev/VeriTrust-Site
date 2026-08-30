@@ -164,7 +164,9 @@
   function renderCoverage(items) {
     return `<div class="email-coverage-results" aria-label="Observed evidence coverage">${items.map(([name, status, detail]) => `
       <article class="email-coverage-item" data-coverage="${escapeHtml(status)}">
-        <span>${escapeHtml(name)}</span><strong>${escapeHtml(titleCase(status))}</strong><small>${escapeHtml(detail)}</small>
+        <span>${escapeHtml(name)}</span><strong>${escapeHtml(titleCase(status))}</strong><small>${name === 'Media authenticity'
+          ? '<a class="email-coverage-link" href="gateway.html">Open media analysis</a>'
+          : escapeHtml(detail)}</small>
       </article>`).join('')}</div>`;
   }
 

@@ -111,7 +111,7 @@ export default async function learningPreviewMiddleware(request) {
 
   if (moduleName) return;
 
-  // The learning experience is intentionally unavailable for the SIH build.
+  // The learning experience is intentionally unavailable in this deployment.
   // Keep the implementation isolated in the repository, but do not expose any
   // learning, assessment, administration, or credential UI route.
   if (!LEARNING_UI_ENABLED) {
