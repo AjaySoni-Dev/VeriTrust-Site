@@ -24,8 +24,8 @@ body.vt-detection-page .detection-hub {
   display: grid;
   grid-template-columns: minmax(0, 1.45fr) minmax(300px, 0.65fr);
   align-items: end;
-  gap: 32px;
-  padding: 0 0 15px;
+  gap: 36px;
+  padding: 0 0 18px;
   border: 0;
   border-bottom: 1px solid var(--border-subtle);
   border-radius: 0;
@@ -42,7 +42,7 @@ body.vt-detection-page .detection-intro h1 {
   margin: 0;
   color: var(--text-primary);
   font-size: clamp(1.85rem, 3vw, 2.65rem);
-  line-height: 1.04;
+  line-height: 1.08;
   letter-spacing: -0.04em;
   text-wrap: balance;
 }
@@ -60,9 +60,9 @@ body.vt-detection-page .detection-intro .lead {
   min-width: 0;
   min-height: 0;
   display: grid;
-  grid-template-rows: auto auto;
-  align-content: start;
-  gap: 14px;
+  grid-template-rows: minmax(0, 1.15fr) minmax(0, 0.85fr);
+  align-content: stretch;
+  gap: 16px;
   overflow: hidden;
 }
 
@@ -73,7 +73,7 @@ body.vt-detection-page .detection-intro .lead {
   grid-template-columns: minmax(0, 1.45fr) minmax(360px, 0.75fr);
   overflow: hidden;
   border: 1px solid var(--border-subtle);
-  border-radius: 4px;
+  border-radius: 10px;
   background: rgba(26, 26, 26, 0.86);
   box-shadow: none;
 }
@@ -92,10 +92,16 @@ body.vt-detection-page .detection-intro .lead {
 }
 
 .core-main {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
   padding: clamp(18px, 2.2vw, 26px);
 }
 
 .core-side {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
   padding: clamp(16px, 1.8vw, 22px);
   border-left: 1px solid var(--border-subtle);
   background: rgba(11, 15, 21, 0.58);
@@ -114,7 +120,7 @@ body.vt-detection-page .detection-intro .lead {
   flex: 0 0 auto;
   place-items: center;
   border: 1px solid var(--accent-border);
-  border-radius: 3px;
+  border-radius: 7px;
   background: var(--accent-soft);
   color: var(--accent-main);
 }
@@ -139,7 +145,7 @@ body.vt-detection-page .detection-intro .lead {
 .core-label span {
   padding: 2px 6px;
   border: 1px solid rgba(74, 222, 128, 0.32);
-  border-radius: 2px;
+  border-radius: 5px;
   background: rgba(74, 222, 128, 0.07);
   color: #86efac;
   font-family: var(--font-sans);
@@ -151,17 +157,17 @@ body.vt-detection-page .detection-intro .lead {
   margin: 0;
   color: var(--text-primary);
   font-size: clamp(1.3rem, 2vw, 1.75rem);
-  line-height: 1.08;
+  line-height: 1.14;
   letter-spacing: -0.03em;
   text-wrap: balance;
 }
 
 .core-summary {
   max-width: 760px;
-  margin: 15px 0 0;
+  margin: 17px 0 0;
   color: var(--text-secondary);
   font-size: clamp(0.78rem, 1vw, 0.9rem);
-  line-height: 1.55;
+  line-height: 1.62;
 }
 
 .core-summary code {
@@ -171,9 +177,9 @@ body.vt-detection-page .detection-intro .lead {
 .core-capabilities {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 9px 18px;
-  margin: 16px 0 0;
-  padding: 14px 0 0;
+  gap: 11px 20px;
+  margin: 18px 0 0;
+  padding: 16px 0 0;
   border-top: 1px solid var(--border-subtle);
   list-style: none;
 }
@@ -185,7 +191,7 @@ body.vt-detection-page .detection-intro .lead {
   gap: 8px;
   color: var(--text-primary);
   font-size: clamp(0.72rem, 0.9vw, 0.82rem);
-  line-height: 1.35;
+  line-height: 1.45;
 }
 
 .core-capabilities li > span {
@@ -210,6 +216,8 @@ body.vt-detection-page .detection-intro .lead {
   margin: 0;
   border-top: 1px solid var(--border-subtle);
   border-left: 1px solid var(--border-subtle);
+  border-radius: 7px;
+  overflow: hidden;
 }
 
 .core-coverage div {
@@ -251,7 +259,7 @@ body.vt-detection-page .detection-intro .lead {
 body.vt-detection-page .core-actions .btn {
   min-height: 42px;
   padding-inline: 12px;
-  border-radius: 2px !important;
+  border-radius: 6px !important;
   font-size: 0.72rem;
   white-space: nowrap;
 }
@@ -266,9 +274,9 @@ body.vt-detection-page .core-actions .btn {
 .additional-modules {
   min-width: 0;
   display: grid;
-  grid-template-rows: auto auto;
-  gap: 10px;
-  padding: 13px 0 0;
+  grid-template-rows: auto minmax(0, 1fr);
+  gap: 13px;
+  padding: 16px 0 0;
   border: 0;
   border-top: 1px solid var(--border-subtle);
   border-radius: 0;
@@ -291,7 +299,7 @@ body.vt-detection-page .core-actions .btn {
   margin: 0;
   color: var(--text-primary);
   font-size: clamp(1.05rem, 1.5vw, 1.3rem);
-  line-height: 1.1;
+  line-height: 1.2;
 }
 
 .section-heading-row > p {
@@ -305,6 +313,7 @@ body.vt-detection-page .core-actions .btn {
 
 body.vt-detection-page .additional-modules .choice-grid {
   min-width: 0;
+  min-height: 0;
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 10px;
@@ -314,13 +323,14 @@ body.vt-detection-page .additional-modules .choice-grid {
 body.vt-detection-page .additional-modules .choice-card {
   min-width: 0;
   min-height: 116px;
+  height: 100%;
   display: grid;
   grid-template-columns: auto minmax(0, 1fr) auto;
   align-items: center;
   gap: 12px;
-  padding: 15px;
+  padding: clamp(16px, 1.5vw, 20px);
   border: 1px solid var(--border-subtle) !important;
-  border-radius: 3px !important;
+  border-radius: 9px !important;
   background: rgba(26, 26, 26, 0.72) !important;
   box-shadow: none !important;
   animation: none;
@@ -338,7 +348,7 @@ body.vt-detection-page .choice-card .module-icon {
   display: inline-grid;
   place-items: center;
   border: 1px solid var(--accent-border) !important;
-  border-radius: 2px !important;
+  border-radius: 7px !important;
   background: var(--accent-soft) !important;
   color: var(--accent-main) !important;
 }
@@ -356,14 +366,14 @@ body.vt-detection-page .choice-card h3 {
   margin: 0;
   color: var(--text-primary);
   font-size: clamp(0.8rem, 0.95vw, 0.9rem);
-  line-height: 1.25;
+  line-height: 1.35;
 }
 
 body.vt-detection-page .choice-card p {
   margin: 5px 0 0;
   color: var(--text-secondary);
   font-size: clamp(0.65rem, 0.75vw, 0.72rem);
-  line-height: 1.35;
+  line-height: 1.5;
 }
 
 body.vt-detection-page .choice-action {
@@ -371,7 +381,7 @@ body.vt-detection-page .choice-action {
   min-height: 36px;
   margin: 0;
   padding: 0 9px;
-  border-radius: 2px !important;
+  border-radius: 6px !important;
 }
 
 body.vt-detection-page :where(.core-actions .btn, .choice-card):focus-visible {
@@ -424,6 +434,8 @@ body.vt-detection-page :where(.core-actions .btn, .choice-card):focus-visible {
   }
 
   .detection-workspace {
+    grid-template-rows: auto auto;
+    align-content: start;
     gap: 8px;
     overflow: visible;
   }
@@ -435,6 +447,7 @@ body.vt-detection-page :where(.core-actions .btn, .choice-card):focus-visible {
 
   .core-main,
   .core-side {
+    display: block;
     padding: 10px;
   }
 
@@ -513,6 +526,7 @@ body.vt-detection-page :where(.core-actions .btn, .choice-card):focus-visible {
 
   .additional-modules {
     min-height: max-content;
+    grid-template-rows: auto auto;
     gap: 7px;
     padding-top: 8px;
   }
@@ -534,6 +548,7 @@ body.vt-detection-page :where(.core-actions .btn, .choice-card):focus-visible {
 
   body.vt-detection-page .additional-modules .choice-card {
     min-height: 126px;
+    height: auto;
     grid-template-columns: minmax(0, 1fr);
     grid-template-rows: auto minmax(0, 1fr) auto;
     align-items: start;
