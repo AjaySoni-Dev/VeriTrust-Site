@@ -184,7 +184,7 @@ const VeriTrustSiteChrome = (() => {
     auth: 'Account access',
     detection: 'Detection',
     deepfake: 'Image review',
-    phishing: 'Message review',
+    phishing: 'Email threat intelligence',
     'link-check': 'Link intelligence',
     gateway: 'Unified gateway',
     cli: 'Command console',
@@ -234,7 +234,6 @@ const VeriTrustSiteChrome = (() => {
           <a href="/">Home</a>
           <a href="/detection">Detection</a>
           <a href="/gateway">Gateway</a>
-          <a href="/learn">Learn</a>
           <a href="/developers">Developers</a>
           <a href="/docs">Docs</a>
         </nav>
@@ -278,9 +277,8 @@ const VeriTrustSiteChrome = (() => {
           <p>AI-assisted image, message, URL, and gateway review for cautious security triage.</p>
         </section>
         <nav class="vt-site-footer-groups" aria-label="Footer navigation">
-          <section><h2>Review</h2><a href="/detection">Detection modules</a><a href="/deepfake">Image review</a><a href="/phishing">Message review</a><a href="/link-check">Link intelligence</a><a href="/gateway">Unified gateway</a></section>
+          <section><h2>Review</h2><a href="/detection">Detection modules</a><a href="/phishing">Email threat intelligence</a><a href="/gateway">Unified gateway</a><a href="/link-check">Link intelligence</a><a href="/deepfake">Image review</a></section>
           <section><h2>Workspace</h2><a href="/dashboard">Overview</a><a href="/cases">Case workspace</a><a href="/api-access">API access</a><a href="/billing">Billing</a><a href="/account">Account</a></section>
-          <section><h2>Learning</h2><a href="/learn">Catalog</a><a href="/learn/my-learning">My learning</a><a href="/certificates">Certificates</a><a href="/learning-admin">Administration</a></section>
           <section><h2>Resources</h2><a href="/docs">Documentation</a><a href="/developers">Developer API</a><a href="/cli">Web CLI</a><a href="/gateway-powershell">PowerShell guide</a><a href="/model-performance">Model performance</a></section>
           <section><h2>Trust</h2><a href="/security">Security</a><a href="/privacy">Privacy</a><a href="/terms">Terms</a><a href="/disclaimer">Disclaimer</a></section>
         </nav>
@@ -373,7 +371,6 @@ document.addEventListener('DOMContentLoaded', async () => {
       ['/', 'Home', 'index'],
       ['/detection', 'Detection', 'detection'],
       ['/gateway', 'Gateway', 'gateway'],
-      ['/learn', 'Learn', 'learning'],
       ['/developers', 'Developers', 'developers'],
       ['/docs', 'Docs', 'docs']
     ];

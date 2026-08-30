@@ -2,6 +2,7 @@ import moduleConfig from './config/modules.json';
 
 const COOKIE_NAME = 'veritrust_learning_access';
 const MAX_AGE_SECONDS = 8 * 60 * 60;
+const LEARNING_UI_ENABLED = false;
 
 const MODULES = moduleConfig;
 
@@ -17,10 +18,19 @@ export const config = {
   matcher: [
     '/learn/:path*',
     '/learning',
+    '/learning.html',
     '/course',
+    '/course.html',
     '/lesson',
+    '/lesson.html',
     '/assessment',
+    '/assessment.html',
     '/learning-admin',
+    '/learning-admin.html',
+    '/learning-access',
+    '/learning-access.html',
+    '/certificate',
+    '/certificate.html',
     '/certificates',
     '/deepfake',
     '/deepfake.html',
@@ -100,6 +110,20 @@ export default async function learningPreviewMiddleware(request) {
   }
 
   if (moduleName) return;
+
+  // The learning experience is intentionally unavailable for the SIH build.
+  // Keep the implementation isolated in the repository, but do not expose any
+  // learning, assessment, administration, or credential UI route.
+  if (!LEARNING_UI_ENABLED) {
+    return new Response('Not Found', {
+      status: 404,
+      headers: {
+        'Cache-Control': 'no-store',
+        'Content-Type': 'text/plain; charset=utf-8',
+        'X-Robots-Tag': 'noindex, nofollow, nosnippet',
+      },
+    });
+  }
 
   const secret = String(process.env.VERITRUST_LEARNING_ACCESS_KEY || '');
   const unlocked = secret.length >= 32

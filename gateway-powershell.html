@@ -161,9 +161,9 @@ Write-Host "Authenticated with VeriTrust." -ForegroundColor Green</code></pre>
         <section id="phishing" class="ps-guide-section">
           <div class="ps-section-heading">
             <span class="ps-step-number">03</span>
-            <div><p class="eyebrow">Focused detection</p><h2>Phishing message only</h2></div>
+            <div><p class="eyebrow">Core email workflow</p><h2>Email threat intelligence</h2></div>
           </div>
-          <p class="ps-lead">Use this when you want the gateway to assess email, SMS, or chat text. URLs found inside the message are extracted and assessed automatically.</p>
+          <p class="ps-lead">Use this PowerShell flow to assess suspicious email, SMS, or chat text. URLs found inside the message are extracted and assessed automatically, and the resulting report preserves the evidence used for the decision.</p>
           <div class="ps-code-card">
             <div class="ps-code-head"><div><span>PowerShell</span><strong>Submit, wait, and show phishing result</strong></div><button type="button" data-copy-code>Copy block</button></div>
             <pre><code>$PhishingText = @"

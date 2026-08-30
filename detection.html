@@ -10,18 +10,18 @@
   <link rel="icon" href="/favicon-96.png" type="image/png" sizes="96x96">
   <link rel="icon" href="/favicon-192.png" type="image/png" sizes="192x192">
   <link rel="apple-touch-icon" href="/apple-touch-icon.png" sizes="180x180">
-  <title>Detection Modules | VeriTrust</title>
-  <meta name="description" content="Choose the implemented VeriTrust image, phishing-message, link-intelligence, or unified-gateway review workflow.">
+  <title>AI Email Threat &amp; Forensic Intelligence | VeriTrust</title>
+  <meta name="description" content="Launch VeriTrust AI-powered email threat detection, geolocation, and forensic intelligence, with gateway, link, and deepfake review modules.">
   <link rel="canonical" href="https://www.veritrustlab.in/detection">
   <meta name="robots" content="index, follow, max-image-preview:large">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="VeriTrust">
-  <meta property="og:title" content="Detection Modules | VeriTrust">
-  <meta property="og:description" content="Choose the implemented VeriTrust image, phishing-message, link-intelligence, or unified-gateway review workflow.">
+  <meta property="og:title" content="AI Email Threat &amp; Forensic Intelligence | VeriTrust">
+  <meta property="og:description" content="Launch VeriTrust AI-powered email threat detection, geolocation, and forensic intelligence, with additional security review modules.">
   <meta property="og:url" content="https://www.veritrustlab.in/detection">
   <meta name="twitter:card" content="summary">
-  <meta name="twitter:title" content="Detection Modules | VeriTrust">
-  <meta name="twitter:description" content="Choose the implemented VeriTrust image, phishing-message, link-intelligence, or unified-gateway review workflow.">
+  <meta name="twitter:title" content="AI Email Threat &amp; Forensic Intelligence | VeriTrust">
+  <meta name="twitter:description" content="Launch VeriTrust AI-powered email threat detection, geolocation, and forensic intelligence.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@500;600&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -32,6 +32,7 @@
   <script src="/assets/js/core/reporting.js" defer></script>
   <script src="/assets/js/core/site.js" defer></script>
   <link rel="stylesheet" href="/assets/css/base/glass-system.css">
+  <link rel="stylesheet" href="/assets/css/pages/detection-hub.css?v=20260830-sih">
 </head>
 <body class="vt-graphite-theme vt-detection-page">
     <header class="tool-header-shell vt-page-header">
@@ -62,49 +63,80 @@
     </div>
   </header>
 
-  <main class="tool-hub">
-    <p class="eyebrow">Choose a check</p>
-    <h1>Choose a review type.</h1>
-    <p class="lead">Each check returns an AI-assisted risk signal for triage, not proof of authenticity or safety.</p>
+  <main class="tool-hub detection-hub">
+    <header class="detection-intro">
+      <p class="eyebrow">SIH26106 <span aria-hidden="true">/</span> AICTE</p>
+      <h1>AI-powered email threat detection, geolocation, and forensic intelligence.</h1>
+      <p class="lead">Start with the hackathon core workflow, then use the supporting modules when an investigation needs wider evidence coverage.</p>
+    </header>
 
-    <section class="choice-grid" aria-label="Detection modules">
-      <a class="choice-card" href="gateway.html" data-module="gateway">
-        <span class="module-icon">G</span>
-        <span><h2>Unified Security Gateway</h2><p>Combine message, URL, and media checks into one decision.</p></span>
-        <span class="choice-footer"><span>Multimodal gateway</span><span class="choice-action">Open</span></span>
-      </a>
-      <a class="choice-card" href="deepfake.html" data-module="deepfake">
-        <span class="module-icon">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="10" r="2"/><path d="M21 16l-5-5L5 20"/></svg>
-        </span>
-        <span>
-          <h2>Image Deepfake Review</h2>
-          <p>Review real-versus-synthetic model scores for a supported image.</p>
-        </span>
-        <span class="choice-footer"><span>Image check</span><span class="choice-action">Open</span></span>
-      </a>
+    <section class="core-module" aria-labelledby="core-module-title">
+      <div class="core-module-copy">
+        <div class="core-module-heading">
+          <span class="core-module-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3.5 6.5h17v11h-17z"/><path d="m4 7 8 6 8-6"/><path d="M17.5 3.5 20 6l-2.5 2.5"/></svg>
+          </span>
+          <div>
+            <p class="core-label">Core SIH module <span>Ready for judging</span></p>
+            <h2 id="core-module-title">AI Email Threat &amp; Forensic Intelligence</h2>
+          </div>
+        </div>
+        <p class="core-summary">Investigate visible message content or upload raw <code>.eml</code> evidence. VeriTrust correlates model risk, deterministic indicators, authentication results, sender identities, URLs, infrastructure, and available geolocation evidence in one analyst-ready report.</p>
+        <ul class="core-capabilities" aria-label="Core capabilities">
+          <li><span aria-hidden="true"></span>Email threat scoring</li>
+          <li><span aria-hidden="true"></span>SPF, DKIM &amp; DMARC evidence</li>
+          <li><span aria-hidden="true"></span>IP &amp; geolocation context</li>
+          <li><span aria-hidden="true"></span>Forensic evidence graph</li>
+        </ul>
+        <div class="core-actions">
+          <a class="btn btn-primary" href="phishing.html">Launch email investigation <span aria-hidden="true">&rarr;</span></a>
+          <a class="btn btn-secondary" href="gateway-powershell.html#phishing">Run with PowerShell</a>
+        </div>
+      </div>
+      <aside class="core-module-preview" aria-label="Investigation coverage preview">
+        <div class="preview-status"><span aria-hidden="true"></span>Investigation pipeline online</div>
+        <dl>
+          <div><dt>Content intelligence</dt><dd>AI + rules</dd></div>
+          <div><dt>Email authentication</dt><dd>SPF / DKIM / DMARC</dd></div>
+          <div><dt>Network evidence</dt><dd>IP + GeoIP</dd></div>
+          <div><dt>Forensic output</dt><dd>Evidence report</dd></div>
+        </dl>
+        <p>Results communicate evidence gaps and support human review; they are not proof of safety.</p>
+      </aside>
+    </section>
 
-      <a class="choice-card" href="phishing.html" data-module="phishing">
-        <span class="module-icon">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M9.5 12.5l1.8 1.8 3.7-4.1"/></svg>
-        </span>
-        <span>
-          <h2>Phishing Message Review</h2>
-          <p>Score suspicious messages with model and rule-based signals.</p>
-        </span>
-        <span class="choice-footer"><span>Message check</span><span class="choice-action">Open</span></span>
-      </a>
+    <section class="additional-modules" aria-labelledby="additional-modules-title">
+      <div class="section-heading-row">
+        <div>
+          <p class="eyebrow">Supporting capabilities</p>
+          <h2 id="additional-modules-title">Additional modules</h2>
+        </div>
+        <p>Expand an investigation across multimodal, URL, and image evidence.</p>
+      </div>
 
-      <a class="choice-card" href="link-check.html" data-module="link">
-        <span class="module-icon">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 0 0 7.1 0l2-2a5 5 0 0 0-7.1-7.1l-1.1 1.1"/><path d="M14 11a5 5 0 0 0-7.1 0l-2 2a5 5 0 0 0 7.1 7.1l1.1-1.1"/></svg>
-        </span>
-        <span>
-          <h2>Link Intelligence</h2>
-          <p>Review a URL and optional context without opening the destination.</p>
-        </span>
-        <span class="choice-footer"><span>URL check</span><span class="choice-action">Open</span></span>
-      </a>
+      <div class="choice-grid" aria-label="Additional detection modules">
+        <a class="choice-card" href="gateway.html" data-module="gateway">
+          <span class="module-icon">G</span>
+          <span><h3>Unified Security Gateway</h3><p>Combine message, URL, and media checks into one policy decision.</p></span>
+          <span class="choice-footer"><span>Multimodal gateway</span><span class="choice-action">Open</span></span>
+        </a>
+
+        <a class="choice-card" href="link-check.html" data-module="link">
+          <span class="module-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 0 0 7.1 0l2-2a5 5 0 0 0-7.1-7.1l-1.1 1.1"/><path d="M14 11a5 5 0 0 0-7.1 0l-2 2a5 5 0 0 0 7.1 7.1l1.1-1.1"/></svg>
+          </span>
+          <span><h3>Link Intelligence</h3><p>Review a URL and optional context without opening its destination.</p></span>
+          <span class="choice-footer"><span>URL check</span><span class="choice-action">Open</span></span>
+        </a>
+
+        <a class="choice-card" href="deepfake.html" data-module="deepfake">
+          <span class="module-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="10" r="2"/><path d="M21 16l-5-5L5 20"/></svg>
+          </span>
+          <span><h3>Image Deepfake Review</h3><p>Review real-versus-synthetic model scores for a supported image.</p></span>
+          <span class="choice-footer"><span>Image check</span><span class="choice-action">Open</span></span>
+        </a>
+      </div>
     </section>
   </main>
   <footer class="legal-footer">

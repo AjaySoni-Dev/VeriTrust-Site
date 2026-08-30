@@ -572,6 +572,7 @@
     </style>
     <link rel="stylesheet" href="/assets/css/base/graphite-orange-theme.css">
   <link rel="stylesheet" href="/assets/css/base/glass-system.css">
+  <link rel="stylesheet" href="/assets/css/pages/auth-demo.css?v=20260830-sih">
 </head>
 <body class="vt-graphite-theme vt-auth-page">
     <a href="index.html" class="auth-back-button" aria-label="Back to home" title="Back to home">
@@ -589,13 +590,29 @@
                     <div class="auth-header">
                         <!-- <img src="/assets/images/brand.png" alt="VeriTrust" class="brand-text-img"> -->
                         <h1>Secure account access</h1>
-                        <p>AI-assisted image, message, and link review</p>
+                        <p>AI-powered email threat &amp; forensic intelligence</p>
                     </div>
 
                     <div class="auth-tabs">
-                        <button class="tab-btn active" data-target="login-form">Log in</button>
-                        <button class="tab-btn" data-target="signup-form">Create account</button>
+                        <button class="tab-btn active" type="button" data-target="login-form">Log in</button>
+                        <button class="tab-btn" type="button" data-target="signup-form">Create account</button>
                     </div>
+
+                    <section class="demo-access" aria-labelledby="demoAccessTitle">
+                        <div class="demo-access-heading">
+                            <div>
+                                <p class="demo-kicker">Hackathon judge access</p>
+                                <h2 id="demoAccessTitle">Use the prepared demo account</h2>
+                            </div>
+                            <span class="demo-ready"><span aria-hidden="true"></span>Ready</span>
+                        </div>
+                        <dl class="demo-credentials" aria-label="Demo credentials">
+                            <div><dt>Email</dt><dd><code>example@gmail.com</code></dd></div>
+                            <div><dt>Password</dt><dd><code>example@gmail.com</code></dd></div>
+                        </dl>
+                        <button id="demo-login-button" class="btn demo-login-button" type="button">Autofill &amp; sign in</button>
+                        <p>The button fills both fields and signs in automatically. Use this account only for the SIH demonstration.</p>
+                    </section>
 
                     <div class="auth-forms-wrapper">
                         

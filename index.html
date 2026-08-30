@@ -514,6 +514,28 @@
             text-align: center;
         }
 
+        .hero-problem-id {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.55rem;
+            margin: 0 0 1rem !important;
+            padding: 0.4rem 0.7rem;
+            border: 1px solid var(--accent-border);
+            border-radius: 999px;
+            background: var(--accent-soft);
+            color: var(--accent-main) !important;
+            font-family: var(--font-mono);
+            font-size: 0.72rem !important;
+            font-weight: 600;
+            line-height: 1.2 !important;
+            letter-spacing: 0.07em;
+            text-transform: uppercase;
+        }
+
+        .hero-problem-id span {
+            color: var(--text-tertiary);
+        }
+
         .hero-content h1 {
             margin-bottom: 1.25rem;
             font-size: clamp(1.85rem, 4.2vw, 3.1rem);
@@ -527,7 +549,7 @@
         .hero-content p {
             font-size: 1rem;
             margin: 0 auto 2.25rem;
-            max-width: 460px;
+            max-width: 610px;
             line-height: 1.62;
         }
 
@@ -543,6 +565,16 @@
             padding-inline: 1rem;
             font-size: 0.86rem;
             white-space: nowrap;
+        }
+
+        .hero-actions .btn-sih-core {
+            border-color: var(--accent-border);
+            color: var(--accent-hover);
+        }
+
+        .hero-actions .btn-sih-core:hover {
+            border-color: var(--accent-main);
+            background: var(--accent-soft);
         }
 
         /* Hero Illustration - Console Style */
@@ -1094,7 +1126,7 @@
             }
 
             .hero-actions .btn:first-child {
-                grid-column: 1 / -1;
+                grid-column: auto;
             }
 
             .hero-actions .btn {
@@ -1174,12 +1206,12 @@
             }
 
             .hero-actions {
-                grid-template-columns: repeat(2, minmax(0, 1fr));
+                grid-template-columns: minmax(0, 1fr);
                 gap: 0.4rem;
             }
 
             .hero-actions .btn:first-child {
-                grid-column: 1 / -1;
+                grid-column: auto;
             }
 
             .hero-actions .btn {
@@ -1479,12 +1511,12 @@
         <section class="hero">
             <div class="container hero-grid">
                 <div class="hero-content reveal">
-                    <h1>AI-assisted review for <span class="hero-accent">suspicious digital content.</span></h1>
-                    <p>Review face images, messages, emails, and URLs with model scores, rule-based indicators, and clear limitations. Sign in to run checks and save web scan results.</p>
+                    <p class="hero-problem-id">SIH26106 <span aria-hidden="true">/</span> AICTE</p>
+                    <h1>AI-powered email threat detection, <span class="hero-accent">geolocation &amp; forensic intelligence.</span></h1>
+                    <p>Investigate suspicious messages and raw email evidence with AI risk scoring, authentication analysis, infrastructure context, available geolocation signals, and analyst-ready forensic reporting.</p>
                     <div class="hero-actions">
     <a href="gateway.html" class="btn btn-primary">Open Unified Gateway</a>
-    <a href="/learn" class="btn btn-secondary">Explore Learning</a>
-    <a href="dashboard.html" class="btn btn-secondary">Open Dashboard</a>
+    <a href="phishing.html" class="btn btn-secondary btn-sih-core">Launch Email Threat Intelligence</a>
 </div>
                 </div>
             </div>
@@ -1538,12 +1570,12 @@
                         <div class="solution-icon">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><path d="M22 6l-10 7L2 6"/></svg>
                         </div>
-                        <h3>Message Review</h3>
-                        <p>Review suspicious email, SMS, URL, or message text using a selected phishing model plus deterministic message indicators.</p>
+                        <h3>Email Threat Intelligence</h3>
+                        <p>Investigate suspicious message text or raw email evidence with AI scoring, authentication, identity, URL, infrastructure, and available geolocation signals.</p>
                         <ul class="solution-list">
-                            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg> Phishing and legitimate score review</li>
-                            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg> URL, credential, urgency, and payment signals</li>
-                            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg> Extracted URLs, domains, emails, and phones</li>
+                            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg> AI and deterministic threat scoring</li>
+                            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg> SPF, DKIM, DMARC, identity, and routing evidence</li>
+                            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg> URL, infrastructure, and available GeoIP context</li>
                         </ul>
                     </div>
 

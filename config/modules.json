@@ -1,6 +1,6 @@
 {
   "phishing": true,
-  "deepfake": false,
+  "deepfake": true,
   "link": true,
   "gateway": true
 }

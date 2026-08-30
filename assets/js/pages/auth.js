@@ -2,8 +2,13 @@ document.addEventListener('DOMContentLoaded', async () => {
   const tabBtns = document.querySelectorAll('.tab-btn');
   const forms = document.querySelectorAll('.auth-form');
   const message = document.getElementById('authMessage');
+  const demoLoginButton = document.getElementById('demo-login-button');
   const params = new URLSearchParams(window.location.search);
   const redirectTarget = window.VeriTrustAuthFlow?.safeRedirect(params.get('redirect')) || 'dashboard.html';
+  const demoCredentials = Object.freeze({
+    email: 'example@gmail.com',
+    password: 'example@gmail.com',
+  });
 
   const showMessage = (text, tone = 'info') => {
     if (!message) return;
@@ -18,6 +23,16 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (!button.dataset.defaultLabel) button.dataset.defaultLabel = button.textContent;
     button.disabled = submitting;
     button.textContent = submitting ? 'Please wait...' : button.dataset.defaultLabel;
+    if (form.dataset.authMode === 'login' && demoLoginButton) {
+      if (!demoLoginButton.dataset.defaultLabel) demoLoginButton.dataset.defaultLabel = demoLoginButton.textContent;
+      demoLoginButton.disabled = submitting;
+      demoLoginButton.textContent = submitting ? 'Signing in...' : demoLoginButton.dataset.defaultLabel;
+    }
+  };
+
+  const activateForm = (targetId) => {
+    tabBtns.forEach((item) => item.classList.toggle('active', item.getAttribute('data-target') === targetId));
+    forms.forEach((form) => form.classList.toggle('active', form.id === targetId));
   };
 
   const authConfigured = Boolean(window.VeriTrustSupabase?.isConfigured());
@@ -44,24 +59,35 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   tabBtns.forEach((btn) => {
     btn.addEventListener('click', () => {
-      tabBtns.forEach((item) => item.classList.remove('active'));
-      forms.forEach((form) => form.classList.remove('active'));
-      btn.classList.add('active');
-
       const targetId = btn.getAttribute('data-target');
-      const targetForm = document.getElementById(targetId);
-      if (targetForm) targetForm.classList.add('active');
+      activateForm(targetId);
       if (message) message.classList.remove('active');
     });
   });
 
   if (!authConfigured) {
+    if (demoLoginButton) demoLoginButton.disabled = true;
     forms.forEach((form) => {
       const submit = form.querySelector('button[type="submit"]');
       if (submit) submit.disabled = true;
     });
     return;
   }
+
+  demoLoginButton?.addEventListener('click', () => {
+    const loginForm = document.getElementById('login-form');
+    const emailInput = document.getElementById('login-email');
+    const passwordInput = document.getElementById('login-password');
+    if (!loginForm || !emailInput || !passwordInput) return;
+
+    activateForm('login-form');
+    emailInput.value = demoCredentials.email;
+    passwordInput.value = demoCredentials.password;
+    emailInput.dispatchEvent(new Event('input', { bubbles: true }));
+    passwordInput.dispatchEvent(new Event('input', { bubbles: true }));
+    showMessage('Demo credentials filled. Signing you in now...', 'info');
+    loginForm.requestSubmit();
+  });
 
   forms.forEach((form) => {
     form.addEventListener('submit', async (event) => {
@@ -74,7 +100,7 @@ document.addEventListener('DOMContentLoaded', async () => {
           const confirm = document.getElementById('recovery-confirm')?.value || '';
           if (password !== confirm) throw new Error('Passwords do not match.');
           await window.VeriTrustSupabase.updatePassword(password);
-          showMessage('Password updated. Opening your dashboard...', 'success');
+          showMessage('Password updated. Opening your requested VeriTrust page...', 'success');
           window.location.href = redirectTarget;
           return;
         }
@@ -94,7 +120,7 @@ document.addEventListener('DOMContentLoaded', async () => {
           });
 
           if (data?.authenticated) {
-            showMessage('Account created. Opening your dashboard...', 'success');
+            showMessage('Account created. Opening your requested VeriTrust page...', 'success');
             window.location.href = redirectTarget;
           } else {
             showMessage('Account created. Check your email to confirm your account, then sign in.', 'success');
@@ -106,7 +132,7 @@ document.addEventListener('DOMContentLoaded', async () => {
           email: document.getElementById('login-email')?.value.trim() || '',
           password: document.getElementById('login-password')?.value || '',
         });
-        showMessage('Signed in. Opening your dashboard...', 'success');
+        showMessage('Signed in. Opening your requested VeriTrust module...', 'success');
         window.location.href = redirectTarget;
       } catch (error) {
         showMessage(error.message || 'Authentication failed.', 'error');

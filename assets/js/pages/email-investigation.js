@@ -157,7 +157,7 @@
       ['Infrastructure', infrastructure.length ? 'observed' : capabilities.infrastructure_geo ? 'partial' : 'unavailable', infrastructure.length ? `${infrastructure.length} conservative hop(s)` : 'No eligible routing hop'],
       ['Attachments', attachments.length ? 'partial' : capabilities.attachments ? 'observed' : 'unavailable', attachments.length ? `${attachments.length} metadata-only artifact(s)` : capabilities.attachments ? 'No attachment observed' : 'Not available in this mode'],
       ['Content model', model?.status === 'completed' ? 'observed' : model?.status === 'failed' ? 'failed' : 'partial', model?.status === 'completed' ? 'Qualified registry version used' : 'No authoritative model result'],
-      ['Media authenticity', 'unavailable', 'Deepfake module disabled for email'],
+      ['Media authenticity', 'separate module', 'Available through the Unified Gateway'],
     ];
   }
 
