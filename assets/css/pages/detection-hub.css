@@ -21,13 +21,9 @@ body.vt-detection-page .detection-hub {
 
 .detection-intro {
   min-width: 0;
-  display: grid;
-  grid-template-columns: minmax(0, 1.45fr) minmax(300px, 0.65fr);
-  align-items: end;
-  gap: 36px;
-  padding: 0 0 18px;
+  display: block;
+  padding: 0 0 6px;
   border: 0;
-  border-bottom: 1px solid var(--border-subtle);
   border-radius: 0;
   background: transparent !important;
   box-shadow: none;
@@ -79,11 +75,7 @@ body.vt-detection-page .detection-intro .lead {
 }
 
 .core-module::before {
-  position: absolute;
-  inset: 0 auto 0 0;
-  width: 2px;
-  background: var(--accent-main);
-  content: "";
+  content: none;
 }
 
 .core-main,
@@ -276,9 +268,8 @@ body.vt-detection-page .core-actions .btn {
   display: grid;
   grid-template-rows: auto minmax(0, 1fr);
   gap: 13px;
-  padding: 16px 0 0;
+  padding: 0;
   border: 0;
-  border-top: 1px solid var(--border-subtle);
   border-radius: 0;
   background: transparent;
   box-shadow: none;
@@ -286,9 +277,8 @@ body.vt-detection-page .core-actions .btn {
 
 .section-heading-row {
   display: flex;
-  align-items: end;
-  justify-content: space-between;
-  gap: 18px;
+  align-items: center;
+  justify-content: flex-start;
 }
 
 .section-heading-row .eyebrow {
@@ -325,8 +315,9 @@ body.vt-detection-page .additional-modules .choice-card {
   min-height: 116px;
   height: 100%;
   display: grid;
-  grid-template-columns: auto minmax(0, 1fr) auto;
-  align-items: center;
+  grid-template-columns: auto minmax(0, 1fr);
+  grid-template-rows: auto minmax(12px, 1fr) auto;
+  align-items: start;
   gap: 12px;
   padding: clamp(16px, 1.5vw, 20px);
   border: 1px solid var(--border-subtle) !important;
@@ -377,8 +368,12 @@ body.vt-detection-page .choice-card p {
 }
 
 body.vt-detection-page .choice-action {
+  width: 100%;
   min-width: 52px;
-  min-height: 36px;
+  min-height: 42px;
+  grid-column: 1 / -1;
+  grid-row: 3;
+  align-self: end;
   margin: 0;
   padding: 0 9px;
   border-radius: 6px !important;
@@ -398,14 +393,6 @@ body.vt-detection-page :where(.core-actions .btn, .choice-card):focus-visible {
     grid-template-columns: minmax(0, 1.2fr) minmax(320px, 0.8fr);
   }
 
-  body.vt-detection-page .additional-modules .choice-card {
-    grid-template-columns: auto minmax(0, 1fr);
-  }
-
-  body.vt-detection-page .choice-action {
-    width: 100%;
-    grid-column: 1 / -1;
-  }
 }
 
 @media (max-width: 760px) {
@@ -419,7 +406,7 @@ body.vt-detection-page :where(.core-actions .btn, .choice-card):focus-visible {
 
   .detection-intro {
     display: block;
-    padding-bottom: 8px;
+    padding-bottom: 4px;
   }
 
   body.vt-detection-page .detection-intro h1 {
@@ -528,7 +515,7 @@ body.vt-detection-page :where(.core-actions .btn, .choice-card):focus-visible {
     min-height: max-content;
     grid-template-rows: auto auto;
     gap: 7px;
-    padding-top: 8px;
+    padding-top: 0;
   }
 
   .section-heading-row .eyebrow,
@@ -776,8 +763,8 @@ body.vt-detection-page :where(.core-actions .btn, .choice-card):focus-visible {
   }
 
   body.vt-detection-page .additional-modules .choice-grid {
-    grid-template-columns: minmax(0, 1fr);
-    grid-template-rows: repeat(3, minmax(0, 1fr));
+    grid-template-columns: minmax(0, 1fr) !important;
+    grid-template-rows: repeat(3, minmax(0, 1fr)) !important;
     gap: 3px;
   }
 
