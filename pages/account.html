@@ -1,0 +1,207 @@
+﻿<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Account Command Center â€” Z Sphere</title>
+    <meta name="color-scheme" content="light">
+    <meta name="theme-color" content="#ffffff">
+    <meta name="description" content="View your Z Sphere account overview, registered sessions, and announcements.">
+    <link rel="stylesheet" href="../css/base.css">
+    <link rel="stylesheet" href="../css/components.css">
+    <link rel="stylesheet" href="../css/account.css">
+    <link rel="stylesheet" href="../css/responsive.css">
+    <link rel="stylesheet" href="../css/polish.css">
+    <link rel="stylesheet" href="../css/cerebras-theme.css">
+</head>
+<body>
+
+    <a href="#main-content" class="skip-link">Skip to main content</a>
+
+            <!-- Header with Logo Image & Right-Aligned Menu Toggle -->
+    <header class="site-header">
+        <div class="container header-inner">
+            <!-- Brand Logo Image -->
+            <a href="../index2.html" class="brand" aria-label="Z Sphere Home">
+                <img src="../logo text.png" alt="Z Sphere" class="brand-logo" onerror="this.src='../logo.png'">
+            </a>
+
+            <!-- Desktop Navigation -->
+            <nav class="desktop-nav" aria-label="Main Navigation">
+                <a href="../index2.html" class="nav-link">Home</a>
+                <a href="sessions.html" class="nav-link">Sessions</a>
+                <a href="domains.html" class="nav-link">Learning Tracks</a>
+                <a href="announcements.html" class="nav-link">Announcements</a>
+                <a href="gallery.html" class="nav-link">Gallery</a>
+                <a href="team.html" class="nav-link">Team</a>
+                <a href="about.html" class="nav-link">About</a>
+            </nav>
+
+            <!-- Header Actions -->
+            <div class="header-actions">
+                <a href="sessions.html" class="btn btn-primary btn-sm">Explore Sessions</a>
+                <a href="login.html" class="btn btn-secondary btn-sm" id="header-auth-btn">Account</a>
+                <a href="admin.html" class="btn btn-navy btn-sm desktop-only-btn">Admin Panel</a>
+            </div>
+
+            <!-- Mobile Right Hamburger Toggle with Staggered 3 Bars -->
+            <button class="mobile-toggle" aria-label="Open navigation menu" aria-expanded="false" aria-controls="mobile-drawer-pane">
+                <span class="hamburger-bar"></span>
+                <span class="hamburger-bar"></span>
+                <span class="hamburger-bar"></span>
+            </button>
+        </div>
+    </header>
+
+    <!-- Mobile Drawer -->
+    <div class="mobile-drawer-backdrop"></div>
+    <div class="mobile-drawer" aria-label="Mobile Navigation">
+        <div class="drawer-header">
+            <a href="../index2.html" class="brand" aria-label="Z Sphere Home">
+                <img src="../logo text.png" alt="Z Sphere" class="brand-logo" onerror="this.src='../logo.png'">
+            </a>
+            <button class="drawer-close" aria-label="Close menu">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+            </button>
+        </div>
+        <nav class="drawer-nav">
+            <a href="../index2.html" class="drawer-nav-link">Home</a>
+            <a href="sessions.html" class="drawer-nav-link">Sessions</a>
+            <a href="domains.html" class="drawer-nav-link">Learning Tracks</a>
+            <a href="announcements.html" class="drawer-nav-link">Announcements</a>
+            <a href="gallery.html" class="drawer-nav-link">Gallery</a>
+            <a href="team.html" class="drawer-nav-link">Team</a>
+            <a href="about.html" class="drawer-nav-link">About</a>
+        </nav>
+        <div class="drawer-actions">
+            <a href="sessions.html" class="btn btn-primary btn-full">Explore Sessions</a>
+            <a href="login.html" class="btn btn-secondary btn-full">Account</a>
+            <a href="admin.html" class="btn btn-navy btn-full">Admin Panel</a>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="account-layout">
+            <!-- Account Sidebar -->
+            <aside class="account-sidebar">
+                <div class="account-user-info">
+                    <div class="account-user-avatar">SU</div>
+                    <div class="account-user-name">Student User</div>
+                    <div class="account-user-email">student@zsphere.edu</div>
+                </div>
+
+                <nav class="account-menu">
+                    <a href="account.html" class="account-menu-link active">
+                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+                        <span>Overview</span>
+                    </a>
+                    <a href="profile.html" class="account-menu-link">
+                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                        <span>My Profile</span>
+                    </a>
+                    <a href="my-sessions.html" class="account-menu-link">
+                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+                        <span>My Sessions</span>
+                    </a>
+                    <a href="announcements.html" class="account-menu-link">
+                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
+                        <span>Announcements</span>
+                    </a>
+                    <button type="button" data-zsphere-signout class="account-menu-link logout-menu-btn">
+                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
+                        <span>Sign Out</span>
+                    </button>
+                </nav>
+            </aside>
+
+            <!-- Account Main Content -->
+            <main id="main-content">
+                <div class="mb-4">
+                    <h1 class="page-title mb-2">Student Account Command Center</h1>
+                    <p class="body-text text-base">Welcome back! Manage your registered sessions and community updates.</p>
+                </div>
+
+                <!-- Profile Completeness Banner -->
+                <div class="profile-complete-banner" id="account-profile-banner">
+                    <span class="banner-icon" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5"><polyline points="20 6 9 17 4 12"></polyline></svg></span>
+                    <div>
+                        <strong>Profile Complete</strong>
+                        <div class="text-muted text-xs">Your academic profile is ready for workshop registration.</div>
+                    </div>
+                </div>
+
+                <!-- My Registered Workshops Section -->
+                <div class="card-bordered mb-4" id="account-registered-sessions-card">
+                    <div class="section-header-row mb-3 d-flex justify-between items-center flex-wrap gap-2">
+                        <div>
+                            <h2 class="card-title mb-0">My Registered Workshops</h2>
+                            <p class="text-muted text-xs mb-0">Active seat reservations and upcoming session passes.</p>
+                        </div>
+                        <a href="my-sessions.html" class="btn btn-ghost btn-sm">View All Sessions &rarr;</a>
+                    </div>
+                    <div id="account-overview-sessions-container">
+                        <p class="text-muted text-sm my-2">Loading your workshop reservations...</p>
+                    </div>
+                </div>
+
+                <!-- Recent Announcements Overview -->
+                <div class="card-bordered">
+                    <div class="section-header-row mb-3 d-flex justify-between items-center flex-wrap gap-2">
+                        <div>
+                            <h2 class="card-title mb-0">Community Notices</h2>
+                            <p class="text-muted text-xs mb-0">Latest club announcements and academic updates.</p>
+                        </div>
+                        <a href="announcements.html" class="btn btn-ghost btn-sm">View All Notices &rarr;</a>
+                    </div>
+
+                    <div id="account-overview-announcements-container" class="notices-list">
+                        <div class="notice-item">
+                            <strong class="notice-title">Prompt Engineering Workshop Resources Available</strong>
+                            <span class="text-muted text-xs">Aug 07, 2026</span>
+                        </div>
+                        <div class="notice-item no-border">
+                            <strong class="notice-title">Welcome to Z Sphere Fall 2026 Semester!</strong>
+                            <span class="text-muted text-xs">Aug 01, 2026</span>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="site-footer">
+        <div class="container">
+            <div class="footer-inner">
+                <a href="../index2.html" class="brand" aria-label="Z Sphere Home"><img src="../logo text.png" alt="Z Sphere" class="brand-logo" onerror="this.src='../logo.png'"></a>
+
+                <div class="footer-nav">
+                    <a href="../index2.html" class="footer-link">Home</a>
+                    <a href="sessions.html" class="footer-link">Sessions</a>
+                    <a href="domains.html" class="footer-link">Learning Tracks</a>
+                    <a href="announcements.html" class="footer-link">Announcements</a>
+                    <a href="gallery.html" class="footer-link">Gallery</a>
+                    <a href="team.html" class="footer-link">Team</a>
+                    <a href="about.html" class="footer-link">About</a>
+                </div>
+            </div>
+            <div class="footer-copy">
+                <span>Â© 2026 Z Sphere Technology & Learning Community. All rights reserved.</span>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="../js/config.js"></script>
+    <script src="../js/supabase-client.js"></script>
+    <script src="../js/app.js"></script>
+    <script src="../js/ui.js"></script>
+    <script src="../js/auth.js"></script>
+    <script src="../js/data-service.js"></script>
+    <script src="../js/navigation.js"></script>
+    <script src="../js/motion.js"></script>
+    <script src="../js/account.js"></script>
+</body>
+</html>
+

@@ -1,24 +1,16 @@
 User-agent: *
 Allow: /
+Allow: /index2.html
+Allow: /pages/sessions.html
+Allow: /pages/domains.html
+Allow: /pages/gallery.html
+Allow: /pages/gallery-album.html
+Allow: /pages/announcements.html
+Allow: /pages/team.html
+Allow: /pages/about.html
+Disallow: /pages/admin.html
+Disallow: /pages/admin-*
+Disallow: /pages/account.html
+Disallow: /pages/profile.html
 
-# Private workspace and machine endpoints
-Disallow: /api/
-Disallow: /auth
-Disallow: /dashboard
-Disallow: /cases
-Disallow: /case
-Disallow: /api-access
-Disallow: /billing
-Disallow: /account
-Disallow: /cli
-
-# Private learning preview and user-specific learning routes
-Disallow: /learning-access
-Disallow: /learning-admin
-Disallow: /learn/
-Disallow: /course
-Disallow: /lesson
-Disallow: /assessment
-Disallow: /certificates
-
-Sitemap: https://www.veritrustlab.in/sitemap.xml
+Sitemap: https://zsphere.edu/sitemap.xml

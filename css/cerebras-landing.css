@@ -1,0 +1,603 @@
+/* Cerebras Inference — Dedicated Stylesheet */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+
+:root {
+    --cerebras-bg-dark: #120602;
+    --cerebras-bg-mid: #2b0e04;
+    --cerebras-bg-warm: #4d1805;
+    --cerebras-bg-accent: #7a2807;
+    --cerebras-orange-primary: #eb4e27;
+    --cerebras-orange-hover: #d03d17;
+    --cerebras-orange-active: #b63412;
+    --cerebras-orange-glow: rgba(235, 78, 39, 0.25);
+    
+    --card-bg: #ffffff;
+    --card-text-main: #111827;
+    --card-text-muted: #6b7280;
+    --card-border: #e5e7eb;
+    --card-border-focus: #eb4e27;
+    
+    --font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+}
+
+*, *::before, *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+html, body {
+    height: 100%;
+    min-height: 100vh;
+    font-family: var(--font-family);
+    background-color: var(--cerebras-bg-dark);
+    color: #ffffff;
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+/* Page Layout Wrapper */
+.cerebras-viewport {
+    position: relative;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    background: 
+        radial-gradient(ellipse at 85% 30%, rgba(184, 60, 15, 0.45) 0%, rgba(92, 28, 6, 0.25) 40%, transparent 70%),
+        radial-gradient(circle at 15% 20%, rgba(120, 35, 8, 0.3) 0%, transparent 50%),
+        linear-gradient(135deg, #150602 0%, #290d04 28%, #471705 58%, #782607 88%, #b83d0f 100%);
+    overflow: hidden;
+    padding: 2.25rem 3.5rem 1.75rem 3.5rem;
+    z-index: 1;
+}
+
+/* Background Graphical Artwork Layer */
+.cerebras-bg-curves {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: -1;
+    overflow: hidden;
+}
+
+.cerebras-bg-svg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0.95;
+}
+
+/* Vignette & Ambient Glow */
+.cerebras-vignette {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: radial-gradient(circle at 50% 50%, transparent 60%, rgba(12, 3, 1, 0.5) 100%);
+    z-index: -1;
+}
+
+/* Header Area */
+.cerebras-header {
+    position: relative;
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+.cerebras-brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.75rem;
+    text-decoration: none;
+    color: #ffffff;
+    transition: opacity 0.2s ease;
+}
+
+.cerebras-brand:hover {
+    opacity: 0.92;
+}
+
+.cerebras-logo-icon {
+    width: 38px;
+    height: 38px;
+    flex-shrink: 0;
+}
+
+.cerebras-brand-text {
+    display: flex;
+    align-items: baseline;
+    font-size: 1.35rem;
+    letter-spacing: -0.02em;
+    font-weight: 700;
+    color: #ffffff;
+}
+
+.cerebras-brand-text .brand-suffix {
+    font-weight: 400;
+    margin-left: 4px;
+    color: rgba(255, 255, 255, 0.9);
+}
+
+/* Secondary Navigation in Header (Subtle & Clean) */
+.header-quick-links {
+    display: flex;
+    align-items: center;
+    gap: 1.25rem;
+}
+
+.nav-pill-link {
+    color: rgba(255, 255, 255, 0.75);
+    font-size: 0.875rem;
+    font-weight: 500;
+    text-decoration: none;
+    padding: 0.4rem 0.85rem;
+    border-radius: 9999px;
+    background: rgba(0, 0, 0, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    transition: all 0.2s ease;
+}
+
+.nav-pill-link:hover {
+    color: #ffffff;
+    background: rgba(255, 255, 255, 0.12);
+    border-color: rgba(255, 255, 255, 0.25);
+}
+
+/* Main Two-Column Stage */
+.cerebras-main {
+    position: relative;
+    z-index: 10;
+    width: 100%;
+    max-width: 1400px;
+    margin: auto auto;
+    display: grid;
+    grid-template-columns: 1.15fr 0.85fr;
+    align-items: center;
+    gap: 3.5rem;
+    padding: 2.5rem 0;
+}
+
+/* Left Hero Column */
+.cerebras-hero-col {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    gap: 2.5rem;
+}
+
+.hero-headline {
+    font-size: clamp(3.2rem, 6.2vw, 5.4rem);
+    font-weight: 800;
+    line-height: 1.04;
+    letter-spacing: -0.03em;
+    color: #ffffff;
+    text-shadow: 0 4px 24px rgba(0, 0, 0, 0.35);
+    margin: 0;
+}
+
+/* Wafer Engine Pill Badge */
+.wafer-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.75rem;
+    background: rgba(20, 8, 4, 0.55);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
+    border-radius: 9999px;
+    padding: 0.6rem 1.25rem 0.6rem 0.9rem;
+    color: #f1f5f9;
+    font-size: 0.9rem;
+    font-weight: 500;
+    letter-spacing: -0.01em;
+    transition: transform 0.2s ease, border-color 0.2s ease;
+}
+
+.wafer-badge:hover {
+    transform: translateY(-1px);
+    border-color: rgba(255, 255, 255, 0.22);
+}
+
+.wafer-icon-grid {
+    width: 22px;
+    height: 22px;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    grid-template-rows: repeat(4, 1fr);
+    gap: 2px;
+    padding: 2.5px;
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 3px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.wafer-dot {
+    background-color: #cbd5e1;
+    border-radius: 0.5px;
+}
+
+.wafer-text {
+    font-size: 0.88rem;
+    color: #f3f4f6;
+    letter-spacing: -0.01em;
+}
+
+/* Right Column: Sign Up / Log In Card */
+.cerebras-card-col {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    width: 100%;
+}
+
+.cerebras-card {
+    width: 100%;
+    max-width: 440px;
+    background-color: var(--card-bg);
+    color: var(--card-text-main);
+    /* Very less rounded corners as requested */
+    border-radius: 3px;
+    /* Low elevation as requested */
+    box-shadow: 0 4px 18px rgba(0, 0, 0, 0.14), 0 1px 3px rgba(0, 0, 0, 0.08);
+    padding: 2.5rem 2.25rem 2.25rem 2.25rem;
+    position: relative;
+    z-index: 20;
+    transition: box-shadow 0.2s ease;
+}
+
+.cerebras-card:focus-within {
+    box-shadow: 0 6px 24px rgba(0, 0, 0, 0.18), 0 2px 6px rgba(0, 0, 0, 0.08);
+}
+
+.card-title {
+    font-size: 1.35rem;
+    font-weight: 700;
+    color: #111827;
+    margin-bottom: 1.75rem;
+    letter-spacing: -0.02em;
+}
+
+/* Form Styles */
+.cerebras-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.form-label {
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: #374151;
+    display: block;
+}
+
+.email-input-wrapper {
+    position: relative;
+    width: 100%;
+}
+
+.email-input {
+    width: 100%;
+    min-height: 48px;
+    padding: 0.75rem 1rem;
+    font-size: 1rem;
+    font-family: inherit;
+    color: #111827;
+    background-color: #ffffff;
+    border: 1px solid #e5e7eb;
+    /* Minimal rounded corners */
+    border-radius: 2px;
+    outline: none;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.email-input::placeholder {
+    color: #9ca3af;
+}
+
+.email-input:hover {
+    border-color: #d1d5db;
+}
+
+.email-input:focus {
+    border-color: var(--cerebras-orange-primary);
+    box-shadow: 0 0 0 3px rgba(235, 78, 39, 0.15);
+}
+
+.email-input.has-error {
+    border-color: #ef4444;
+    box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.15);
+}
+
+.field-error-msg {
+    font-size: 0.8rem;
+    color: #dc2626;
+    margin-top: 0.25rem;
+    display: none;
+}
+
+.field-error-msg.active {
+    display: block;
+}
+
+/* Primary Submit Button */
+.btn-continue-email {
+    width: 100%;
+    min-height: 48px;
+    padding: 0.85rem 1.25rem;
+    background-color: var(--cerebras-orange-primary);
+    color: #ffffff;
+    font-family: inherit;
+    font-size: 0.85rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    border: none;
+    /* Minimal rounded corners */
+    border-radius: 2px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    transition: background-color 0.15s ease, transform 0.1s ease, box-shadow 0.15s ease;
+    box-shadow: 0 1px 3px rgba(235, 78, 39, 0.2);
+}
+
+.btn-continue-email:hover {
+    background-color: var(--cerebras-orange-hover);
+}
+
+.btn-continue-email:active {
+    background-color: var(--cerebras-orange-active);
+    transform: scale(0.99);
+}
+
+.btn-continue-email:focus-visible {
+    outline: 2px solid #111827;
+    outline-offset: 2px;
+}
+
+.btn-continue-email.is-loading {
+    pointer-events: none;
+    opacity: 0.85;
+}
+
+/* Divider */
+.card-divider {
+    display: flex;
+    align-items: center;
+    margin: 1.35rem 0;
+    color: #9ca3af;
+    font-size: 0.875rem;
+    font-weight: 400;
+}
+
+.card-divider::before,
+.card-divider::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background-color: #e5e7eb;
+}
+
+.card-divider span {
+    padding: 0 1rem;
+}
+
+/* Social Buttons */
+.social-buttons-stack {
+    display: flex;
+    flex-direction: column;
+    gap: 0.85rem;
+}
+
+.btn-social {
+    width: 100%;
+    min-height: 48px;
+    padding: 0.75rem 1.25rem;
+    background-color: #ffffff;
+    border: 1px solid #e5e7eb;
+    /* Minimal rounded corners */
+    border-radius: 2px;
+    color: #1f2937;
+    font-family: inherit;
+    font-size: 0.85rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    transition: background-color 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.btn-social:hover {
+    background-color: #f9fafb;
+    border-color: #d1d5db;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.btn-social:active {
+    background-color: #f3f4f6;
+}
+
+.btn-social:focus-visible {
+    outline: 2px solid #111827;
+    outline-offset: 2px;
+}
+
+.social-icon {
+    width: 18px;
+    height: 18px;
+    flex-shrink: 0;
+}
+
+/* Footer Section */
+.cerebras-footer {
+    position: relative;
+    z-index: 10;
+    width: 100%;
+    text-align: center;
+    padding: 1.5rem 1rem 0.5rem 1rem;
+}
+
+.footer-legal-text {
+    font-size: 0.8rem;
+    color: rgba(255, 255, 255, 0.75);
+    line-height: 1.5;
+    letter-spacing: -0.01em;
+}
+
+.footer-legal-text a {
+    color: rgba(255, 255, 255, 0.95);
+    text-decoration: none;
+    font-weight: 600;
+    transition: color 0.15s ease, text-decoration 0.15s ease;
+}
+
+.footer-legal-text a:hover {
+    color: #ffffff;
+    text-decoration: underline;
+}
+
+/* Toast / Feedback Notification */
+.cerebras-toast {
+    position: fixed;
+    bottom: 2rem;
+    right: 2rem;
+    background: #18181b;
+    color: #ffffff;
+    padding: 1rem 1.5rem;
+    border-radius: 4px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+    border-left: 4px solid var(--cerebras-orange-primary);
+    font-size: 0.9rem;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    transform: translateY(100px);
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    z-index: 1000;
+}
+
+.cerebras-toast.show {
+    transform: translateY(0);
+    opacity: 1;
+    visibility: visible;
+}
+
+/* Inline Spinner */
+.spinner {
+    width: 16px;
+    height: 16px;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-top-color: #ffffff;
+    border-radius: 50%;
+    animation: spin 0.6s linear infinite;
+    display: inline-block;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* Responsive Media Queries */
+@media (max-width: 1100px) {
+    .cerebras-viewport {
+        padding: 2rem 2rem 1.5rem 2rem;
+    }
+    
+    .cerebras-main {
+        gap: 2.5rem;
+    }
+    
+    .hero-headline {
+        font-size: clamp(2.8rem, 5vw, 4.2rem);
+    }
+}
+
+@media (max-width: 900px) {
+    .cerebras-viewport {
+        padding: 1.5rem 1.5rem 1.25rem 1.5rem;
+        min-height: 100vh;
+        height: auto;
+    }
+    
+    .cerebras-main {
+        grid-template-columns: 1fr;
+        gap: 3rem;
+        padding: 2rem 0;
+    }
+    
+    .cerebras-hero-col {
+        align-items: center;
+        text-align: center;
+    }
+    
+    .cerebras-card-col {
+        justify-content: center;
+    }
+    
+    .cerebras-card {
+        max-width: 440px;
+        padding: 2rem 1.75rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .cerebras-viewport {
+        padding: 1.25rem 1rem 1rem 1rem;
+    }
+    
+    .cerebras-brand-text {
+        font-size: 1.15rem;
+    }
+    
+    .hero-headline {
+        font-size: 2.6rem;
+    }
+    
+    .wafer-badge {
+        font-size: 0.8rem;
+        padding: 0.5rem 0.9rem;
+    }
+    
+    .cerebras-card {
+        padding: 1.75rem 1.25rem;
+    }
+    
+    .card-title {
+        font-size: 1.2rem;
+    }
+    
+    .header-quick-links {
+        display: none;
+    }
+}

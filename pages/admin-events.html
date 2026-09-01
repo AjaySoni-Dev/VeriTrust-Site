@@ -1,0 +1,160 @@
+﻿<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Sessions â€” Z Sphere Admin</title>
+    <meta name="color-scheme" content="light">
+    <meta name="theme-color" content="#ffffff">
+    <meta name="description" content="Manage sessions, edit event details, search, filter, and track registrations.">
+    <link rel="stylesheet" href="../css/base.css">
+    <link rel="stylesheet" href="../css/components.css">
+    <link rel="stylesheet" href="../css/admin.css">
+    <link rel="stylesheet" href="../css/responsive.css">
+    <link rel="stylesheet" href="../css/polish.css">
+    <link rel="stylesheet" href="../css/cerebras-theme.css">
+</head>
+<body>
+
+    <a href="#main-content" class="skip-link">Skip to main content</a>
+
+    <!-- Header -->
+    <header class="site-header">
+        <div class="container header-inner">
+            <a href="../index2.html" class="brand">
+                <img src="../logo text.png" alt="Z Sphere Logo" class="brand-logo">
+                
+            </a>
+            <div class="header-actions">
+                <a href="../index2.html" class="btn btn-secondary btn-sm return-web-btn" aria-label="Return to Website">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+                    <span class="return-text-desktop">Return to Website</span>
+                    <span class="return-text-mobile">Website</span>
+                </a>
+                <span class="admin-sidebar-badge">Administrator</span>
+                <button type="button" data-zsphere-signout class="btn btn-secondary btn-sm">Sign Out</button>
+            </div>
+        </div>
+    </header>
+
+    <div class="admin-layout">
+        <!-- Admin Sidebar -->
+        <aside class="admin-sidebar" aria-label="Admin Navigation">
+            <div class="admin-sidebar-brand">
+                <span class="font-bold text-navy text-sm">Control Center</span>
+                <span class="admin-sidebar-badge ml-auto">v2.0</span>
+            </div>
+            <a href="admin.html" class="admin-nav-item">
+                <span class="admin-nav-icon" aria-hidden="true">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="12" width="4" height="8" rx="1"></rect><rect x="10" y="8" width="4" height="12" rx="1"></rect><rect x="17" y="4" width="4" height="16" rx="1"></rect></svg>
+                </span>
+                <span>Dashboard Overview</span>
+            </a>
+            <a href="admin-events.html" class="admin-nav-item active">
+                <span class="admin-nav-icon" aria-hidden="true">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+                </span>
+                <span>Manage Sessions</span>
+            </a>
+            <a href="admin-registrations.html" class="admin-nav-item">
+                <span class="admin-nav-icon" aria-hidden="true">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+                </span>
+                <span>Registrations</span>
+            </a>
+            <a href="admin-announcements.html" class="admin-nav-item">
+                <span class="admin-nav-icon" aria-hidden="true">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
+                </span>
+                <span>Announcements</span>
+            </a>
+            <a href="admin-gallery.html" class="admin-nav-item">
+                <span class="admin-nav-icon" aria-hidden="true">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
+                </span>
+                <span>Photo Gallery</span>
+            </a>
+            <a href="admin-team.html" class="admin-nav-item">
+                <span class="admin-nav-icon" aria-hidden="true">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+                </span>
+                <span>Student Team</span>
+            </a>
+        </aside>
+
+        <!-- Admin Main Content -->
+        <main class="admin-main" id="main-content">
+            <div class="admin-page-header">
+                <div class="admin-page-title-wrap">
+                    <h1 class="admin-page-title">Session Management</h1>
+                    <p class="admin-page-desc">Create, modify, publish, or delete technical workshops and tracks.</p>
+                </div>
+                <div class="d-flex align-center gap-2 flex-wrap">
+                    <a href="admin-registrations.html" class="btn btn-secondary btn-sm" style="display: inline-flex; align-items: center; gap: 6px;">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                        <span>Export All Registrations (.xlsx)</span>
+                    </a>
+                    <a href="admin-event-form.html" class="btn btn-primary">+ Create New Session</a>
+                </div>
+            </div>
+
+            <!-- Toolbar / Filters -->
+            <div class="admin-toolbar">
+                <div class="admin-search-box">
+                    <span class="admin-search-icon" aria-hidden="true">
+                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                    </span>
+                    <input type="text" id="admin-event-search" class="form-control" placeholder="Search sessions by title, domain, or venue..." aria-label="Search sessions">
+                </div>
+                <div class="d-flex items-center gap-2">
+                    <select id="admin-filter-status" class="form-control" aria-label="Filter sessions by status">
+                        <option value="all">All Statuses</option>
+                        <option value="published">Published</option>
+                        <option value="draft">Draft</option>
+                        <option value="completed">Completed</option>
+                        <option value="cancelled">Cancelled</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Desktop Table View -->
+            <div class="admin-table-wrap">
+                <table class="admin-table">
+                    <thead>
+                        <tr>
+                            <th scope="col">Session Title</th>
+                            <th scope="col">Category</th>
+                            <th scope="col">Date & Time</th>
+                            <th scope="col">Venue</th>
+                            <th scope="col">Status</th>
+                            <th scope="col">Capacity</th>
+                            <th scope="col" class="text-right">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="admin-events-table-body" aria-live="polite">
+                        <!-- Rendered by js/admin.js -->
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Mobile Responsive Card View -->
+            <div id="admin-events-mobile-cards" class="admin-cards-mobile" aria-live="polite">
+                <!-- Rendered by js/admin.js -->
+            </div>
+        </main>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+    <script src="../js/config.js"></script>
+    <script src="../js/supabase-client.js"></script>
+    <script src="../js/app.js"></script>
+    <script src="../js/ui.js"></script>
+    <script src="../js/auth.js"></script>
+    <script src="../js/data-service.js"></script>
+    <script src="../js/navigation.js"></script>
+    <script src="../js/motion.js"></script>
+    <script src="../js/admin.js"></script>
+</body>
+</html>

@@ -1,0 +1,123 @@
+﻿<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Photo Album â€” Z Sphere Gallery</title>
+    <meta name="color-scheme" content="light">
+    <meta name="theme-color" content="#ffffff">
+    <meta name="description" content="View photo grid and captions for selected Z Sphere workshop album.">
+    <link rel="stylesheet" href="../css/base.css">
+    <link rel="stylesheet" href="../css/components.css">
+    <link rel="stylesheet" href="../css/pages.css">
+    <link rel="stylesheet" href="../css/responsive.css">
+    <link rel="stylesheet" href="../css/polish.css">
+    <link rel="stylesheet" href="../css/cerebras-theme.css">
+</head>
+<body>
+
+    <a href="#main-content" class="skip-link">Skip to main content</a>
+
+            <!-- Header with Logo Image & Right-Aligned Menu Toggle -->
+    <header class="site-header">
+        <div class="container header-inner">
+            <!-- Brand Logo Image -->
+            <a href="../index2.html" class="brand" aria-label="Z Sphere Home">
+                <img src="../logo text.png" alt="Z Sphere" class="brand-logo" onerror="this.src='../logo.png'">
+            </a>
+
+            <!-- Desktop Navigation -->
+            <nav class="desktop-nav" aria-label="Main Navigation">
+                <a href="../index2.html" class="nav-link">Home</a>
+                <a href="sessions.html" class="nav-link">Sessions</a>
+                <a href="domains.html" class="nav-link">Learning Tracks</a>
+                <a href="announcements.html" class="nav-link">Announcements</a>
+                <a href="gallery.html" class="nav-link">Gallery</a>
+                <a href="team.html" class="nav-link">Team</a>
+                <a href="about.html" class="nav-link">About</a>
+            </nav>
+
+            <!-- Header Actions -->
+            <div class="header-actions">
+                <a href="sessions.html" class="btn btn-primary btn-sm">Explore Sessions</a>
+                <a href="login.html" class="btn btn-secondary btn-sm" id="header-auth-btn">Account</a>
+                <a href="admin.html" class="btn btn-navy btn-sm desktop-only-btn">Admin Panel</a>
+            </div>
+
+            <!-- Mobile Right Hamburger Toggle with Staggered 3 Bars -->
+            <button class="mobile-toggle" aria-label="Open navigation menu" aria-expanded="false" aria-controls="mobile-drawer-pane">
+                <span class="hamburger-bar"></span>
+                <span class="hamburger-bar"></span>
+                <span class="hamburger-bar"></span>
+            </button>
+        </div>
+    </header>
+
+    <!-- Mobile Drawer -->
+    <div class="mobile-drawer-backdrop"></div>
+    <div class="mobile-drawer" aria-label="Mobile Navigation">
+        <div class="drawer-header">
+            <a href="../index2.html" class="brand" aria-label="Z Sphere Home">
+                <img src="../logo text.png" alt="Z Sphere" class="brand-logo" onerror="this.src='../logo.png'">
+            </a>
+            <button class="drawer-close" aria-label="Close menu">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+            </button>
+        </div>
+        <nav class="drawer-nav">
+            <a href="../index2.html" class="drawer-nav-link">Home</a>
+            <a href="sessions.html" class="drawer-nav-link">Sessions</a>
+            <a href="domains.html" class="drawer-nav-link">Learning Tracks</a>
+            <a href="announcements.html" class="drawer-nav-link">Announcements</a>
+            <a href="gallery.html" class="drawer-nav-link">Gallery</a>
+            <a href="team.html" class="drawer-nav-link">Team</a>
+            <a href="about.html" class="drawer-nav-link">About</a>
+        </nav>
+        <div class="drawer-actions">
+            <a href="sessions.html" class="btn btn-primary btn-full">Explore Sessions</a>
+            <a href="login.html" class="btn btn-secondary btn-full">Account</a>
+            <a href="admin.html" class="btn btn-navy btn-full">Admin Panel</a>
+        </div>
+    </div>
+
+    <!-- Main Content Container -->
+    <main id="main-content" class="container event-page-main">
+        <div id="album-detail-container">
+            <h1 class="page-title mb-3">Loading Photo Album...</h1>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="site-footer">
+        <div class="container">
+            <div class="footer-inner">
+                <a href="../index2.html" class="brand" aria-label="Z Sphere Home"><img src="../logo text.png" alt="Z Sphere" class="brand-logo" onerror="this.src='../logo.png'"></a>
+                <div class="footer-nav">
+                    <a href="../index2.html" class="footer-link">Home</a>
+                    <a href="sessions.html" class="footer-link">Sessions</a>
+                    <a href="domains.html" class="footer-link">Learning Tracks</a>
+                    <a href="announcements.html" class="footer-link">Announcements</a>
+                    <a href="gallery.html" class="footer-link">Gallery</a>
+                    <a href="team.html" class="footer-link">Team</a>
+                    <a href="about.html" class="footer-link">About</a>
+                </div>
+            </div>
+            <div class="footer-copy">
+                <span>Â© 2026 Z Sphere Technology & Learning Community. All rights reserved.</span>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="../js/config.js"></script>
+    <script src="../js/supabase-client.js"></script>
+    <script src="../js/app.js"></script>
+    <script src="../js/ui.js"></script>
+    <script src="../js/auth.js"></script>
+    <script src="../js/data-service.js"></script>
+    <script src="../js/navigation.js"></script>
+    <script src="../js/motion.js"></script>
+    <script src="../js/gallery.js"></script>
+</body>
+</html>

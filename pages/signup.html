@@ -1,0 +1,170 @@
+﻿<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Registration â€” Z Sphere</title>
+    <meta name="color-scheme" content="light">
+    <meta name="theme-color" content="#ffffff">
+    <meta name="description" content="Create a Z Sphere student account to register for workshops and build your technical profile.">
+    <link rel="stylesheet" href="../css/base.css">
+    <link rel="stylesheet" href="../css/components.css">
+    <link rel="stylesheet" href="../css/account.css">
+    <link rel="stylesheet" href="../css/responsive.css">
+    <link rel="stylesheet" href="../css/polish.css">
+    <link rel="stylesheet" href="../css/cerebras-theme.css">
+</head>
+<body class="auth-page">
+    <a href="#main-content" class="skip-link">Skip to main content</a>
+
+        <!-- Header with Logo Image & Right-Aligned Menu Toggle -->
+    <header class="site-header">
+        <div class="container header-inner">
+            <!-- Brand Logo Image -->
+            <a href="../index2.html" class="brand" aria-label="Z Sphere Home">
+                <img src="../logo text.png" alt="Z Sphere" class="brand-logo" onerror="this.src='../logo.png'">
+            </a>
+
+            <!-- Desktop Navigation -->
+            <nav class="desktop-nav" aria-label="Main Navigation">
+                <a href="../index2.html" class="nav-link">Home</a>
+                <a href="sessions.html" class="nav-link">Sessions</a>
+                <a href="domains.html" class="nav-link">Learning Tracks</a>
+                <a href="announcements.html" class="nav-link">Announcements</a>
+                <a href="gallery.html" class="nav-link">Gallery</a>
+                <a href="team.html" class="nav-link">Team</a>
+                <a href="about.html" class="nav-link">About</a>
+            </nav>
+
+            <!-- Header Actions -->
+            <div class="header-actions">
+                <a href="sessions.html" class="btn btn-primary btn-sm">Explore Sessions</a>
+                <a href="login.html" class="btn btn-secondary btn-sm" id="header-auth-btn">Account</a>
+                <a href="admin.html" class="btn btn-navy btn-sm desktop-only-btn">Admin Panel</a>
+            </div>
+
+            <!-- Mobile Right Hamburger Toggle with Staggered 3 Bars -->
+            <button class="mobile-toggle" aria-label="Open navigation menu" aria-expanded="false" aria-controls="mobile-drawer-pane">
+                <span class="hamburger-bar"></span>
+                <span class="hamburger-bar"></span>
+                <span class="hamburger-bar"></span>
+            </button>
+        </div>
+    </header>
+
+    <!-- Mobile Drawer -->
+    <div class="mobile-drawer-backdrop"></div>
+    <div class="mobile-drawer" aria-label="Mobile Navigation">
+        <div class="drawer-header">
+            <a href="../index2.html" class="brand" aria-label="Z Sphere Home">
+                <img src="../logo text.png" alt="Z Sphere" class="brand-logo" onerror="this.src='../logo.png'">
+            </a>
+            <button class="drawer-close" aria-label="Close menu">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+            </button>
+        </div>
+        <nav class="drawer-nav">
+            <a href="../index2.html" class="drawer-nav-link">Home</a>
+            <a href="sessions.html" class="drawer-nav-link">Sessions</a>
+            <a href="domains.html" class="drawer-nav-link">Learning Tracks</a>
+            <a href="announcements.html" class="drawer-nav-link">Announcements</a>
+            <a href="gallery.html" class="drawer-nav-link">Gallery</a>
+            <a href="team.html" class="drawer-nav-link">Team</a>
+            <a href="about.html" class="drawer-nav-link">About</a>
+        </nav>
+        <div class="drawer-actions">
+            <a href="sessions.html" class="btn btn-primary btn-full">Explore Sessions</a>
+            <a href="login.html" class="btn btn-secondary btn-full">Account</a>
+            <a href="admin.html" class="btn btn-navy btn-full">Admin Panel</a>
+        </div>
+    </div>
+
+    <main class="auth-container" id="main-content">
+        <div class="auth-card auth-card-wide">
+            <div class="auth-header">
+                <h1 class="auth-title">Create an Account</h1>
+                <p class="auth-subtitle">Join the Z Sphere student technology community</p>
+            </div>
+
+            <form id="signup-form" novalidate>
+                <div class="form-group">
+                    <label class="form-label" for="signup-name">Full Name <span class="required">*</span></label>
+                    <input type="text" id="signup-name" class="form-control" placeholder="Aarav Sharma" autocomplete="name" maxlength="100" required>
+                    <div class="form-error"></div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="signup-email">Student Email Address <span class="required">*</span></label>
+                    <input type="email" id="signup-email" class="form-control" placeholder="student@zsphere.edu" autocomplete="email" maxlength="255" required>
+                    <div class="form-error"></div>
+                </div>
+
+                <div class="signup-grid">
+                    <div class="form-group">
+                        <label class="form-label" for="signup-course">Academic Course <span class="required">*</span></label>
+                        <select id="signup-course" class="form-control" required>
+                            <option value="BCA (Hons.) - Data Science">BCA (Hons.) - Data Science</option>
+                            <option value="B.Tech Computer Science">B.Tech Computer Science</option>
+                            <option value="BCA General">BCA General</option>
+                            <option value="B.Sc. IT">B.Sc. IT</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="signup-semester">Current Semester <span class="required">*</span></label>
+                        <select id="signup-semester" class="form-control" required>
+                            <option value="1st Semester">1st Semester</option>
+                            <option value="2nd Semester">2nd Semester</option>
+                            <option value="3rd Semester">3rd Semester</option>
+                            <option value="4th Semester">4th Semester</option>
+                            <option value="5th Semester">5th Semester</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="signup-grid">
+                    <div class="form-group">
+                        <label class="form-label" for="signup-password">Password <span class="required">*</span></label>
+                        <div class="password-input-wrap">
+                            <input type="password" minlength="6" id="signup-password" class="form-control" placeholder="â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢" autocomplete="new-password" maxlength="128" required>
+                            <button type="button" class="password-toggle-btn" aria-label="Toggle password visibility" aria-pressed="false">Show</button>
+                        </div>
+                        <div class="form-error"></div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="signup-confirm">Confirm Password <span class="required">*</span></label>
+                        <input type="password" minlength="6" id="signup-confirm" class="form-control" placeholder="â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢" autocomplete="new-password" maxlength="128" required>
+                        <div class="form-error"></div>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-primary btn-full mt-2">Create Student Account</button>
+            </form>
+
+            <div class="auth-foot">
+                Already have an account? <a href="login.html">Sign in here</a>
+            </div>
+        </div>
+    </main>
+
+    <footer class="site-footer auth-footer-bar">
+        <div class="container text-center">
+            <span class="auth-footer-copy">Â© 2026 Z Sphere Technology & Learning Community. All rights reserved.</span>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="../js/config.js"></script>
+    <script src="../js/supabase-client.js"></script>
+    <script src="../js/app.js"></script>
+    <script src="../js/ui.js"></script>
+    <script src="../js/auth.js"></script>
+    <script src="../js/data-service.js"></script>
+    <script src="../js/navigation.js"></script>
+    <script src="../js/motion.js"></script>
+    <script src="../js/forms.js"></script>
+</body>
+</html>
+

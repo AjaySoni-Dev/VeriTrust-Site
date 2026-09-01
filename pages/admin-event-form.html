@@ -1,0 +1,324 @@
+﻿<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Event Form â€” Z Sphere Admin</title>
+    <meta name="color-scheme" content="light">
+    <meta name="theme-color" content="#ffffff">
+    <meta name="description" content="Create or update Z Sphere technical session details, agenda, learning points, and resources.">
+    <link rel="stylesheet" href="../css/base.css">
+    <link rel="stylesheet" href="../css/components.css">
+    <link rel="stylesheet" href="../css/admin.css">
+    <link rel="stylesheet" href="../css/responsive.css">
+    <link rel="stylesheet" href="../css/polish.css">
+    <link rel="stylesheet" href="../css/cerebras-theme.css">
+</head>
+<body>
+
+    <a href="#main-content" class="skip-link">Skip to main content</a>
+
+    <!-- Header -->
+    <header class="site-header">
+        <div class="container header-inner">
+            <a href="../index2.html" class="brand">
+                <img src="../logo text.png" alt="Z Sphere Logo" class="brand-logo">
+                
+            </a>
+            <div class="header-actions">
+                <a href="../index2.html" class="btn btn-secondary btn-sm return-web-btn" aria-label="Return to Website">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+                    <span class="return-text-desktop">Return to Website</span>
+                    <span class="return-text-mobile">Website</span>
+                </a>
+                <span class="admin-sidebar-badge">Administrator</span>
+                <button type="button" data-zsphere-signout class="btn btn-secondary btn-sm">Sign Out</button>
+            </div>
+        </div>
+    </header>
+
+    <div class="admin-layout">
+        <!-- Admin Sidebar -->
+        <aside class="admin-sidebar" aria-label="Admin Navigation">
+            <div class="admin-sidebar-brand">
+                <span class="font-bold text-navy text-sm">Control Center</span>
+                <span class="admin-sidebar-badge ml-auto">v2.0</span>
+            </div>
+            <a href="admin.html" class="admin-nav-item">
+                <span class="admin-nav-icon" aria-hidden="true">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="12" width="4" height="8" rx="1"></rect><rect x="10" y="8" width="4" height="12" rx="1"></rect><rect x="17" y="4" width="4" height="16" rx="1"></rect></svg>
+                </span>
+                <span>Dashboard Overview</span>
+            </a>
+            <a href="admin-events.html" class="admin-nav-item active">
+                <span class="admin-nav-icon" aria-hidden="true">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+                </span>
+                <span>Manage Sessions</span>
+            </a>
+            <a href="admin-registrations.html" class="admin-nav-item">
+                <span class="admin-nav-icon" aria-hidden="true">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+                </span>
+                <span>Registrations</span>
+            </a>
+            <a href="admin-announcements.html" class="admin-nav-item">
+                <span class="admin-nav-icon" aria-hidden="true">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
+                </span>
+                <span>Announcements</span>
+            </a>
+            <a href="admin-gallery.html" class="admin-nav-item">
+                <span class="admin-nav-icon" aria-hidden="true">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
+                </span>
+                <span>Photo Gallery</span>
+            </a>
+            <a href="admin-team.html" class="admin-nav-item">
+                <span class="admin-nav-icon" aria-hidden="true">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+                </span>
+                <span>Student Team</span>
+            </a>
+        </aside>
+
+        <!-- Admin Main Content -->
+        <main class="admin-main" id="main-content">
+            <div class="admin-page-header">
+                <div class="admin-page-title-wrap">
+                    <h1 class="admin-page-title" id="form-title">Create New Session</h1>
+                    <p class="admin-page-desc">Define session syllabus, schedule, seat capacity, and registration links.</p>
+                </div>
+                <a href="admin-events.html" class="btn btn-secondary">â† Back to Sessions</a>
+            </div>
+
+            <!-- Progressive Section Stepper (UI-23) -->
+            <nav class="admin-form-stepper" aria-label="Form Sections Navigation">
+                <a href="#section-basic" class="admin-stepper-btn active">1. Basic Information</a>
+                <a href="#section-schedule" class="admin-stepper-btn">2. Schedule & Venue</a>
+                <a href="#section-curriculum" class="admin-stepper-btn">3. Curriculum & Agenda</a>
+                <a href="#section-capacity" class="admin-stepper-btn">4. Capacity & Publish</a>
+            </nav>
+
+            <form id="admin-event-form">
+                <!-- Section 1: Basic Information -->
+                <div class="admin-card-section" id="section-basic">
+                    <h2 class="admin-section-title">1. Basic Information</h2>
+                    <div class="form-grid-2">
+                        <div class="form-group">
+                            <label class="form-label" for="evt-title">Session Title <span class="required">*</span></label>
+                            <input type="text" id="evt-title" class="form-control" placeholder="e.g. Prompt Engineering Workshop" required maxlength="150" autocomplete="off">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="evt-slug">URL Slug <span class="required">*</span></label>
+                            <input type="text" id="evt-slug" class="form-control" placeholder="prompt-engineering-workshop" required maxlength="150" autocomplete="off">
+                        </div>
+                    </div>
+
+                    <div class="form-grid-2 mt-3">
+                        <div class="form-group">
+                            <label class="form-label" for="evt-category">Category / Track</label>
+                            <select id="evt-category" class="form-control">
+                                <option value="AI & Prompt Engineering">AI & Prompt Engineering</option>
+                                <option value="Git & Open Source">Git & Open Source</option>
+                                <option value="Data Engineering & ML">Data Engineering & ML</option>
+                                <option value="Hackathons & Building">Hackathons & Building</option>
+                                <option value="Web Development">Web Development</option>
+                                <option value="Career & Technical Profile">Career & Technical Profile</option>
+                                <option value="Cybersecurity">Cybersecurity</option>
+                                <option value="Cryptography">Cryptography</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="evt-type">Event Type</label>
+                            <select id="evt-type" class="form-control">
+                                <option value="workshop">Workshop</option>
+                                <option value="hackathon">Hackathon</option>
+                                <option value="demo">Demo / Showcase</option>
+                                <option value="session">Interactive Session</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group mt-3">
+                        <label class="form-label" for="evt-summary">Short Summary (Catalogue Card)</label>
+                        <input type="text" id="evt-summary" class="form-control" placeholder="Brief 1-2 sentence overview of the session target outcomes." maxlength="250" autocomplete="off">
+                    </div>
+
+                    <div class="form-group mt-3">
+                        <label class="form-label" for="evt-description">Full Description</label>
+                        <textarea id="evt-description" class="form-control text-area-lg" placeholder="Detailed breakdown of what the session entails."></textarea>
+                    </div>
+
+                    <div class="form-grid-2 mt-3">
+                        <div class="form-group">
+                            <label class="form-label" for="event-registration-form-url">Registration Form URL (Google Form)</label>
+                            <input type="url" id="event-registration-form-url" name="registration_form_url" class="form-control" placeholder="https://forms.gle/...">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="event-whatsapp-group-url">WhatsApp Group URL</label>
+                            <input type="url" id="event-whatsapp-group-url" name="whatsapp_group_url" class="form-control" placeholder="https://chat.whatsapp.com/...">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Section 2: Date, Time & Venue -->
+                <div class="admin-card-section" id="section-schedule">
+                    <h2 class="admin-section-title">2. Date, Time & Venue</h2>
+                    <div class="form-grid-2">
+                        <div class="form-group">
+                            <label class="form-label" for="evt-start">Start Date & Time <span class="required">*</span></label>
+                            <input type="datetime-local" id="evt-start" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="evt-end">End Date & Time <span class="required">*</span></label>
+                            <input type="datetime-local" id="evt-end" class="form-control" required>
+                        </div>
+                    </div>
+
+                    <div class="form-grid-2 mt-3">
+                        <div class="form-group">
+                            <label class="form-label" for="evt-mode">Delivery Mode</label>
+                            <select id="evt-mode" class="form-control">
+                                <option value="in-person">In-Person</option>
+                                <option value="online">Online / Google Meet</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="evt-venue">Venue / Room Number</label>
+                            <input type="text" id="evt-venue" class="form-control" placeholder="e.g. Lab 402 or Google Meet Link">
+                        </div>
+                    </div>
+
+                    <div class="form-grid-2 mt-3">
+                        <div class="form-group">
+                            <label class="form-label" for="evt-facilitator-select">Session Facilitator / Instructor (From Team)</label>
+                            <select id="evt-facilitator-select" class="form-control">
+                                <option value="">-- Select Team Member (or type custom below) --</option>
+                            </select>
+                            <div class="form-help text-xs text-muted">Links session to core/leadership team profile with photo & bio.</div>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="evt-conducted">Conducted By Display Name</label>
+                            <input type="text" id="evt-conducted" class="form-control" placeholder="e.g. Aarav Sharma">
+                            <div class="form-help text-xs text-muted">Auto-filled when selecting team member, or custom name.</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Section 3: Dynamic Learning Points, Agenda & Resources -->
+                <div class="admin-card-section" id="section-curriculum">
+                    <h2 class="admin-section-title">3. Session Curriculum & Materials</h2>
+
+                    <!-- Learning Points -->
+                    <div class="mb-4">
+                        <div class="section-header-row mb-3">
+                            <label class="form-label mb-0">What You'll Learn Points</label>
+                            <button type="button" class="btn btn-secondary btn-sm" id="add-learning-point-btn">+ Add Outcome</button>
+                        </div>
+                        <div id="learning-points-container" aria-live="polite">
+                            <div class="dynamic-row">
+                                <input type="text" class="form-control dynamic-row-input" value="Master key technical fundamentals" placeholder="Outcome description" aria-label="Learning outcome" maxlength="180">
+                                <button type="button" class="dynamic-row-remove-btn" aria-label="Remove learning outcome" data-dynamic-remove>
+                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Agenda Items -->
+                    <div class="mb-4">
+                        <div class="section-header-row mb-3">
+                            <label class="form-label mb-0">Agenda Timeline Rows</label>
+                            <button type="button" class="btn btn-secondary btn-sm" id="add-agenda-btn">+ Add Agenda Row</button>
+                        </div>
+                        <div id="agenda-rows-container" aria-live="polite">
+                            <div class="dynamic-row">
+                                <input type="text" class="form-control agenda-time-input" value="00â€“05 min" placeholder="Time slot" aria-label="Agenda time slot" maxlength="60">
+                                <input type="text" class="form-control dynamic-row-input" value="Introduction & Goals" placeholder="Topic description" aria-label="Agenda topic" maxlength="180">
+                                <button type="button" class="dynamic-row-remove-btn" aria-label="Remove agenda row" data-dynamic-remove>
+                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Resources -->
+                    <div>
+                        <div class="section-header-row mb-3">
+                            <label class="form-label mb-0">Resources & Materials</label>
+                            <button type="button" class="btn btn-secondary btn-sm" id="add-resource-btn">+ Add Resource Link</button>
+                        </div>
+                        <div id="resources-rows-container" aria-live="polite">
+                            <div class="dynamic-row">
+                                <input type="text" class="form-control dynamic-row-input" value="Workshop Slide Deck (PDF)" placeholder="Resource Title" aria-label="Resource title" maxlength="160">
+                                <input type="text" class="form-control dynamic-row-input" value="#" placeholder="URL / Download Link" aria-label="Resource URL or relative link" maxlength="500" inputmode="url">
+                                <button type="button" class="dynamic-row-remove-btn" aria-label="Remove resource link" data-dynamic-remove>
+                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Section 4: Tracking & Publish Settings -->
+                <div class="admin-card-section" id="section-capacity">
+                    <h2 class="admin-section-title">4. Tracking & Publish Settings</h2>
+                    <div class="form-grid-3">
+                        <div class="form-group">
+                            <label class="form-label" for="evt-capacity">Seat Capacity (0 = Unlimited)</label>
+                            <input type="number" id="evt-capacity" class="form-control" value="60" min="0" max="100000" inputmode="numeric">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="evt-registered-count">Registered Count (Manual)</label>
+                            <input type="number" id="evt-registered-count" class="form-control" value="0" min="0" max="100000" inputmode="numeric">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="evt-attendance-count">Attendance Count (Past Event)</label>
+                            <input type="number" id="evt-attendance-count" class="form-control" value="0" min="0" max="100000" inputmode="numeric">
+                        </div>
+                    </div>
+                    <div class="form-grid-2 mt-3">
+                        <div class="form-group">
+                            <label class="form-label" for="evt-status">Publish Status</label>
+                            <select id="evt-status" class="form-control">
+                                <option value="published">Published (Open for Registration)</option>
+                                <option value="draft">Draft (Admin Only)</option>
+                                <option value="completed">Completed</option>
+                                <option value="cancelled">Cancelled</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="evt-cover-file">Cover Image Upload</label>
+                            <input type="file" id="evt-cover-file" class="form-control" accept="image/jpeg,image/png,image/webp,image/avif">
+                            <div id="evt-cover-preview" class="mt-2"></div>
+                        </div>
+                    </div>
+                    <div class="form-group mt-3">
+                        <label class="form-label" for="evt-feedback-summary">Feedback Summary (Past Event)</label>
+                        <textarea id="evt-feedback-summary" class="form-control" placeholder="Add verified feedback or post-event quotes to display publicly..."></textarea>
+                    </div>
+                </div>
+
+                <!-- Sticky Admin Actions Footer (UI-23) -->
+                <div class="admin-sticky-actions">
+                    <a href="admin-events.html" class="btn btn-secondary">Discard Changes</a>
+                    <button type="submit" class="btn btn-primary">Save & Publish Session</button>
+                </div>
+            </form>
+        </main>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="../js/config.js"></script>
+    <script src="../js/supabase-client.js"></script>
+    <script src="../js/app.js"></script>
+    <script src="../js/ui.js"></script>
+    <script src="../js/auth.js"></script>
+    <script src="../js/data-service.js"></script>
+    <script src="../js/navigation.js"></script>
+    <script src="../js/motion.js"></script>
+    <script src="../js/admin.js"></script>
+</body>
+</html>

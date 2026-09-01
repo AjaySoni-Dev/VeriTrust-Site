@@ -1,0 +1,225 @@
+﻿<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sessions Catalogue â€” Z Sphere</title>
+    <meta name="color-scheme" content="light">
+    <meta name="theme-color" content="#ffffff">
+    <meta name="description" content="Discover workshops, technical sessions, and collaborative events organized by Z Sphere.">
+    <link rel="stylesheet" href="../css/base.css">
+    <link rel="stylesheet" href="../css/components.css">
+    <link rel="stylesheet" href="../css/pages.css">
+    <link rel="stylesheet" href="../css/responsive.css">
+    <link rel="stylesheet" href="../css/polish.css">
+    <link rel="stylesheet" href="../css/cerebras-theme.css">
+</head>
+<body>
+
+    <a href="#main-content" class="skip-link">Skip to main content</a>
+
+        <!-- Header with Logo Image & Right-Aligned Menu Toggle -->
+    <header class="site-header">
+        <div class="container header-inner">
+            <!-- Brand Logo Image -->
+            <a href="../index2.html" class="brand" aria-label="Z Sphere Home">
+                <img src="../logo text.png" alt="Z Sphere" class="brand-logo" onerror="this.src='../logo.png'">
+            </a>
+
+            <!-- Desktop Navigation -->
+            <nav class="desktop-nav" aria-label="Main Navigation">
+                <a href="../index2.html" class="nav-link">Home</a>
+                <a href="sessions.html" class="nav-link">Sessions</a>
+                <a href="domains.html" class="nav-link">Learning Tracks</a>
+                <a href="announcements.html" class="nav-link">Announcements</a>
+                <a href="gallery.html" class="nav-link">Gallery</a>
+                <a href="team.html" class="nav-link">Team</a>
+                <a href="about.html" class="nav-link">About</a>
+            </nav>
+
+            <!-- Header Actions -->
+            <div class="header-actions">
+                <a href="sessions.html" class="btn btn-primary btn-sm">Explore Sessions</a>
+                <a href="login.html" class="btn btn-secondary btn-sm" id="header-auth-btn">Account</a>
+                <a href="admin.html" class="btn btn-navy btn-sm desktop-only-btn">Admin Panel</a>
+            </div>
+
+            <!-- Mobile Right Hamburger Toggle with Staggered 3 Bars -->
+            <button class="mobile-toggle" aria-label="Open navigation menu" aria-expanded="false" aria-controls="mobile-drawer-pane">
+                <span class="hamburger-bar"></span>
+                <span class="hamburger-bar"></span>
+                <span class="hamburger-bar"></span>
+            </button>
+        </div>
+    </header>
+
+    <!-- Mobile Drawer -->
+    <div class="mobile-drawer-backdrop"></div>
+    <div class="mobile-drawer" aria-label="Mobile Navigation">
+        <div class="drawer-header">
+            <a href="../index2.html" class="brand" aria-label="Z Sphere Home">
+                <img src="../logo text.png" alt="Z Sphere" class="brand-logo" onerror="this.src='../logo.png'">
+            </a>
+            <button class="drawer-close" aria-label="Close menu">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+            </button>
+        </div>
+        <nav class="drawer-nav">
+            <a href="../index2.html" class="drawer-nav-link">Home</a>
+            <a href="sessions.html" class="drawer-nav-link">Sessions</a>
+            <a href="domains.html" class="drawer-nav-link">Learning Tracks</a>
+            <a href="announcements.html" class="drawer-nav-link">Announcements</a>
+            <a href="gallery.html" class="drawer-nav-link">Gallery</a>
+            <a href="team.html" class="drawer-nav-link">Team</a>
+            <a href="about.html" class="drawer-nav-link">About</a>
+        </nav>
+        <div class="drawer-actions">
+            <a href="sessions.html" class="btn btn-primary btn-full">Explore Sessions</a>
+            <a href="login.html" class="btn btn-secondary btn-full">Account</a>
+            <a href="admin.html" class="btn btn-navy btn-full">Admin Panel</a>
+        </div>
+    </div>
+
+    <!-- Page Hero -->
+    <section class="page-hero">
+        <div class="container page-hero-inner">
+            <h1 class="page-hero-title">Sessions Catalogue</h1>
+            <p class="page-hero-desc">Discover upcoming engineering workshops, technical sessions, and collaborative build sprints.</p>
+        </div>
+    </section>
+
+    <!-- Main Content -->
+    <main id="main-content" class="container">
+        <!-- Filter Bar -->
+        <div class="catalogue-filter-bar">
+            <div class="catalogue-search-box">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="search-icon"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                <label for="sessions-search-input" class="sr-only">Search sessions</label>
+                <input type="text" id="sessions-search-input" class="search-control" placeholder="Search sessions..." aria-label="Search sessions">
+            </div>
+
+            <!-- Mobile Filter Trigger Button (Visible only on mobile/tablet) -->
+            <button type="button" id="mobile-filter-dialog-btn" class="btn btn-secondary mobile-filter-btn" aria-label="Open filter options" aria-haspopup="dialog">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="21" x2="4" y2="14"></line><line x1="4" y1="10" x2="4" y2="3"></line><line x1="12" y1="21" x2="12" y2="12"></line><line x1="12" y1="8" x2="12" y2="3"></line><line x1="20" y1="21" x2="20" y2="16"></line><line x1="20" y1="12" x2="20" y2="3"></line><line x1="1" y1="14" x2="7" y2="14"></line><line x1="9" y1="8" x2="15" y2="8"></line><line x1="17" y1="16" x2="23" y2="16"></line></svg>
+                <span>Filters</span>
+                <span id="active-filter-count" class="filter-count-badge" style="display: none;">0</span>
+            </button>
+
+            <!-- Desktop Filter Group (Visible only on desktop screens) -->
+            <div class="catalogue-filter-group desktop-filter-group">
+                <label for="filter-status" class="sr-only">Status</label>
+                <select id="filter-status" class="filter-select" aria-label="Filter sessions by status">
+                    <option value="all">All Statuses</option>
+                    <option value="upcoming">Upcoming</option>
+                    <option value="completed">Completed</option>
+                    <option value="full">Full</option>
+                </select>
+                <label for="filter-type" class="sr-only">Type</label>
+                <select id="filter-type" class="filter-select" aria-label="Filter sessions by type">
+                    <option value="all">All Types</option>
+                    <option value="workshop">Workshop</option>
+                    <option value="session">Technical Session</option>
+                    <option value="hackathon">Hackathon</option>
+                </select>
+                <label for="filter-mode" class="sr-only">Mode</label>
+                <select id="filter-mode" class="filter-select" aria-label="Filter sessions by delivery mode">
+                    <option value="all">All Modes</option>
+                    <option value="in-person">In-Person</option>
+                    <option value="online">Online</option>
+                </select>
+                <button type="button" id="clear-filters-btn" class="btn btn-secondary btn-sm">Clear Filters</button>
+            </div>
+        </div>
+
+        <div class="catalogue-results-meta mb-3">
+            <h2 class="text-muted text-sm font-semibold m-0" id="sessions-result-count">Loading sessions...</h2>
+        </div>
+
+        <!-- Sessions List -->
+        <div id="sessions-list-container" class="event-list-vertical">
+            <!-- Rendered by js/sessions.js -->
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="site-footer">
+        <div class="container">
+            <div class="footer-inner">
+                <a href="../index2.html" class="brand" aria-label="Z Sphere Home"><img src="../logo text.png" alt="Z Sphere" class="brand-logo" onerror="this.src='../logo.png'"></a>
+                <div class="footer-nav">
+                    <a href="../index2.html" class="footer-link">Home</a>
+                    <a href="sessions.html" class="footer-link">Sessions</a>
+                    <a href="domains.html" class="footer-link">Learning Tracks</a>
+                    <a href="announcements.html" class="footer-link">Announcements</a>
+                    <a href="gallery.html" class="footer-link">Gallery</a>
+                    <a href="team.html" class="footer-link">Team</a>
+                    <a href="about.html" class="footer-link">About</a>
+                </div>
+            </div>
+            <div class="footer-copy">
+                <span>Â© 2026 Z Sphere Technology & Learning Community. All rights reserved.</span>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Filter Dialog Modal for Mobile -->
+    <div id="filter-dialog-backdrop" class="filter-dialog-backdrop" aria-hidden="true">
+        <div id="filter-dialog-modal" class="filter-dialog-modal" role="dialog" aria-modal="true" aria-labelledby="filter-dialog-title">
+            <div class="filter-dialog-header">
+                <div>
+                    <h3 id="filter-dialog-title" class="filter-dialog-heading">Filter Sessions</h3>
+                    <p class="filter-dialog-sub">Select filters to narrow down the catalogue</p>
+                </div>
+                <button type="button" id="filter-dialog-close-btn" class="drawer-close" aria-label="Close filter dialog">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                </button>
+            </div>
+            <div class="filter-dialog-body">
+                <div class="filter-field-group">
+                    <label for="modal-filter-status" class="filter-field-label">Status</label>
+                    <select id="modal-filter-status" class="filter-select-modal">
+                        <option value="all">All Statuses</option>
+                        <option value="upcoming">Upcoming</option>
+                        <option value="completed">Completed</option>
+                        <option value="full">Full</option>
+                    </select>
+                </div>
+                <div class="filter-field-group">
+                    <label for="modal-filter-type" class="filter-field-label">Session Type</label>
+                    <select id="modal-filter-type" class="filter-select-modal">
+                        <option value="all">All Types</option>
+                        <option value="workshop">Workshop</option>
+                        <option value="session">Technical Session</option>
+                        <option value="hackathon">Hackathon</option>
+                    </select>
+                </div>
+                <div class="filter-field-group">
+                    <label for="modal-filter-mode" class="filter-field-label">Delivery Mode</label>
+                    <select id="modal-filter-mode" class="filter-select-modal">
+                        <option value="all">All Modes</option>
+                        <option value="in-person">In-Person</option>
+                        <option value="online">Online</option>
+                    </select>
+                </div>
+            </div>
+            <div class="filter-dialog-footer">
+                <button type="button" id="modal-clear-filters-btn" class="btn btn-secondary btn-full">Reset All</button>
+                <button type="button" id="modal-apply-filters-btn" class="btn btn-primary btn-full">Apply Filters</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="../js/config.js"></script>
+    <script src="../js/supabase-client.js"></script>
+    <script src="../js/app.js"></script>
+    <script src="../js/ui.js"></script>
+    <script src="../js/auth.js"></script>
+    <script src="../js/data-service.js"></script>
+    <script src="../js/navigation.js"></script>
+    <script src="../js/motion.js"></script>
+    <script src="../js/sessions.js"></script>
+</body>
+</html>
+

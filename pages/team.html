@@ -1,0 +1,191 @@
+﻿<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meet the Student Team â€” Z Sphere</title>
+    <meta name="color-scheme" content="light">
+    <meta name="theme-color" content="#ffffff">
+    <meta name="description" content="Meet the student leads and team members organizing Z Sphere technical workshops and activities.">
+    <link rel="stylesheet" href="../css/base.css">
+    <link rel="stylesheet" href="../css/components.css">
+    <link rel="stylesheet" href="../css/pages.css">
+    <link rel="stylesheet" href="../css/responsive.css">
+    <link rel="stylesheet" href="../css/polish.css">
+    <link rel="stylesheet" href="../css/cerebras-theme.css">
+</head>
+<body>
+
+    <a href="#main-content" class="skip-link">Skip to main content</a>
+
+            <!-- Header with Logo Image & Right-Aligned Menu Toggle -->
+    <header class="site-header">
+        <div class="container header-inner">
+            <!-- Brand Logo Image -->
+            <a href="../index2.html" class="brand" aria-label="Z Sphere Home">
+                <img src="../logo text.png" alt="Z Sphere" class="brand-logo" onerror="this.src='../logo.png'">
+            </a>
+
+            <!-- Desktop Navigation -->
+            <nav class="desktop-nav" aria-label="Main Navigation">
+                <a href="../index2.html" class="nav-link">Home</a>
+                <a href="sessions.html" class="nav-link">Sessions</a>
+                <a href="domains.html" class="nav-link">Learning Tracks</a>
+                <a href="announcements.html" class="nav-link">Announcements</a>
+                <a href="gallery.html" class="nav-link">Gallery</a>
+                <a href="team.html" class="nav-link">Team</a>
+                <a href="about.html" class="nav-link">About</a>
+            </nav>
+
+            <!-- Header Actions -->
+            <div class="header-actions">
+                <a href="sessions.html" class="btn btn-primary btn-sm">Explore Sessions</a>
+                <a href="login.html" class="btn btn-secondary btn-sm" id="header-auth-btn">Account</a>
+                <a href="admin.html" class="btn btn-navy btn-sm desktop-only-btn">Admin Panel</a>
+            </div>
+
+            <!-- Mobile Right Hamburger Toggle with Staggered 3 Bars -->
+            <button class="mobile-toggle" aria-label="Open navigation menu" aria-expanded="false" aria-controls="mobile-drawer-pane">
+                <span class="hamburger-bar"></span>
+                <span class="hamburger-bar"></span>
+                <span class="hamburger-bar"></span>
+            </button>
+        </div>
+    </header>
+
+    <!-- Mobile Drawer -->
+    <div class="mobile-drawer-backdrop"></div>
+    <div class="mobile-drawer" aria-label="Mobile Navigation">
+        <div class="drawer-header">
+            <a href="../index2.html" class="brand" aria-label="Z Sphere Home">
+                <img src="../logo text.png" alt="Z Sphere" class="brand-logo" onerror="this.src='../logo.png'">
+            </a>
+            <button class="drawer-close" aria-label="Close menu">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+            </button>
+        </div>
+        <nav class="drawer-nav">
+            <a href="../index2.html" class="drawer-nav-link">Home</a>
+            <a href="sessions.html" class="drawer-nav-link">Sessions</a>
+            <a href="domains.html" class="drawer-nav-link">Learning Tracks</a>
+            <a href="announcements.html" class="drawer-nav-link">Announcements</a>
+            <a href="gallery.html" class="drawer-nav-link">Gallery</a>
+            <a href="team.html" class="drawer-nav-link">Team</a>
+            <a href="about.html" class="drawer-nav-link">About</a>
+        </nav>
+        <div class="drawer-actions">
+            <a href="sessions.html" class="btn btn-primary btn-full">Explore Sessions</a>
+            <a href="login.html" class="btn btn-secondary btn-full">Account</a>
+            <a href="admin.html" class="btn btn-navy btn-full">Admin Panel</a>
+        </div>
+    </div>
+
+    <!-- Page Hero -->
+    <section class="page-hero">
+        <div class="container page-hero-inner">
+            <h1 class="page-hero-title">Meet the Team</h1>
+            <p class="page-hero-desc">The student organizers, content leads, and coordinators behind Z Sphere.</p>
+        </div>
+    </section>
+
+    <!-- Main Content -->
+    <main id="main-content" class="container event-page-main">
+        <h2 class="section-title mb-3">Leadership Team</h2>
+        <div id="leadership-team-grid" class="team-grid mb-4">
+            <!-- Rendered by inline script -->
+        </div>
+
+        <h2 class="section-title mb-3">Core Team</h2>
+        <div id="core-team-grid" class="team-grid">
+            <!-- Rendered by inline script -->
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="site-footer">
+        <div class="container">
+            <div class="footer-inner">
+                <a href="../index2.html" class="brand" aria-label="Z Sphere Home"><img src="../logo text.png" alt="Z Sphere" class="brand-logo" onerror="this.src='../logo.png'"></a>
+                <div class="footer-nav">
+                    <a href="../index2.html" class="footer-link">Home</a>
+                    <a href="sessions.html" class="footer-link">Sessions</a>
+                    <a href="domains.html" class="footer-link">Learning Tracks</a>
+                    <a href="announcements.html" class="footer-link">Announcements</a>
+                    <a href="gallery.html" class="footer-link">Gallery</a>
+                    <a href="team.html" class="footer-link">Team</a>
+                    <a href="about.html" class="footer-link">About</a>
+                </div>
+            </div>
+            <div class="footer-copy">
+                <span>Â© 2026 Z Sphere Technology & Learning Community. All rights reserved.</span>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="../js/config.js"></script>
+    <script src="../js/supabase-client.js"></script>
+    <script src="../js/app.js"></script>
+    <script src="../js/ui.js"></script>
+    <script src="../js/auth.js"></script>
+    <script src="../js/data-service.js"></script>
+    <script src="../js/navigation.js"></script>
+    <script src="../js/motion.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', async function () {
+            if (!window.ZSphereDataService) return;
+
+            const leadsGrid = document.getElementById('leadership-team-grid');
+            const coreGrid = document.getElementById('core-team-grid');
+
+            if (leadsGrid && window.ZSphereUI) window.ZSphereUI.renderLoadingSkeleton(leadsGrid, 2, 'card');
+            if (coreGrid && window.ZSphereUI) window.ZSphereUI.renderLoadingSkeleton(coreGrid, 3, 'card');
+
+            try {
+                const members = await window.ZSphereDataService.getTeamMembers();
+
+                function renderMemberCard(m) {
+                    const initials = m.name ? m.name.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase() : 'ZS';
+                    const photoUrl = m.photo_path ? window.ZSphereDataService.getPublicMediaUrl(m.photo_path) : null;
+                    const roleTitle = m.role_title || m.role || 'Team Member';
+                    const linkedin = m.linkedin_url || m.linkedin;
+                    const github = m.github_url || m.github;
+
+                    return `
+                        <article class="team-card">
+                            <div class="team-avatar">
+                                ${photoUrl ? `<img src="${photoUrl}" alt="${window.ZSphereApp.escapeHtml(m.name)}" class="team-avatar-img" data-fallback-text="${window.ZSphereApp.escapeHtml(initials)}">` : initials}
+                            </div>
+                            <h3 class="card-title text-center mb-1">${window.ZSphereApp.escapeHtml(m.name)}</h3>
+                            <div class="text-primary text-sm text-center font-semibold mb-1">${window.ZSphereApp.escapeHtml(roleTitle)}</div>
+                            <p class="body-text text-sm text-center mb-3">${window.ZSphereApp.escapeHtml(m.bio || '')}</p>
+                            <div class="d-flex gap-2 justify-center flex-wrap">
+                                ${linkedin ? `<a href="${window.ZSphereApp.sanitizeUrl(linkedin)}" target="_blank" rel="noopener noreferrer" class="btn btn-secondary btn-sm" aria-label="${window.ZSphereApp.escapeHtml(m.name)} LinkedIn Profile">LinkedIn</a>` : ''}
+                                ${github ? `<a href="${window.ZSphereApp.sanitizeUrl(github)}" target="_blank" rel="noopener noreferrer" class="btn btn-secondary btn-sm" aria-label="${window.ZSphereApp.escapeHtml(m.name)} GitHub Profile">GitHub</a>` : ''}
+                            </div>
+                        </article>
+                    `;
+                }
+
+                const leads = members.filter(m => (m.group_name || m.group || '').toLowerCase().includes('lead'));
+                const core = members.filter(m => !(m.group_name || m.group || '').toLowerCase().includes('lead'));
+
+                if (leadsGrid) {
+                    leadsGrid.innerHTML = leads.length > 0 ? leads.map(renderMemberCard).join('') : '<p class="text-muted text-center">No leadership entries found.</p>';
+                }
+
+                if (coreGrid) {
+                    coreGrid.innerHTML = core.length > 0 ? core.map(renderMemberCard).join('') : '<p class="text-muted text-center">No core team entries found.</p>';
+                }
+            } catch (err) {
+                console.error('Error fetching team members:', err);
+                if (leadsGrid && window.ZSphereUI) {
+                    window.ZSphereUI.renderErrorState(leadsGrid, 'Could not load team members', 'Please check your connection and try again.');
+                }
+            }
+        });
+    </script>
+</body>
+</html>
+

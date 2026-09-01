@@ -1,0 +1,162 @@
+﻿<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Team â€” Z Sphere Admin</title>
+    <meta name="color-scheme" content="light">
+    <meta name="theme-color" content="#ffffff">
+    <meta name="description" content="Add and edit Z Sphere student team leads, roles, and profiles.">
+    <link rel="stylesheet" href="../css/base.css">
+    <link rel="stylesheet" href="../css/components.css">
+    <link rel="stylesheet" href="../css/admin.css">
+    <link rel="stylesheet" href="../css/responsive.css">
+    <link rel="stylesheet" href="../css/polish.css">
+    <link rel="stylesheet" href="../css/cerebras-theme.css">
+</head>
+<body>
+
+    <a href="#main-content" class="skip-link">Skip to main content</a>
+
+    <!-- Header -->
+    <header class="site-header">
+        <div class="container header-inner">
+            <a href="../index2.html" class="brand">
+                <img src="../logo text.png" alt="Z Sphere Logo" class="brand-logo">
+                
+            </a>
+            <div class="header-actions">
+                <a href="../index2.html" class="btn btn-secondary btn-sm return-web-btn" aria-label="Return to Website">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+                    <span class="return-text-desktop">Return to Website</span>
+                    <span class="return-text-mobile">Website</span>
+                </a>
+                <span class="admin-sidebar-badge">Administrator</span>
+                <button type="button" data-zsphere-signout class="btn btn-secondary btn-sm">Sign Out</button>
+            </div>
+        </div>
+    </header>
+
+    <div class="admin-layout">
+        <!-- Admin Sidebar -->
+        <aside class="admin-sidebar" aria-label="Admin Navigation">
+            <div class="admin-sidebar-brand">
+                <span class="font-bold text-navy text-sm">Control Center</span>
+                <span class="admin-sidebar-badge ml-auto">v2.0</span>
+            </div>
+            <a href="admin.html" class="admin-nav-item">
+                <span class="admin-nav-icon" aria-hidden="true">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="12" width="4" height="8" rx="1"></rect><rect x="10" y="8" width="4" height="12" rx="1"></rect><rect x="17" y="4" width="4" height="16" rx="1"></rect></svg>
+                </span>
+                <span>Dashboard Overview</span>
+            </a>
+            <a href="admin-events.html" class="admin-nav-item">
+                <span class="admin-nav-icon" aria-hidden="true">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+                </span>
+                <span>Manage Sessions</span>
+            </a>
+            <a href="admin-registrations.html" class="admin-nav-item">
+                <span class="admin-nav-icon" aria-hidden="true">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+                </span>
+                <span>Registrations</span>
+            </a>
+            <a href="admin-announcements.html" class="admin-nav-item">
+                <span class="admin-nav-icon" aria-hidden="true">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
+                </span>
+                <span>Announcements</span>
+            </a>
+            <a href="admin-gallery.html" class="admin-nav-item">
+                <span class="admin-nav-icon" aria-hidden="true">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
+                </span>
+                <span>Photo Gallery</span>
+            </a>
+            <a href="admin-team.html" class="admin-nav-item active">
+                <span class="admin-nav-icon" aria-hidden="true">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+                </span>
+                <span>Student Team</span>
+            </a>
+        </aside>
+
+        <!-- Admin Main Content -->
+        <main class="admin-main" id="main-content">
+            <div class="admin-page-header">
+                <div class="admin-page-title-wrap">
+                    <h1 class="admin-page-title">Manage Student Team</h1>
+                    <p class="admin-page-desc">Add team organizers, update leadership roles, and manage bios.</p>
+                </div>
+            </div>
+
+            <!-- Add Member Form -->
+            <div class="admin-card-section">
+                <h2 class="admin-section-title">Add Team Member</h2>
+                <form id="admin-team-form">
+                    <div class="form-grid-3">
+                        <div class="form-group">
+                            <label class="form-label" for="team-name">Full Name <span class="required">*</span></label>
+                            <input type="text" id="team-name" class="form-control" placeholder="Aarav Sharma" required maxlength="100" autocomplete="name">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="team-role">Role Title <span class="required">*</span></label>
+                            <input type="text" id="team-role" class="form-control" placeholder="Community Lead" required maxlength="100" autocomplete="organization-title">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="team-group">Group Category</label>
+                            <select id="team-group" class="form-control">
+                                <option value="leadership">Leadership</option>
+                                <option value="core">Core Team</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-grid-3 mt-3">
+                        <div class="form-group">
+                            <label class="form-label" for="team-linkedin">LinkedIn Profile URL</label>
+                            <input type="url" id="team-linkedin" class="form-control" placeholder="https://linkedin.com/in/username">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="team-github">GitHub Profile URL</label>
+                            <input type="url" id="team-github" class="form-control" placeholder="https://github.com/username">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="team-photo-file">Photo Upload</label>
+                            <input type="file" id="team-photo-file" class="form-control" accept="image/jpeg,image/png,image/webp,image/avif">
+                        </div>
+                    </div>
+
+                    <div class="form-group mt-3">
+                        <label class="form-label" for="team-bio">Short Bio</label>
+                        <textarea id="team-bio" class="form-control text-area-sm" placeholder="Brief background..."></textarea>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary mt-3">Add Team Member</button>
+                </form>
+            </div>
+
+            <!-- Existing Team Roster -->
+            <div class="admin-card-section">
+                <h2 class="admin-section-title">Team Roster</h2>
+                <div id="admin-team-container" aria-live="polite">
+                    <!-- Rendered by js/admin.js -->
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="../js/config.js"></script>
+    <script src="../js/supabase-client.js"></script>
+    <script src="../js/app.js"></script>
+    <script src="../js/ui.js"></script>
+    <script src="../js/auth.js"></script>
+    <script src="../js/data-service.js"></script>
+    <script src="../js/navigation.js"></script>
+    <script src="../js/motion.js"></script>
+    <script src="../js/admin.js"></script>
+</body>
+</html>
