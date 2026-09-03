@@ -1,1 +1,0 @@
-{"_id":"6583331a4f6ed39deedd833e","id":"ealvaradob/bert-finetuned-phishing","inferenceProviderMapping":{"hf-inference":{"status":"live","providerId":"ealvaradob/bert-finetuned-phishing","task":"text-classification","isModelAuthor":false}}}

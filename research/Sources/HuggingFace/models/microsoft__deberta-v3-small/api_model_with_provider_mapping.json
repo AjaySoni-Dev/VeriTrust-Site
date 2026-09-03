@@ -1,1 +1,0 @@
-{"_id":"621ffdc136468d709f17dee6","id":"microsoft/deberta-v3-small","inferenceProviderMapping":{"hf-inference":{"status":"live","providerId":"microsoft/deberta-v3-small","task":"fill-mask","isModelAuthor":false}}}
