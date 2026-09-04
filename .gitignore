@@ -16,6 +16,10 @@ output/
 coverage/
 tmp/
 *.bak
+*.tmp
+*.tsbuildinfo
+/playwright-report/
+/test-results/
 
 # Runtime and debug output
 *.log
