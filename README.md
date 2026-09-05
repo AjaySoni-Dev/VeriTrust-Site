@@ -118,7 +118,7 @@ Clean public routes include:
 /api/health
 ```
 
-For a deeper technical breakdown, see [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md).
+This README is the maintained architecture and deployment overview for the current repository.
 
 ---
 
@@ -216,7 +216,7 @@ The implementation prioritizes:
 
 These display names are deployment aliases, not qualified scientific model identities. Provider repository identifiers are not stored in frontend code, returned in public scan payloads, or listed in public site documentation.
 
-The implementation-ready target model roles, pinned-revision requirements, adapter constraints, benchmark gates, calibration rules, and acquisition priorities are documented in [`output/pdfs/VeriTrust_Hugging_Face_Model_Research_and_Acquisition_Guide.pdf`](output/pdfs/VeriTrust_Hugging_Face_Model_Research_and_Acquisition_Guide.pdf). Do not place a newly researched model ID in an existing alias variable until its task, processor, label contract, runtime adapter, benchmark, and calibration gates are complete.
+Model roles and runtime contracts are enforced by the committed files in `config/` and `lib/model-contracts.js`. Do not place a newly researched model ID in an existing alias variable until its task, processor, label contract, runtime adapter, benchmark, and calibration gates are complete.
 
 ---
 
@@ -316,7 +316,7 @@ STRIPE_SECRET_KEY=
 STRIPE_WEBHOOK_SECRET=
 ```
 
-Use exactly one of `HF_ACCESS_TOKEN` or `HF_TOKEN`; `HF_TOKEN` takes precedence if both are present. MailGuard and Swift repository IDs, immutable revisions, label maps, site origin, allowed origins, and Gateway execution limits are pinned in source and require no Vercel variables; see [`docs/MODEL_REGISTRY.md`](docs/MODEL_REGISTRY.md). Model paths can alternatively be supplied through `HF_MODEL_PATHS`, with `HF_MODEL_PATH` retained only as a legacy Pixel fallback. Keep every populated value in Vercel Environment Variables or an ignored local environment file.
+Use exactly one of `HF_ACCESS_TOKEN` or `HF_TOKEN`; `HF_TOKEN` takes precedence if both are present. MailGuard and Swift repository IDs, immutable revisions, label maps, site origin, allowed origins, and Gateway execution limits are pinned in `config/` and `lib/config.js` and require no Vercel variables. Model paths can alternatively be supplied through `HF_MODEL_PATHS`, with `HF_MODEL_PATH` retained only as a legacy Pixel fallback. Keep every populated value in Vercel Environment Variables or an ignored local environment file.
 
 > [!WARNING]
 > Never expose Supabase service credentials, provider tokens, Stripe secrets, gateway keys, or learning-preview secrets in browser JavaScript.
@@ -355,7 +355,7 @@ A configured runtime returns a public health response without exposing private d
 
 ### Database requirement
 
-The application expects an existing Supabase project compatible with [`docs/database-schema.json`](docs/database-schema.json). Apply the reviewed migrations in [`migrations/`](migrations/), including the final direct-module alignment migration, through the controlled database release workflow. Do not reconstruct production SQL from a schema inventory.
+The application expects a separately managed Supabase project compatible with the tables and RPC contracts used by `lib/supabase-server.js`. Database migrations are intentionally not shipped in this application repository; apply only reviewed migrations from the controlled database release source.
 
 ---
 
@@ -468,7 +468,7 @@ GET  /api/v2/phishing/evidence/{scan_id}
 POST /internal/v2/phishing/receiver-event
 ```
 
-Plain text makes no header or authentication claims. Raw EML is hashed before bounded streaming MIME parsing and uses private temporary storage. Trusted receiver events add verifiable SMTP facts. Deepfake is disabled and never receives email attachments; Link remains the URL specialist. See [`docs/EMAIL_FORENSICS.md`](docs/EMAIL_FORENSICS.md) and [`openapi/veritrust-email-v2.yaml`](openapi/veritrust-email-v2.yaml).
+Plain text makes no header or authentication claims. Raw EML is hashed before bounded streaming MIME parsing and uses private temporary storage. Trusted receiver events add verifiable SMTP facts. Deepfake is disabled and never receives email attachments; Link remains the URL specialist. The current request and response contract is defined in [`openapi/veritrust-email-v2.yaml`](openapi/veritrust-email-v2.yaml).
 
 ### Health Check
 
@@ -618,8 +618,7 @@ https://www.veritrustlab.in
 
 If the production domain changes, update page canonicals, JSON-LD, `robots.txt`, `sitemap.xml`, the pinned site URL and allowed origins in `lib/config.js`, and the public-page map in `scripts/verify.js` together.
 
-Complete deployment instructions are available in [`docs/DEPLOYMENT.md`](docs/DEPLOYMENT.md).
-The final MailGraph direct-module release is documented in [`docs/PHISHING_GATEWAY_RELEASE.md`](docs/PHISHING_GATEWAY_RELEASE.md).
+The environment, validation, health-check, and production-domain steps above are the maintained deployment instructions for this repository.
 
 ---
 

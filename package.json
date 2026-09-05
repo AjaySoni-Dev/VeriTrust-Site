@@ -24,5 +24,9 @@
   },
   "engines": {
     "node": "24.x"
+  },
+  "devDependencies": {
+    "@types/node": "^24.13.3",
+    "typescript": "^5.9.3"
   }
 }

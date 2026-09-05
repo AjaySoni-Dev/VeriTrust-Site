@@ -4,7 +4,8 @@ const crypto = require('node:crypto');
 const { spawnSync } = require('node:child_process');
 
 const root = path.resolve(__dirname, '..');
-const ignoredDirectories = new Set(['.git', '.vercel', 'coverage', 'node_modules', 'output', 'tmp']);
+const ignoredDirectories = new Set(['.git', '.vercel', 'coverage', 'css', 'js', 'node_modules', 'output', 'pages', 'tmp']);
+const ignoredFiles = new Set(['detection-hub.css', 'index2.html', 'report_print.html']);
 const textExtensions = new Set([
   '.css', '.html', '.js', '.json', '.md', '.ts', '.txt', '.webmanifest', '.xml', '.yaml', '.yml',
 ]);
@@ -18,6 +19,7 @@ function walk(directory = root) {
   const files = [];
   for (const entry of fs.readdirSync(directory, { withFileTypes: true })) {
     if (entry.isDirectory() && ignoredDirectories.has(entry.name)) continue;
+    if (directory === root && entry.isFile() && ignoredFiles.has(entry.name)) continue;
     const absolute = path.join(directory, entry.name);
     if (entry.isDirectory()) files.push(...walk(absolute));
     else if (entry.isFile()) files.push(absolute);

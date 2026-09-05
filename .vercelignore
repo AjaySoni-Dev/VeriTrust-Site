@@ -15,3 +15,11 @@ openapi/
 private/
 *.md
 LICENSE
+
+# Legacy Z-Sphere snapshot retained in Git history, never shipped by VeriTrust.
+/css/
+/js/
+/pages/
+/index2.html
+/report_print.html
+/detection-hub.css
