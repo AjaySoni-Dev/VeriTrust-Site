@@ -163,96 +163,32 @@ Write-Host "Authenticated with VeriTrust." -ForegroundColor Green</code></pre>
             <span class="ps-step-number">03</span>
             <div><p class="eyebrow">Core SIH workflow</p><h2>Investigate email text or an .eml file</h2></div>
           </div>
-          <p class="ps-lead">Add this function once per PowerShell session. It sends pasted text or the exact bytes of an original email through the Unified Gateway and returns a clear result, risk score, recommended action, and report ID.</p>
+          <p class="ps-lead">Load the verified VeriTrust email command once per PowerShell session. It sends pasted text or the exact bytes of an original email through the Unified Gateway and returns a clear result, risk score, recommended action, and report ID.</p>
           <div class="ps-callout ps-callout-info"><strong>Which input should I use?</strong><span>Text is fastest and checks wording plus links. An <code>.eml</code> file also preserves sender verification, sender consistency, attachment details, and the recorded delivery route.</span></div>
           <div class="ps-code-card">
-            <div class="ps-code-head"><div><span>PowerShell</span><strong>Create the email investigation command</strong></div><button type="button" data-copy-code>Copy block</button></div>
-            <pre><code>function Invoke-VeriTrustEmailInvestigation {
-    [CmdletBinding(DefaultParameterSetName = "Text")]
-    param(
-        [Parameter(Mandatory, ParameterSetName = "Text")]
-        [ValidateLength(1, 12000)]
-        [string] $Body,
+            <div class="ps-code-head"><div><span>PowerShell</span><strong>Load and verify the email investigation command</strong></div><button type="button" data-copy-code>Copy block</button></div>
+            <pre><code>$CommandUrl = "$BaseUrl/assets/powershell/VeriTrust.EmailInvestigation.ps1"
+$CommandPath = Join-Path ([IO.Path]::GetTempPath()) "VeriTrust.EmailInvestigation.ps1"
 
-        [Parameter(ParameterSetName = "Text")]
-        [ValidateLength(0, 998)]
-        [string] $Subject = "",
+Invoke-WebRequest `
+    -Uri $CommandUrl `
+    -OutFile $CommandPath `
+    -UseBasicParsing `
+    -ErrorAction Stop
 
-        [Parameter(Mandatory, ParameterSetName = "Eml")]
-        [string] $EmlPath
-    )
-
-    if ([string]::IsNullOrWhiteSpace($ApiKey)) {
-        throw "Run the secure setup block first."
-    }
-
-    $RequestHeaders = @{
-        Authorization      = "Bearer $ApiKey"
-        "Idempotency-Key" = [Guid]::NewGuid().ToString()
-    }
-
-    if ($PSCmdlet.ParameterSetName -eq "Eml") {
-        if (-not (Test-Path -LiteralPath $EmlPath -PathType Leaf)) {
-            throw "Email file not found: $EmlPath"
-        }
-
-        $EmailFile = Get-Item -LiteralPath $EmlPath
-        if ($EmailFile.Extension -ne ".eml") {
-            throw "Choose a file with the .eml extension."
-        }
-        if ($EmailFile.Length -lt 1 -or $EmailFile.Length -gt 10MB) {
-            throw "The .eml file must contain data and must not exceed 10 MB."
-        }
-
-        $Response = Invoke-RestMethod `
-            -Method Post `
-            -Uri "$BaseUrl/api/v1/gateway/email/analyze-eml" `
-            -Headers $RequestHeaders `
-            -ContentType "message/rfc822" `
-            -InFile $EmailFile.FullName `
-            -ErrorAction Stop
-    }
-    else {
-        $Payload = @{
-            subject          = $Subject
-            body             = $Body
-            channel          = "email"
-            retention_policy = "metadata_only"
-        }
-
-        $Response = Invoke-RestMethod `
-            -Method Post `
-            -Uri "$BaseUrl/api/v1/gateway/email/analyze-text" `
-            -Headers $RequestHeaders `
-            -ContentType "application/json" `
-            -Body ($Payload | ConvertTo-Json -Compress) `
-            -ErrorAction Stop
-    }
-
-    $Evidence = $Response.evidence
-    $Decision = $Response.gateway_decision
-    $ResultLabel = switch ([string] $Evidence.state) {
-        "LIKELY_PHISHING" { "Likely phishing" }
-        "LIKELY_BENIGN"   { "No strong phishing signs found" }
-        "UNCERTAIN"       { "Needs a closer look" }
-        "UNSUPPORTED"     { "Could not fully check this email" }
-        default            { "Check could not be completed" }
-    }
-
-    [PSCustomObject] @{
-        Result            = $ResultLabel
-        RiskPercent       = [Math]::Round(([double] $Decision.risk * 100), 1)
-        RecommendedAction = [string] $Decision.recommendation
-        InputType         = [string] $Evidence.input_mode
-        MissingChecks     = @($Evidence.limitations).Count
-        ReportId          = [string] $Response.scan_id
-        TechnicalReport   = $Response
-    }
-}</code></pre>
+. $CommandPath
+Get-Command Invoke-VeriTrustEmailInvestigation -ErrorAction Stop</code></pre>
           </div>
+          <div class="ps-callout ps-callout-success"><strong>Expected output</strong><span>PowerShell displays <code>Invoke-VeriTrustEmailInvestigation</code> with command type <code>Function</code>. You can also <a href="/assets/powershell/VeriTrust.EmailInvestigation.ps1" download>download the command script</a>, review it, and dot-source it locally.</span></div>
           <div class="ps-code-card ps-code-card-compact">
             <div class="ps-code-head"><div><span>PowerShell</span><strong>Option A: investigate pasted email text</strong></div><button type="button" data-copy-code>Copy block</button></div>
-            <pre><code>$EmailText = @"
+            <pre><code>if (-not (Get-Command Invoke-VeriTrustEmailInvestigation -ErrorAction SilentlyContinue)) {
+    $CommandPath = Join-Path ([IO.Path]::GetTempPath()) "VeriTrust.EmailInvestigation.ps1"
+    Invoke-WebRequest -Uri "$BaseUrl/assets/powershell/VeriTrust.EmailInvestigation.ps1" -OutFile $CommandPath -UseBasicParsing -ErrorAction Stop
+    . $CommandPath
+}
+
+$EmailText = @"
 URGENT: Your Microsoft 365 account will be suspended today.
 Confirm your password immediately using the verification link.
 "@
@@ -267,8 +203,13 @@ $EmailResult | Select-Object `
           </div>
           <div class="ps-code-card ps-code-card-compact">
             <div class="ps-code-head"><div><span>PowerShell</span><strong>Option B: upload an original .eml file</strong></div><button type="button" data-copy-code>Copy block</button></div>
-            <pre><code>$EmailResult = Invoke-VeriTrustEmailInvestigation `
-    -EmlPath "C:\SecurityTests\suspicious-email.eml"
+            <pre><code>if (-not (Get-Command Invoke-VeriTrustEmailInvestigation -ErrorAction SilentlyContinue)) {
+    $CommandPath = Join-Path ([IO.Path]::GetTempPath()) "VeriTrust.EmailInvestigation.ps1"
+    Invoke-WebRequest -Uri "$BaseUrl/assets/powershell/VeriTrust.EmailInvestigation.ps1" -OutFile $CommandPath -UseBasicParsing -ErrorAction Stop
+    . $CommandPath
+}
+
+$EmailResult = Invoke-VeriTrustEmailInvestigation -EmlPath "C:\SecurityTests\suspicious-email.eml"
 
 $EmailResult | Select-Object `
     Result, RiskPercent, RecommendedAction, InputType, MissingChecks, ReportId |
@@ -798,6 +739,7 @@ $History.scans |
             <div><p class="eyebrow">Recovery</p><h2>Common errors</h2></div>
           </div>
           <div class="ps-accordion-list">
+            <details open><summary><span>CMD</span> Invoke-VeriTrustEmailInvestigation is not recognized</summary><p>The command script has not been loaded in this PowerShell session. Run the “Load and verify” block above, then confirm that <code>Get-Command Invoke-VeriTrustEmailInvestigation</code> returns a Function. The text and .eml examples now load it automatically when it is missing.</p></details>
             <details><summary><span>401</span> This endpoint requires a valid Bearer token</summary><p>The key is missing, invalid, expired, or revoked. Create a new organization API key and rerun the secure setup block. Do not type the key inside the <code>Read-Host</code> prompt label.</p></details>
             <details><summary><span>403</span> API key has no gateway permissions</summary><p>Create a new key after gateway access is enabled. It must include <code>gateway:scan</code>, <code>gateway:read</code>, and <code>gateway:cancel</code>.</p></details>
             <details><summary><span>409</span> Idempotency conflict</summary><p>Reuse an idempotency key only when retrying the exact same request body. Generate a new GUID when the content changes.</p></details>
