@@ -32,7 +32,7 @@
   <script src="/assets/js/core/reporting.js" defer></script>
   <script src="/assets/js/core/site.js" defer></script>
   <link rel="stylesheet" href="/assets/css/base/glass-system.css">
-  <link rel="stylesheet" href="/assets/css/pages/detection-hub.css?v=20260830-final3">
+  <link rel="stylesheet" href="/assets/css/pages/detection-hub.css?v=20260905-final">
 </head>
 <body class="vt-graphite-theme vt-detection-page">
     <header class="tool-header-shell vt-page-header">
@@ -65,81 +65,76 @@
 
   <main class="tool-hub detection-hub">
     <section class="detection-intro" aria-labelledby="detection-page-title">
-      <div>
-        <p class="eyebrow">Detection platform</p>
-        <h1 id="detection-page-title">Email threat detection and forensic intelligence.</h1>
+      <p class="eyebrow">SIH email security workspace</p>
+      <h1 id="detection-page-title">Investigate suspicious email with evidence you can explain.</h1>
+      <p class="lead">Start with pasted text or the original email file. VeriTrust turns the available evidence into a clear result, practical next steps, and a downloadable report.</p>
+      <div class="intro-assurances" aria-label="Investigation benefits">
+        <span>Text or original email</span>
+        <span>Plain-language findings</span>
+        <span>Light PDF report</span>
       </div>
     </section>
 
-    <div class="detection-workspace">
-      <section class="core-module" aria-labelledby="core-module-title">
-        <div class="core-main">
-          <div class="core-module-heading">
-            <span class="core-module-icon" aria-hidden="true">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3.5 6.5h17v11h-17z"/><path d="m4 7 8 6 8-6"/><path d="M17.5 3.5 20 6l-2.5 2.5"/></svg>
-            </span>
-            <div>
-              <p class="core-label">Primary module <span>Operational</span></p>
-              <h2 id="core-module-title">AI Email Threat &amp; Forensic Intelligence</h2>
-            </div>
-          </div>
-          <p class="core-summary">Investigate message content or raw <code>.eml</code> evidence with AI risk scoring, authentication checks, sender and URL analysis, infrastructure context, and available geolocation signals.</p>
-          <ul class="core-capabilities" aria-label="Core capabilities">
-            <li><span aria-hidden="true"></span>Email threat scoring</li>
-            <li><span aria-hidden="true"></span>SPF, DKIM &amp; DMARC evidence</li>
-            <li><span aria-hidden="true"></span>IP &amp; geolocation context</li>
-            <li><span aria-hidden="true"></span>Forensic evidence graph</li>
-          </ul>
-        </div>
-
-        <div class="core-side">
-          <p class="core-side-title">Investigation coverage</p>
-          <dl class="core-coverage" aria-label="Investigation coverage">
-            <div><dt>Content</dt><dd>AI + rules</dd></div>
-            <div><dt>Authentication</dt><dd>SPF / DKIM / DMARC</dd></div>
-            <div><dt>Network</dt><dd>IP + GeoIP</dd></div>
-            <div><dt>Output</dt><dd>Evidence report</dd></div>
-          </dl>
-          <div class="core-actions">
-            <a class="btn btn-primary" href="phishing.html">Launch email investigation <span aria-hidden="true">&rarr;</span></a>
-            <a class="btn btn-secondary" href="gateway-powershell.html#phishing">Run with PowerShell</a>
-          </div>
-          <p class="core-disclaimer">AI-assisted results support human review and are not proof of safety.</p>
-        </div>
-      </section>
-
-      <section class="additional-modules" aria-labelledby="additional-modules-title">
-        <div class="section-heading-row">
+    <section class="core-module" aria-labelledby="core-module-title">
+      <div class="core-main">
+        <div class="core-module-heading">
+          <span class="core-module-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3.5 6.5h17v11h-17z"/><path d="m4 7 8 6 8-6"/><path d="M17.5 3.5 20 6l-2.5 2.5"/></svg>
+          </span>
           <div>
-            <h2 id="additional-modules-title">Additional modules</h2>
+            <p class="core-label">Primary investigation <span>Ready</span></p>
+            <h2 id="core-module-title">Email phishing investigation</h2>
           </div>
         </div>
-
-        <div class="choice-grid" aria-label="Additional detection modules">
-          <a class="choice-card" href="gateway.html" data-module="gateway">
-            <span class="module-icon">G</span>
-            <span class="choice-copy"><h3>Unified Security Gateway</h3><p>Correlate message, URL, and media evidence.</p></span>
-            <span class="choice-action">Open</span>
-          </a>
-
-          <a class="choice-card" href="link-check.html" data-module="link">
-            <span class="module-icon">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 0 0 7.1 0l2-2a5 5 0 0 0-7.1-7.1l-1.1 1.1"/><path d="M14 11a5 5 0 0 0-7.1 0l-2 2a5 5 0 0 0 7.1 7.1l1.1-1.1"/></svg>
-            </span>
-            <span class="choice-copy"><h3>Link Intelligence</h3><p>Inspect URLs without opening their destinations.</p></span>
-            <span class="choice-action">Open</span>
-          </a>
-
-          <a class="choice-card" href="deepfake.html" data-module="deepfake">
-            <span class="module-icon">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="10" r="2"/><path d="M21 16l-5-5L5 20"/></svg>
-            </span>
-            <span class="choice-copy"><h3>Image Deepfake Review</h3><p>Compare real and synthetic-media model scores.</p></span>
-            <span class="choice-action">Open</span>
-          </a>
+        <p class="core-summary">Check what the message says, whether the sender details agree, which links or attachments it contains, and how it reached the mailbox. Every specialist term in the result includes a short explanation.</p>
+        <ol class="investigation-steps" aria-label="Investigation process">
+          <li><span>1</span><div><strong>Add the email</strong><small>Paste its text or choose the original file.</small></div></li>
+          <li><span>2</span><div><strong>Review the evidence</strong><small>See the result, missing checks, and recommended action.</small></div></li>
+          <li><span>3</span><div><strong>Save the report</strong><small>Download a light PDF with a final glossary.</small></div></li>
+        </ol>
+        <div class="core-actions">
+          <a class="btn btn-primary" href="phishing.html">Start email investigation <span aria-hidden="true">&rarr;</span></a>
+          <a class="btn btn-secondary" href="gateway-powershell.html#phishing">Use PowerShell</a>
         </div>
-      </section>
-    </div>
+        <p class="core-disclaimer">VeriTrust supports human review and never treats an incomplete check as proof that an email is safe.</p>
+      </div>
+
+      <aside class="core-side" aria-labelledby="report-includes-title">
+        <p class="core-side-title">Your result</p>
+        <h3 id="report-includes-title">What you will receive</h3>
+        <ul class="result-includes">
+          <li><span aria-hidden="true">01</span><div><strong>A clear overall result</strong><small>Risk level and the safest recommended next step.</small></div></li>
+          <li><span aria-hidden="true">02</span><div><strong>Evidence that supports it</strong><small>Message tactics, sender details, links, files, and delivery records.</small></div></li>
+          <li><span aria-hidden="true">03</span><div><strong>Visible evidence gaps</strong><small>Unavailable checks are shown instead of being treated as safe.</small></div></li>
+          <li><span aria-hidden="true">04</span><div><strong>A judge-ready PDF</strong><small>Light theme, complete technical appendix, and plain-language glossary.</small></div></li>
+        </ul>
+        <div class="pdf-note"><strong>Designed for sharing</strong><p>The PDF keeps the complete returned evidence while explaining unfamiliar terms on its final pages.</p></div>
+      </aside>
+    </section>
+
+    <section class="additional-modules" aria-labelledby="additional-modules-title">
+      <div class="section-heading-row">
+        <div><p class="eyebrow">More security tools</p><h2 id="additional-modules-title">Continue with another investigation</h2></div>
+        <p>Email forensics stays the primary SIH workflow. These focused tools remain available when the case needs them.</p>
+      </div>
+      <div class="choice-grid" aria-label="Additional detection modules">
+        <a class="choice-card" href="gateway.html" data-module="gateway">
+          <span class="module-icon">G</span>
+          <span class="choice-copy"><h3>Unified Security Gateway</h3><p>Bring message, link, and media findings into one decision.</p></span>
+          <span class="choice-action">Open module <span aria-hidden="true">&rarr;</span></span>
+        </a>
+        <a class="choice-card" href="link-check.html" data-module="link">
+          <span class="module-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 0 0 7.1 0l2-2a5 5 0 0 0-7.1-7.1l-1.1 1.1"/><path d="M14 11a5 5 0 0 0-7.1 0l-2 2a5 5 0 0 0 7.1 7.1l1.1-1.1"/></svg></span>
+          <span class="choice-copy"><h3>Link investigation</h3><p>Check a web address without opening its destination.</p></span>
+          <span class="choice-action">Open module <span aria-hidden="true">&rarr;</span></span>
+        </a>
+        <a class="choice-card" href="deepfake.html" data-module="deepfake">
+          <span class="module-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="10" r="2"/><path d="M21 16l-5-5L5 20"/></svg></span>
+          <span class="choice-copy"><h3>Image authenticity review</h3><p>Review whether an image shows signs of synthetic generation.</p></span>
+          <span class="choice-action">Open module <span aria-hidden="true">&rarr;</span></span>
+        </a>
+      </div>
+    </section>
   </main>
   <footer class="legal-footer">
     <a href="privacy.html">Privacy</a><span aria-hidden="true">&middot;</span><a href="terms.html">Terms</a><span aria-hidden="true">&middot;</span><a href="security.html">Security</a><span aria-hidden="true">&middot;</span><a href="disclaimer.html">Disclaimer</a><span aria-hidden="true">&middot;</span><a href="docs.html">Docs</a><span aria-hidden="true">&middot;</span><a href="developers.html">Developers</a><span aria-hidden="true">&middot;</span><a href="model-performance.html">Model Performance</a>

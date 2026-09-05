@@ -277,6 +277,7 @@
           <p>${escapeHtml(stateCopy)}</p>
           <div class="email-result-actions">
             <a class="btn btn-primary" href="gateway.html?scan_id=${encodeURIComponent(payload.scan_id || '')}">View full report</a>
+            <button class="btn btn-secondary email-pdf-download" type="button" data-download-email-pdf>Download light PDF report</button>
             ${['manual_review', 'hold', 'quarantine', 'block'].includes(decision.recommendation) ? '<a class="btn btn-secondary" href="cases.html">Send to case review</a>' : ''}
             <button class="btn btn-secondary" type="button" data-copy-scan>Copy report ID</button>
           </div>
@@ -300,6 +301,22 @@
       if (!state.lastScanId) return;
       await global.navigator.clipboard.writeText(state.lastScanId);
       event.currentTarget.textContent = 'Report ID copied';
+    });
+    one('[data-download-email-pdf]', target)?.addEventListener('click', (event) => {
+      const button = event.currentTarget;
+      const originalLabel = button.textContent;
+      button.disabled = true;
+      button.textContent = 'Preparing PDF...';
+      try {
+        if (!global.VeriTrustEmailPdf?.downloadEmailReportPdf) throw new Error('The PDF report service did not load.');
+        global.VeriTrustEmailPdf.downloadEmailReportPdf(payload);
+        button.textContent = 'PDF downloaded';
+        global.setTimeout(() => { button.textContent = originalLabel; button.disabled = false; }, 2200);
+      } catch (error) {
+        button.textContent = 'PDF could not be created';
+        setError(`${error.message} Try again or use View full report.`);
+        global.setTimeout(() => { button.textContent = originalLabel; button.disabled = false; }, 3200);
+      }
     });
     shell.scrollIntoView({ behavior: global.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'start' });
   }
