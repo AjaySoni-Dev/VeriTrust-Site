@@ -302,14 +302,14 @@
       await global.navigator.clipboard.writeText(state.lastScanId);
       event.currentTarget.textContent = 'Report ID copied';
     });
-    one('[data-download-email-pdf]', target)?.addEventListener('click', (event) => {
+    one('[data-download-email-pdf]', target)?.addEventListener('click', async (event) => {
       const button = event.currentTarget;
       const originalLabel = button.textContent;
       button.disabled = true;
       button.textContent = 'Preparing PDF...';
       try {
         if (!global.VeriTrustEmailPdf?.downloadEmailReportPdf) throw new Error('The PDF report service did not load.');
-        global.VeriTrustEmailPdf.downloadEmailReportPdf(payload);
+        await global.VeriTrustEmailPdf.downloadEmailReportPdf(payload);
         button.textContent = 'PDF downloaded';
         global.setTimeout(() => { button.textContent = originalLabel; button.disabled = false; }, 2200);
       } catch (error) {

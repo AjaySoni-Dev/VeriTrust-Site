@@ -44,6 +44,7 @@ test('Email investigation UI uses the Gateway aliases and accessible contextual 
   assert.match(script, /email-help-button/u);
   assert.match(page, /email-report-pdf\.js/u);
   assert.match(script, /data-download-email-pdf/u);
+  assert.match(script, /await global\.VeriTrustEmailPdf\.downloadEmailReportPdf/u);
 });
 
 test('Email investigation builds a light PDF with complete evidence and a final glossary', () => {
@@ -66,10 +67,21 @@ test('Email investigation builds a light PDF with complete evidence and a final 
   const content = Buffer.from(bytes).toString('ascii');
 
   assert.match(content, /^%PDF-1\.4/u);
-  assert.match(content, /Complete technical evidence appendix/u);
-  assert.match(content, /report\.evidence\.observations\[0\]\.protocol/u);
+  assert.match(content, /FORENSIC FINDINGS/u);
+  assert.match(content, /Complete response data/u);
+  assert.match(content, /"observations":/u);
+  assert.match(content, /\/BaseFont \/Courier/u);
   assert.match(content, /Glossary: terms and meanings/u);
   assert.match(content, /SPF/u);
   assert.match(content, /Manual review/u);
   assert.ok((content.match(/\/Type \/Page\b/gu) || []).length >= 2);
+});
+
+test('Email report loads the official VeriTrust wordmark for browser downloads', () => {
+  const generator = read('assets/js/core/email-report-pdf.js');
+
+  assert.match(generator, /fetch\('\/assets\/images\/brand\.png'/u);
+  assert.match(generator, /\/ASCIIHexDecode \/DCTDecode/u);
+  assert.match(generator, /this\.image\('Logo'/u);
+  assert.match(generator, /async function downloadEmailReportPdf/u);
 });
