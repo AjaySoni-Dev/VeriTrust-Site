@@ -15,6 +15,7 @@ const MODULE_PAGE: Record<string, keyof typeof MODULES> = {
 };
 
 export const config = {
+  runtime: 'nodejs',
   matcher: [
     '/learn/:path*',
     '/learning',
