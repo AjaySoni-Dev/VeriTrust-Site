@@ -320,6 +320,18 @@
       "destination": "/api/gateway?resource=email-receiver"
     },
     {
+      "source": "/api/v1/gateway/email/analyze-text",
+      "destination": "/api/gateway?resource=email-text"
+    },
+    {
+      "source": "/api/v1/gateway/email/analyze-eml",
+      "destination": "/api/gateway?resource=email-eml"
+    },
+    {
+      "source": "/api/v1/gateway/email/evidence/:id",
+      "destination": "/api/gateway?resource=email-evidence&id=:id"
+    },
+    {
       "source": "/api/v1/gateway/policies/:id/activate",
       "destination": "/api/gateway?resource=policies&id=:id&action=activate"
     },

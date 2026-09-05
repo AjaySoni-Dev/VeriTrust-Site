@@ -5,10 +5,59 @@
   const CONFIGURATION_FAILURE_CODES = new Set(['GATEWAY_POLICY_INVALID', 'GATEWAY_POLICY_UNAVAILABLE', 'SERVER_CONFIG_ERROR']);
   const STATE_LABELS = Object.freeze({
     LIKELY_PHISHING: 'Likely phishing',
-    LIKELY_BENIGN: 'Likely benign',
-    UNCERTAIN: 'Uncertain',
-    UNSUPPORTED: 'Unsupported',
-    FAILED: 'Analysis failed',
+    LIKELY_BENIGN: 'No strong phishing signs found',
+    UNCERTAIN: 'Needs a closer look',
+    UNSUPPORTED: 'Could not fully check this email',
+    FAILED: 'Check could not be completed',
+  });
+  const HELP = Object.freeze({
+    authentication: 'Sender verification checks whether the email was authorized by the domain it claims to come from. Original email data is required for most of these checks.',
+    spf: 'SPF checks whether the sending mail server was allowed to send for the claimed domain. A saved .eml file alone cannot reliably recreate this historical check.',
+    dkim: 'DKIM checks the email\'s cryptographic signature to see whether signed parts of the message changed after the sender sent it.',
+    dmarc: 'DMARC checks whether the visible sender domain aligns with successful SPF or DKIM results and follows the domain owner\'s policy.',
+    arc: 'ARC records how earlier trusted mail systems evaluated the message while it was forwarded. It adds context but does not prove that content is safe.',
+    authResults: 'Authentication-Results is a header written by a mail server. VeriTrust treats a copied value as untrusted unless it comes directly from a configured receiver.',
+    identity: 'Sender consistency compares the visible From address with reply, return-path, signing, and linked domains to reveal unexpected mismatches.',
+    infrastructure: 'The delivery route is built from eligible public mail-server hops. It describes network infrastructure, not the sender\'s physical location.',
+    model: 'The AI content check estimates phishing likelihood from the available subject and message wording. It is one piece of evidence, not a safety guarantee.',
+    risk: 'The risk score is the Gateway\'s combined estimate from available evidence. Missing checks can reduce certainty, so always read the limitations.',
+    coverage: 'Coverage shows which checks had enough information to run. "Limited" or "not available" is an evidence gap, not a safe result.',
+    technicalCode: 'A technical code is the exact machine-readable name of a finding. It is kept in the report so another analyst or system can reproduce the decision.',
+  });
+  const PROTOCOL_HELP = Object.freeze({ SPF: HELP.spf, DKIM: HELP.dkim, DMARC: HELP.dmarc, ARC: HELP.arc, AUTHENTICATION_RESULTS: HELP.authResults });
+  const DECISION_LABELS = Object.freeze({
+    allow: 'No immediate action', warn: 'Show a warning', manual_review: 'Review manually', quarantine: 'Move to quarantine', block: 'Block the message', hold: 'Hold for review',
+  });
+  const OBSERVATION_LABELS = Object.freeze({
+    CREDENTIAL_REQUEST: 'Asks for passwords or security codes',
+    PAYMENT_REQUEST: 'Asks for money or payment',
+    URGENCY_OR_COERCION: 'Uses urgency or pressure',
+    OUT_OF_BAND_CONTACT: 'Asks to move to another contact method',
+    ATTACHMENT_LURE: 'Pushes the reader to open an attachment',
+    QR_OR_LINK_LURE: 'Pushes the reader to follow a link or QR code',
+    IMPERSONATION_CLAIM: 'Claims to represent a trusted person or team',
+    VISIBLE_URL_DIFFERS_FROM_HREF: 'Visible link and actual destination do not match',
+    OBFUSCATED_LINK_TEXT: 'Link text appears intentionally disguised',
+    HTML_HIDDEN_CONTENT: 'Email contains hidden content',
+    HTML_META_REFRESH: 'Email attempts an automatic redirect',
+    AI_INPUT_INSTRUCTION_OVERRIDE: 'Message contains instructions aimed at an AI system',
+    AI_INPUT_OBFUSCATION: 'Message contains hidden or unusual control characters',
+    UNICODE_DIRECTIONAL_CONTROL: 'Text direction controls may disguise what is shown',
+    IDENTITY_ADDRESS_MALFORMED: 'A sender address is malformed',
+    IDENTITY_DOMAIN_MIXED_SCRIPTS: 'A sender domain mixes writing systems',
+    IDENTITY_DOMAIN_CONFUSABLE: 'A sender domain may imitate another domain',
+    URL_EXTRACTION_LIMIT_REACHED: 'Too many links to check completely',
+  });
+  const LIMITATION_LABELS = Object.freeze({
+    SPF_UNAVAILABLE_WITHOUT_TRUSTED_RECEIVER_FACTS: 'SPF could not be recreated from the saved email alone.',
+    AUTHENTICATION_TIMEOUT: 'A sender-verification check took too long to finish.',
+    AUTHENTICATION_EVALUATION_FAILED: 'A sender-verification check could not be completed.',
+    AUTHOR_IDENTITY_UNAVAILABLE: 'The original sender address was not available.',
+    AMBIGUOUS_MULTIPLE_FROM: 'The email lists more than one From address.',
+    AUTHOR_DOMAIN_MALFORMED_OR_UNAVAILABLE: 'The sender domain was missing or malformed.',
+    AMBIGUOUS_MULTIPLE_REPLY_TO: 'The email lists more than one reply address.',
+    AMBIGUOUS_MULTIPLE_RETURN_PATH: 'The email lists more than one return address.',
+    AMBIGUOUS_MULTIPLE_SENDER: 'The email lists more than one sender address.',
   });
   const state = { mode: 'text', file: null, busy: false, lastScanId: null };
   const one = (selector, root = document) => root.querySelector(selector);
@@ -17,6 +66,23 @@
     '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;',
   }[character]));
   const titleCase = (value) => String(value || '').toLowerCase().replace(/_/g, ' ').replace(/\b\w/g, (letter) => letter.toUpperCase());
+
+  function helpLabel(label, help) {
+    return `<span class="email-help-term" data-email-term="${escapeHtml(label)}" data-email-help="${escapeHtml(help)}">${escapeHtml(label)}</span>`;
+  }
+
+  function friendlyCode(value) {
+    return OBSERVATION_LABELS[value] || 'A suspicious pattern was found';
+  }
+
+  function friendlyLimitation(value) {
+    return LIMITATION_LABELS[value] || 'One technical check had insufficient evidence to finish.';
+  }
+
+  function friendlyStatus(value) {
+    const labels = { PASS: 'Passed', FAIL: 'Failed', SOFTFAIL: 'Soft fail', NEUTRAL: 'Neutral', NONE: 'No result', TEMPERROR: 'Temporary error', PERMERROR: 'Permanent error', UNKNOWN: 'Unknown', UNAVAILABLE: 'Not available', completed: 'Completed', failed: 'Failed', pending: 'Pending', accepted: 'Accepted', processing: 'Processing' };
+    return labels[value] || titleCase(value || 'Unknown');
+  }
 
   function endpoint(name, fallback) {
     const runtime = global.VeriTrust_CONFIG || global['VERI' + 'TRUST_CONFIG'] || {};
@@ -53,8 +119,8 @@
     state.busy = busy;
     const button = one('#phishingSubmit');
     if (!button) return;
-    button.disabled = busy || state.mode === 'receiver';
-    button.textContent = busy ? 'Investigating…' : state.mode === 'eml' ? 'Analyze .eml' : 'Run investigation';
+    button.disabled = busy;
+    button.textContent = busy ? 'Checking email...' : state.mode === 'eml' ? 'Check original email' : 'Check email text';
     button.toggleAttribute('aria-busy', busy);
   }
 
@@ -68,17 +134,19 @@
       tab.tabIndex = selected ? 0 : -1;
     });
     all('[data-email-panel]').forEach((panel) => { panel.hidden = panel.dataset.emailPanel !== mode; });
-    const rawEvidence = mode !== 'text';
+    const rawEvidence = mode === 'eml';
     const auth = one('[data-preview-auth]');
     const identity = one('[data-preview-identity]');
     const infra = one('[data-preview-infra]');
-    if (auth) auth.textContent = mode === 'receiver' ? 'SMTP + header evidence' : rawEvidence ? 'Header evidence; SPF unavailable' : 'Unavailable in paste mode';
-    if (identity) identity.textContent = rawEvidence ? 'Header-derived relationships' : 'Limited';
-    if (infra) infra.textContent = rawEvidence ? 'Approximate, when routable IPs exist' : 'Unavailable in paste mode';
+    const attachments = one('[data-preview-attachments]');
+    if (auth) auth.textContent = rawEvidence ? 'Available (SPF limited)' : 'Needs original email';
+    if (identity) identity.textContent = rawEvidence ? 'Available' : 'Limited with pasted text';
+    if (infra) infra.textContent = rawEvidence ? 'Available when recorded' : 'Needs original email';
+    if (attachments) attachments.textContent = rawEvidence ? 'Available' : 'Needs original email';
     setError('');
     setBusy(false);
     if (focusPanel) {
-      const focusTarget = mode === 'text' ? one('#emailSubject') : mode === 'eml' ? one('.email-dropzone') : one('#emailPanelReceiver a');
+      const focusTarget = mode === 'text' ? one('#emailSubject') : one('.email-dropzone');
       focusTarget?.focus();
     }
   }
@@ -120,18 +188,17 @@
     const idempotencyKey = global.crypto?.randomUUID?.() || `email-web-${Date.now()}-${Math.random().toString(36).slice(2)}`;
     if (state.mode === 'eml') {
       const file = validateFile(state.file || one('#emailEmlFile')?.files?.[0]);
-      return parseResponse(await fetch(endpoint('emailAnalyzeEml', '/api/v2/phishing/analyze-eml'), {
+      return parseResponse(await fetch(endpoint('emailAnalyzeEml', '/api/v1/gateway/email/analyze-eml'), {
         method: 'POST',
         headers: { 'Content-Type': 'message/rfc822', 'Idempotency-Key': idempotencyKey, 'X-Retention-Policy': 'ephemeral_24h' },
         body: file,
       }));
     }
-    if (state.mode === 'receiver') throw new Error('Trusted receiver events are sent by configured server integrations, not from the browser.');
     const subject = one('#emailSubject')?.value.trim() || '';
     const body = one('#phishingText')?.value.trim() || '';
     if (!subject && !body) throw new Error('Provide an email subject or message body.');
     if (body.length > 12000) throw new Error('Keep the message body at or below 12,000 characters.');
-    return parseResponse(await fetch(endpoint('emailAnalyzeText', '/api/v2/phishing/analyze-text'), {
+    return parseResponse(await fetch(endpoint('emailAnalyzeText', '/api/v1/gateway/email/analyze-text'), {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'Idempotency-Key': idempotencyKey },
       body: JSON.stringify({ subject, body, channel: 'email', retention_policy: 'metadata_only', org_id: context.organization.id }),
@@ -150,31 +217,28 @@
     const attachments = children.filter((item) => item.type === 'attachment');
     const availableAuth = authentication.filter((item) => item.result !== 'UNAVAILABLE');
     return [
-      ['Content', 'observed', `${observations.filter((item) => item.code).length} deterministic observation(s)`],
-      ['Authentication', capabilities.headers ? (availableAuth.length ? 'observed' : 'partial') : 'unavailable', capabilities.headers ? `${availableAuth.length} protocol result(s); SPF requires receiver facts` : 'No headers or SMTP facts'],
-      ['Identity', relationships.length ? 'observed' : capabilities.headers ? 'partial' : 'unavailable', relationships.length ? `${relationships.length} relationship(s)` : 'No comparable identities'],
-      ['URL intelligence', urls.length ? (urls.some((item) => item.state !== 'completed') ? 'partial' : 'observed') : 'unavailable', urls.length ? `${urls.length} extracted URL artifact(s)` : 'No URL observed'],
-      ['Infrastructure', infrastructure.length ? 'observed' : capabilities.infrastructure_geo ? 'partial' : 'unavailable', infrastructure.length ? `${infrastructure.length} conservative hop(s)` : 'No eligible routing hop'],
-      ['Attachments', attachments.length ? 'partial' : capabilities.attachments ? 'observed' : 'unavailable', attachments.length ? `${attachments.length} metadata-only artifact(s)` : capabilities.attachments ? 'No attachment observed' : 'Not available in this mode'],
-      ['Content model', model?.status === 'completed' ? 'observed' : model?.status === 'failed' ? 'failed' : 'partial', model?.status === 'completed' ? 'Qualified registry version used' : 'No authoritative model result'],
-      ['Media authenticity', 'separate module', 'Available through the Unified Gateway'],
+      ['Message wording', 'checked', `${observations.filter((item) => item.code).length} notable pattern(s) found`, null],
+      ['Sender verification', capabilities.headers ? (availableAuth.length ? 'checked' : 'limited') : 'not available', capabilities.headers ? `${availableAuth.length} sender check(s) completed; SPF needs live server data` : 'Upload the original email to enable this', HELP.authentication],
+      ['Sender consistency', relationships.length ? 'checked' : capabilities.headers ? 'limited' : 'not available', relationships.length ? `${relationships.length} sender relationship(s) compared` : 'No sender details were available to compare', HELP.identity],
+      ['Links', urls.length ? (urls.some((item) => item.state !== 'completed') ? 'limited' : 'checked') : 'not present', urls.length ? `${urls.length} link(s) found in the email` : 'No link was found'],
+      ['Delivery route', infrastructure.length ? 'checked' : capabilities.infrastructure_geo ? 'limited' : 'not available', infrastructure.length ? `${infrastructure.length} public mail-server step(s) found` : 'No eligible public mail-server step was found', HELP.infrastructure],
+      ['Attachments', capabilities.attachments ? 'checked' : 'not available', attachments.length ? `${attachments.length} attachment(s) identified; never executed` : capabilities.attachments ? 'No attachment was found' : 'Upload the original email to enable this'],
+      ['AI content check', model?.status === 'completed' ? 'checked' : model?.status === 'failed' ? 'check failed' : 'limited', model?.status === 'completed' ? 'Completed using the approved model version' : 'No reliable AI result was returned', HELP.model],
     ];
   }
 
   function renderCoverage(items) {
-    return `<div class="email-coverage-results" aria-label="Observed evidence coverage">${items.map(([name, status, detail]) => `
+    return `<section class="email-coverage-summary" aria-labelledby="coverageResultTitle"><div class="email-section-heading"><div><p class="email-result-kicker">Evidence used</p><h3 id="coverageResultTitle">Checks completed</h3></div>${helpLabel('Coverage', HELP.coverage)}</div><div class="email-coverage-results">${items.map(([name, status, detail, help]) => `
       <article class="email-coverage-item" data-coverage="${escapeHtml(status)}">
-        <span>${escapeHtml(name)}</span><strong>${escapeHtml(titleCase(status))}</strong><small>${name === 'Media authenticity'
-          ? '<a class="email-coverage-link" href="gateway.html">Open media analysis</a>'
-          : escapeHtml(detail)}</small>
-      </article>`).join('')}</div>`;
+        <span>${help ? helpLabel(name, help) : escapeHtml(name)}</span><strong>${escapeHtml(titleCase(status))}</strong><small>${escapeHtml(detail)}</small>
+      </article>`).join('')}</div></section>`;
   }
 
   function evidenceList(items, emptyMessage, mapper) {
     if (!items.length) return `<p class="email-evidence-empty">${escapeHtml(emptyMessage)}</p>`;
     return `<ul class="email-evidence-list">${items.map((item) => {
-      const [label, detail] = mapper(item);
-      return `<li><strong>${escapeHtml(label)}</strong><span>${escapeHtml(detail)}</span></li>`;
+      const row = mapper(item);
+      return `<li><strong>${row.help ? helpLabel(row.label, row.help) : escapeHtml(row.label)}</strong><span>${escapeHtml(row.detail)}</span></li>`;
     }).join('')}</ul>`;
   }
 
@@ -192,43 +256,45 @@
     const attachments = children.filter((item) => item.type === 'attachment');
     const model = Array.isArray(evidence.model_evidence) ? evidence.model_evidence[0] : null;
     const limitations = Array.isArray(evidence.limitations) ? evidence.limitations : [];
-    const risk = Number.isFinite(Number(decision.risk)) ? `${Math.round(Number(decision.risk) * 100)}% policy risk` : 'No policy risk score';
+    const risk = Number.isFinite(Number(decision.risk)) ? `${Math.round(Number(decision.risk) * 100)}%` : 'Not available';
     const stateCopy = {
-      LIKELY_PHISHING: 'Available specialist evidence indicates phishing-like content. Review the independent observations and recommended action.',
-      LIKELY_BENIGN: 'The qualified content model found lower phishing likelihood in the available content. Evidence gaps remain material.',
-      UNCERTAIN: 'Available evidence does not support a reliable specialist conclusion. Use the coverage and limitations below before acting.',
-      UNSUPPORTED: 'The input exceeded a bounded parser or capability limit, so no specialist conclusion was produced.',
-      FAILED: 'A required analysis stage failed. The partial evidence below is retained without converting failure into a benign result.',
+      LIKELY_PHISHING: 'This email shows signs commonly associated with phishing. Do not click links, open attachments, reply, or share information until it is verified through another channel.',
+      LIKELY_BENIGN: 'The available checks did not find strong phishing signs. This is not a guarantee of safety, especially where checks were unavailable.',
+      UNCERTAIN: 'The available evidence is not strong enough for a reliable conclusion. Verify the sender through a known phone number or official website.',
+      UNSUPPORTED: 'Part of this email could not be safely processed within the service limits. Treat the result as incomplete and review it manually.',
+      FAILED: 'A required check failed, so VeriTrust did not label the message as safe. Try again or review it manually.',
     }[specialistState];
-    const degraded = decision.degraded ? 'Degraded decision · required evidence unavailable' : 'Final decision from available evidence';
+    const recommendation = DECISION_LABELS[decision.recommendation] || 'Review manually';
+    const certainty = decision.degraded ? 'Some checks were unavailable' : 'Based on all available checks';
     const target = one('#phishingResult');
     const shell = one('#emailInvestigationResult');
     if (!target || !shell) return;
     target.innerHTML = `
       <article class="email-result-hero" data-state="${specialistState}">
         <div>
-          <p class="email-result-kicker">MailGraph specialist state</p>
+          <p class="email-result-kicker">Overall result</p>
           <h2 id="emailResultTitle">${escapeHtml(STATE_LABELS[specialistState])}</h2>
           <p>${escapeHtml(stateCopy)}</p>
           <div class="email-result-actions">
-            <a class="btn btn-primary" href="gateway.html?scan_id=${encodeURIComponent(payload.scan_id || '')}">Open Gateway report</a>
-            ${['manual_review', 'hold', 'quarantine', 'block'].includes(decision.recommendation) ? '<a class="btn btn-secondary" href="cases.html">Open case queue</a>' : ''}
+            <a class="btn btn-primary" href="gateway.html?scan_id=${encodeURIComponent(payload.scan_id || '')}">View full report</a>
+            ${['manual_review', 'hold', 'quarantine', 'block'].includes(decision.recommendation) ? '<a class="btn btn-secondary" href="cases.html">Send to case review</a>' : ''}
             <button class="btn btn-secondary" type="button" data-copy-scan>Copy report ID</button>
           </div>
         </div>
-        <div class="email-result-state"><span>Gateway action</span><strong>${escapeHtml(titleCase(decision.recommendation || 'manual_review'))}</strong><small>${escapeHtml(risk)} · ${escapeHtml(degraded)}</small></div>
+        <div class="email-result-state"><span>Recommended next step</span><strong>${escapeHtml(recommendation)}</strong><small>${helpLabel(`Risk score: ${risk}`, HELP.risk)}<br>${escapeHtml(certainty)}</small></div>
       </article>
       ${renderCoverage(coverageData(evidence))}
       <div class="email-evidence-grid">
-        <article class="email-evidence-card"><header><h3>Content observations</h3><span>${deterministic.length} observed</span></header>${evidenceList(deterministic, 'No deterministic content indicator was observed. Absence is not proof of safety.', (item) => [item.code, item.category || item.source || 'Observed signal'])}</article>
-        <article class="email-evidence-card"><header><h3>Authentication</h3><span>${escapeHtml(evidence.input_mode || 'unknown mode')}</span></header>${evidenceList(authentication, 'Authentication evidence is unavailable in this input mode.', (item) => [item.protocol, `${item.result || 'UNAVAILABLE'}${item.domain ? ` · ${item.domain}` : ''}${item.failure_reason ? ` · ${item.failure_reason}` : ''}`])}</article>
-        <article class="email-evidence-card"><header><h3>Identity relationships</h3><span>${relationships.length} edges</span></header>${evidenceList(relationships, 'No comparable sender, reply, return-path, authentication, or link-domain relationship was observed.', (item) => [item.reason_code || item.type, `${item.source_type || 'source'} ${item.type || item.edge_type || 'relates to'} ${item.target_value || item.target_type || 'target'}`])}</article>
-        <article class="email-evidence-card"><header><h3>URLs and attachments</h3><span>${urls.length + attachments.length} children</span></header>${evidenceList(children, 'No URL or attachment artifact was extracted.', (item) => [item.type === 'url' ? (item.metadata?.hostname || 'URL artifact') : (item.metadata?.original_filename_untrusted || 'Attachment'), `${item.state || 'UNKNOWN'}${item.type === 'attachment' ? ' · metadata only; content not executed' : ''}${item.type === 'url' && Array.isArray(item.reason_codes) && item.reason_codes.length ? ` · ${item.reason_codes.join(', ')}` : ''}`])}</article>
-        <article class="email-evidence-card"><header><h3>Sending infrastructure</h3><span>Approximate only</span></header>${evidenceList(infrastructure, 'No eligible public sending-infrastructure hop was available. This does not imply the sender had no route.', (item) => [`Hop ${item.hop_index ?? '?'}`, `${item.host || item.ip_address || 'Unknown host'} · ${item.ip_classification || 'unclassified'}${item.asn_org ? ` · ${item.asn_org}` : ''}${item.country ? ` · ${item.country}` : ''}`])}<p class="email-retention-note">Location describes network infrastructure, not a person or the sender's physical location.</p></article>
-        <article class="email-evidence-card"><header><h3>Model evidence</h3><span>Registry bound</span></header>${model ? evidenceList([model], 'No model evidence is available.', (item) => [item.state || 'UNCERTAIN', `${item.status || 'unknown'}${Number.isFinite(Number(item.p_phish)) ? ` · p(phish) ${Math.round(Number(item.p_phish) * 100)}%` : ''} · ${Array.isArray(item.reason_codes) ? item.reason_codes.join(', ') : 'no reason code'}`]) : '<p class="email-evidence-empty">No qualified model result was produced. This is not converted into a benign outcome.</p>'}</article>
-        <article class="email-evidence-card is-wide"><header><h3>Limitations and provenance</h3><span>${escapeHtml(evidence.schema_version || 'schema unavailable')}</span></header>${limitations.length ? `<ul class="email-limitation-list">${limitations.map((item) => `<li>${escapeHtml(item)}</li>`).join('')}</ul>` : '<p class="email-evidence-empty">No additional pipeline limitation was recorded.</p>'}<p class="email-retention-note">Report ${escapeHtml(payload.scan_id || 'unavailable')} · Correlation ${escapeHtml(decision.correlation_version || 'unavailable')} · This report is evidence for review, not a safety certificate.</p></article>
+        <article class="email-evidence-card"><header><h3>What the message says</h3><span>${deterministic.length} finding${deterministic.length === 1 ? '' : 's'}</span></header>${evidenceList(deterministic, 'No obvious wording or formatting pattern was found. This does not prove the email is safe.', (item) => ({ label: friendlyCode(item.code), detail: 'Found by a rule-based check of the message content.', help: `Technical code: ${item.code}. ${HELP.technicalCode}` }))}</article>
+        <article class="email-evidence-card"><header><h3>${helpLabel('Sender verification', HELP.authentication)}</h3><span>${authentication.length} check${authentication.length === 1 ? '' : 's'}</span></header>${evidenceList(authentication, 'Sender verification was not available for this type of input.', (item) => ({ label: String(item.protocol || 'Sender check').replaceAll('_', ' '), detail: `${friendlyStatus(item.result)}${item.domain ? ` for ${item.domain}` : ''}${item.failure_reason ? ' - supporting information was unavailable' : ''}`, help: PROTOCOL_HELP[item.protocol] || HELP.authentication }))}</article>
+        <article class="email-evidence-card"><header><h3>${helpLabel('Do sender details match?', HELP.identity)}</h3><span>${relationships.length} comparison${relationships.length === 1 ? '' : 's'}</span></header>${evidenceList(relationships, 'There were not enough sender details to compare.', (item) => ({ label: String(item.edge_type || 'Compared').replaceAll('_', ' '), detail: `${String(item.target_type || 'related domain').replaceAll('_', ' ')}${item.target_value ? `: ${item.target_value}` : ''}`, help: `Technical code: ${item.reason_code || 'not recorded'}. ${HELP.identity}` }))}</article>
+        <article class="email-evidence-card"><header><h3>Links and attachments</h3><span>${urls.length + attachments.length} found</span></header>${evidenceList(children, 'No link or attachment was found in the available content.', (item) => ({ label: item.type === 'url' ? (item.metadata?.hostname || 'Link') : (item.metadata?.original_filename_untrusted || 'Attachment'), detail: item.type === 'attachment' ? `${friendlyStatus(item.state)} - identified only and never opened` : friendlyStatus(item.state), help: item.type === 'attachment' ? 'Attachments are identified and recorded, but their contents are never executed during email parsing.' : 'Links are extracted from visible text and HTML destinations, then passed to the link-checking service when available.' }))}</article>
+        <article class="email-evidence-card"><header><h3>${helpLabel('Delivery route', HELP.infrastructure)}</h3><span>Approximate</span></header>${evidenceList(infrastructure, 'No eligible public mail-server step was available. This does not mean the email had no delivery route.', (item) => ({ label: `Mail server ${Number(item.hop_index ?? 0) + 1}`, detail: `${item.host || item.ip_address || 'Unknown server'}${item.asn_org ? ` - ${item.asn_org}` : ''}${item.country ? ` - ${item.country}` : ''}`, help: HELP.infrastructure }))}<p class="email-retention-note">Any location shown belongs to network infrastructure, not a person.</p></article>
+        <article class="email-evidence-card"><header><h3>${helpLabel('AI content check', HELP.model)}</h3><span>Supporting signal</span></header>${model ? evidenceList([model], 'No AI result is available.', (item) => ({ label: STATE_LABELS[item.state] || friendlyStatus(item.state), detail: `${friendlyStatus(item.status)}${Number.isFinite(Number(item.p_phish)) ? ` - ${Math.round(Number(item.p_phish) * 100)}% phishing likelihood` : ''}`, help: HELP.model })) : '<p class="email-evidence-empty">No reliable AI result was returned. VeriTrust did not convert that gap into a safe result.</p>'}</article>
+        <article class="email-evidence-card is-wide"><header><h3>Important limitations</h3><span>${helpLabel(`${limitations.length} recorded`, HELP.technicalCode)}</span></header>${limitations.length ? `<ul class="email-limitation-list">${limitations.map((item) => `<li>${escapeHtml(friendlyLimitation(item))}</li>`).join('')}</ul>` : '<p class="email-evidence-empty">No additional limitation was recorded for the checks that ran.</p>'}<details class="email-technical-details"><summary>Technical report details</summary><dl><div><dt>Report ID</dt><dd>${escapeHtml(payload.scan_id || 'Unavailable')}</dd></div><div><dt>Evidence format</dt><dd>${escapeHtml(evidence.schema_version || 'Unavailable')}</dd></div><div><dt>Decision method</dt><dd>${escapeHtml(decision.correlation_version || 'Unavailable')}</dd></div></dl></details><p class="email-retention-note">This report supports human review. It is not a safety certificate.</p></article>
       </div>`;
     shell.hidden = false;
+    enhanceHelpTerms(target);
     state.lastScanId = payload.scan_id || null;
     one('[data-copy-scan]', target)?.addEventListener('click', async (event) => {
       if (!state.lastScanId) return;
@@ -243,8 +309,78 @@
     const target = one('#phishingResult');
     if (!shell || !target) return;
     const guidance = failureGuidance(error);
-    target.innerHTML = `<article class="email-result-hero" data-state="FAILED"><div><p class="email-result-kicker">Investigation state</p><h2 id="emailResultTitle">Analysis failed</h2><p>${escapeHtml(error.message)} No failure was converted into a benign result. ${escapeHtml(guidance.detail)}</p></div><div class="email-result-state"><span>Error code</span><strong>${escapeHtml(error.code || 'EMAIL_ANALYSIS_FAILED')}</strong><small>Evidence may be incomplete</small></div></article>`;
+    target.innerHTML = `<article class="email-result-hero" data-state="FAILED"><div><p class="email-result-kicker">Overall result</p><h2 id="emailResultTitle">Check could not be completed</h2><p>${escapeHtml(error.message)} VeriTrust did not label the message as safe. ${escapeHtml(guidance.detail)}</p></div><div class="email-result-state"><span>What to do</span><strong>Try again or review manually</strong><small>${helpLabel('Error details available', `Technical code: ${error.code || 'EMAIL_ANALYSIS_FAILED'}. Share this with support if the problem continues.`)}</small></div></article>`;
     shell.hidden = false;
+    enhanceHelpTerms(target);
+  }
+
+  let activeHelpButton = null;
+  let pinnedHelpButton = null;
+
+  function positionHelpTooltip(button) {
+    const tooltip = one('#emailHelpTooltip');
+    if (!tooltip || !button || tooltip.hidden) return;
+    const buttonRect = button.getBoundingClientRect();
+    const tooltipRect = tooltip.getBoundingClientRect();
+    const margin = 12;
+    const centeredLeft = buttonRect.left + (buttonRect.width / 2) - (tooltipRect.width / 2);
+    const left = Math.max(margin, Math.min(centeredLeft, global.innerWidth - tooltipRect.width - margin));
+    const below = buttonRect.bottom + 10;
+    const top = below + tooltipRect.height <= global.innerHeight - margin
+      ? below
+      : Math.max(margin, buttonRect.top - tooltipRect.height - 10);
+    tooltip.style.left = `${Math.round(left)}px`;
+    tooltip.style.top = `${Math.round(top)}px`;
+  }
+
+  function openHelp(button, pinned = false) {
+    const tooltip = one('#emailHelpTooltip');
+    const term = button.closest('[data-email-help]');
+    if (!tooltip || !term) return;
+    if (activeHelpButton && activeHelpButton !== button) activeHelpButton.setAttribute('aria-expanded', 'false');
+    activeHelpButton = button;
+    if (pinned) pinnedHelpButton = button;
+    tooltip.textContent = term.dataset.emailHelp || '';
+    tooltip.hidden = false;
+    button.setAttribute('aria-expanded', 'true');
+    button.setAttribute('aria-describedby', tooltip.id);
+    global.requestAnimationFrame(() => positionHelpTooltip(button));
+  }
+
+  function closeHelp(force = false) {
+    if (pinnedHelpButton && !force) return;
+    const tooltip = one('#emailHelpTooltip');
+    if (activeHelpButton) {
+      activeHelpButton.setAttribute('aria-expanded', 'false');
+      activeHelpButton.removeAttribute('aria-describedby');
+    }
+    if (tooltip) tooltip.hidden = true;
+    activeHelpButton = null;
+    if (force) pinnedHelpButton = null;
+  }
+
+  function enhanceHelpTerms(root = document) {
+    all('[data-email-help]:not([data-email-help-ready])', root).forEach((term) => {
+      term.dataset.emailHelpReady = 'true';
+      term.classList.add('email-help-term');
+      const button = document.createElement('button');
+      button.type = 'button';
+      button.className = 'email-help-button';
+      button.setAttribute('aria-label', `Explain ${term.dataset.emailTerm || term.textContent.trim()}`);
+      button.setAttribute('aria-expanded', 'false');
+      button.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2.75 12s3.35-5.25 9.25-5.25S21.25 12 21.25 12 17.9 17.25 12 17.25 2.75 12 2.75 12Z"/><circle cx="12" cy="12" r="2.4"/></svg>';
+      term.append(button);
+      button.addEventListener('pointerenter', () => openHelp(button));
+      button.addEventListener('pointerleave', () => { if (pinnedHelpButton !== button) closeHelp(); });
+      button.addEventListener('focus', () => openHelp(button));
+      button.addEventListener('blur', () => { if (pinnedHelpButton !== button) closeHelp(); });
+      button.addEventListener('click', (event) => {
+        event.preventDefault();
+        event.stopPropagation();
+        if (pinnedHelpButton === button) closeHelp(true);
+        else openHelp(button, true);
+      });
+    });
   }
 
   function bindTabs() {
@@ -264,6 +400,11 @@
   function init() {
     const form = one('#phishingForm[data-email-workbench]');
     if (!form) return;
+    enhanceHelpTerms();
+    document.addEventListener('click', () => closeHelp(true));
+    document.addEventListener('keydown', (event) => { if (event.key === 'Escape') closeHelp(true); });
+    global.addEventListener('resize', () => positionHelpTooltip(activeHelpButton));
+    global.addEventListener('scroll', () => positionHelpTooltip(activeHelpButton), { passive: true });
     bindTabs();
     const text = one('#phishingText');
     text?.addEventListener('input', () => { const output = one('#emailCharacterCount'); if (output) output.textContent = `${text.value.length.toLocaleString()} / 12,000`; });
@@ -278,15 +419,15 @@
       if (state.busy) return;
       setError('');
       setBusy(true);
-      setStatus('Building a bounded evidence graph…');
+      setStatus('Checking the message and available sender evidence...');
       try {
         const payload = await requestInvestigation();
         renderResult(payload);
-        setStatus('Investigation complete. Review coverage and limitations.');
+        setStatus('Check complete. Review the result and any missing evidence.');
       } catch (error) {
         renderFailure(error);
         setError(failureGuidance(error).summary);
-        setStatus('Investigation failed. No benign conclusion was inferred.');
+        setStatus('The check failed. No safe conclusion was assumed.');
       } finally {
         setBusy(false);
       }
