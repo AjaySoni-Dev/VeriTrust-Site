@@ -18,6 +18,7 @@ const config = {
 
 let scanContextPromise = null;
 let lastResult = null;
+const analysisProgress = window.VeriTrustAnalysisProgress.create();
 
 function escapeHtml(value) {
   return String(value ?? '').replace(/[&<>"']/g, (char) => ({
@@ -46,7 +47,7 @@ function setLoading(button, loading, label) {
 }
 
 function formatPercent(value) {
-  return `${Math.round(Math.max(0, Math.min(1, Number(value) || 0)) * 100)}%`;
+  return window.VeriTrustAnalysisResult.percent(value);
 }
 
 function riskBadgeClass(level) {
@@ -59,7 +60,7 @@ function riskClass(result) {
   if (level === 'critical') return 'risk-critical';
   if (level === 'high') return 'risk-high';
   if (level === 'medium') return 'risk-medium';
-  return 'risk-low';
+  return level === 'low' ? 'risk-low' : '';
 }
 
 async function parseJsonResponse(response) {
@@ -79,13 +80,15 @@ async function parseJsonResponse(response) {
 }
 
 async function requestJson(url, options) {
-  let response;
-  try {
-    response = await fetch(url, options);
-  } catch {
-    throw new Error('Unable to reach link analysis. Please check your connection and try again.');
-  }
-  return parseJsonResponse(response);
+  return window.VeriTrustAnalysisResult.withDeadline(async (signal) => {
+    let response;
+    try { response = await fetch(url, { ...options, signal }); }
+    catch (error) {
+      if (signal.aborted) throw error;
+      throw new Error('Unable to reach link analysis. Please check your connection and try again.');
+    }
+    return parseJsonResponse(response);
+  });
 }
 
 async function getScanContext() {
@@ -277,15 +280,15 @@ function renderResult(data) {
     <div class="result-summary">
       <div>
         <span class="result-kicker">Verdict</span>
-        <span class="final-label ${isBad ? 'bad' : 'good'}">${escapeHtml(result.label || 'Unknown')}</span>
+        <span class="final-label ${isBad ? 'bad' : labelLower === 'safe' ? 'good' : ''}">${escapeHtml(result.label || 'Unknown')}</span>
       </div>
       <span class="status-pill">${escapeHtml(model.name || modelMeta.name || 'VeriTrust Swift')}</span>
     </div>
-    <div class="score-meter"><span class="${riskClass(result)}" style="width:${Math.max(2, Number.parseInt(confidence, 10) || 0)}%"></span></div>
+    <div class="score-meter"><span class="${riskClass(result)}" style="width:${Number.parseInt(score, 10) || 0}%"></span></div>
     <div class="result-metrics">
       <div class="metric"><span>Confidence</span><strong>${confidence}</strong></div>
       <div class="metric"><span>Link score</span><strong>${score}</strong></div>
-      <div class="metric"><span>Risk</span><strong class="${riskBadgeClass(result.risk_level || 'Low')}">${escapeHtml(result.risk_level || 'Low')}</strong></div>
+      <div class="metric"><span>Risk</span><strong class="${riskBadgeClass(result.risk_level || 'Unknown')}">${escapeHtml(result.risk_level || 'Unknown')}</strong></div>
     </div>
     <p class="result-note">${escapeHtml(result.summary || 'Link analysis complete.')}</p>
     ${fallback ? `<p class="fallback-notice">Fallback used: ${escapeHtml(model.fallback_from_name || model.fallback_from || modelMeta.fallback_from || 'selected model')} to ${escapeHtml(model.name || 'VeriTrust Swift')}. ${escapeHtml(fallbackReason)}</p>` : ''}
@@ -321,7 +324,9 @@ function renderResult(data) {
       setLog('Unable to copy summary.');
     }
   });
-  window.VeriTrustResultDialog?.openFor('linkResult');
+  const shell = document.getElementById('linkResultShell');
+  if (shell) { shell.hidden = false; shell.focus({ preventScroll: true }); }
+  else window.VeriTrustResultDialog?.openFor('linkResult');
 }
 
 function renderError(message, details = {}) {
@@ -350,7 +355,9 @@ function renderError(message, details = {}) {
     </div>
     <p class="result-disclaimer">No report was generated because this request did not complete.</p>
   `;
-  window.VeriTrustResultDialog?.openFor('linkResult');
+  const shell = document.getElementById('linkResultShell');
+  if (shell) { shell.hidden = false; shell.focus({ preventScroll: true }); }
+  else window.VeriTrustResultDialog?.openFor('linkResult');
 }
 
 async function analyzeLink() {
@@ -358,17 +365,12 @@ async function analyzeLink() {
   const contextText = qs('#linkContext')?.value.trim() || '';
   if (!url && !contextText) throw new Error('Please provide a valid URL or text containing a URL.');
 
-  let context = null;
-  try {
-    context = await getScanContext();
-  } catch {
-    context = null;
-  }
+  const context = await getScanContext();
   const headers = {
     'Content-Type': 'application/json',
     ...(await authHeaders()),
   };
-  const data = await requestJson(config.api.linkCheck || '/api/link-check', {
+  const data = await analysisProgress.request(config.api.linkCheck || '/api/link-check', {
     method: 'POST',
     headers,
     body: JSON.stringify({
@@ -454,25 +456,36 @@ document.addEventListener('DOMContentLoaded', async () => {
   if (!access?.allowed) return;
 
   bindCustomModelSelects();
+  let busy = false;
 
   qs('#linkCheckForm')?.addEventListener('submit', async (event) => {
     event.preventDefault();
+    if (busy) return;
+    busy = true;
     const button = qs('#linkSubmit');
+    const controls = qsa('#linkCheckForm input, #linkCheckForm textarea');
+    controls.forEach((control) => { control.disabled = true; });
     try {
+      const shell = document.getElementById('linkResultShell');
+      if (shell) shell.hidden = true;
+      analysisProgress.begin();
       setLog('Analyzing link...');
-      renderLoadingResult();
       setLoading(button, true, 'Analyzing...');
       const data = await analyzeLink();
+      analysisProgress.finish();
       if (!data?.warning?.message) {
         setLog('Link analysis complete.');
       }
     } catch (error) {
+      analysisProgress.finish(error);
       renderError(error.message || 'Link analysis failed.', {
         code: error.code,
         status: error.status,
       });
       setLog(error.message || 'Link analysis failed.');
     } finally {
+      busy = false;
+      controls.forEach((control) => { control.disabled = false; });
       setLoading(button, false);
     }
   });

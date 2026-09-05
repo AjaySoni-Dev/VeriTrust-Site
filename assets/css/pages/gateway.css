@@ -854,3 +854,16 @@ body.vt-tool-page.vt-gateway-page.vt-graphite-theme :where(.gateway-upload, .gat
     width: 100%;
   }
 }
+.gateway-layout > *,
+.gateway-evidence article,
+.gateway-evidence-head > *,
+.gateway-decision > div { min-width: 0; }
+
+.gateway-evidence p,
+.gateway-evidence li,
+.gateway-audit,
+.gateway-history-item strong { overflow-wrap: anywhere; }
+
+.gateway-evidence details { margin-top: 12px; }
+.gateway-evidence summary { cursor: pointer; padding-block: 8px; }
+.gateway-evidence ul { margin: 12px 0; padding-left: 20px; }

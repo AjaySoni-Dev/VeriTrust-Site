@@ -102,13 +102,15 @@ async function parseJsonResponse(response) {
 }
 
 async function requestJson(url, options, fallbackMessage) {
-  let response;
-  try {
-    response = await fetch(url, options);
-  } catch {
-    throw new Error(fallbackMessage || 'Unable to reach the analysis server. Please try again.');
-  }
-  return parseJsonResponse(response);
+  return window.VeriTrustAnalysisResult.withDeadline(async (signal) => {
+    let response;
+    try { response = await fetch(url, { ...options, signal }); }
+    catch (error) {
+      if (signal.aborted) throw error;
+      throw new Error(fallbackMessage || 'Unable to reach the analysis server. Please try again.');
+    }
+    return parseJsonResponse(response);
+  });
 }
 
 async function getScanContext() {
@@ -207,6 +209,8 @@ function renderImagePreview(file) {
 }
 
 function resetResult(targetId, message) {
+  const shell = document.getElementById(`${targetId}Shell`);
+  if (shell) shell.hidden = true;
   window.VeriTrustResultDialog?.closeFor(targetId);
   const target = document.getElementById(targetId);
   if (!target) return;
@@ -216,6 +220,7 @@ function resetResult(targetId, message) {
 }
 
 function renderLoadingResult(targetId, title, message) {
+  if (document.getElementById(`${targetId}Shell`)) return;
   window.VeriTrustResultDialog?.closeFor(targetId);
   const target = document.getElementById(targetId);
   if (!target) return;
@@ -233,6 +238,7 @@ function renderLoadingResult(targetId, title, message) {
 function renderCropLoading(message) {
   const wrap = qs('#cropResults');
   if (!wrap) return;
+  wrap.hidden = false;
   wrap.classList.remove('has-crop');
   wrap.innerHTML = `
     <div class="loading-state small">
@@ -296,6 +302,7 @@ function renderSelectedCropPreview(index) {
 
   qsa('[data-crop-index]', wrap).forEach((button) => {
     button.addEventListener('click', async () => {
+      if (state.imageBusy) return;
       const nextIndex = Number(button.dataset.cropIndex || 0);
       await setSelectedCropFile(nextIndex, false);
       renderSelectedCropPreview(nextIndex);
@@ -351,7 +358,7 @@ function escapeHtml(value) {
 }
 
 function formatPercent(value) {
-  return `${Math.round(Math.max(0, Math.min(1, Number(value) || 0)) * 100)}%`;
+  return window.VeriTrustAnalysisResult.percent(value);
 }
 
 function normalizeReportData(data) {
@@ -477,6 +484,7 @@ async function cropImage() {
   form.append('include_crops', '1');
 
   renderCropLoading('Preparing the face area...');
+  analysisProgress.update({ stage: 'crop', state: 'running', message: 'Requesting face preparation from the crop service. This service does not expose intermediate steps.' });
   setLog('Preparing the image...');
   const data = await requestJson(
     config.cropApiUrl,
@@ -484,6 +492,7 @@ async function cropImage() {
     'Face preparation could not connect. The image can still be checked without cropping.'
   );
   await renderCropResults(data);
+  analysisProgress.update({ stage: 'crop', state: 'completed', message: state.cropFaces.length ? 'Face preparation returned a crop for analysis.' : 'No face crop was returned. Analysis will use the original image.' });
   setLog(data.face_count ? 'Face area ready.' : 'No face was found. The full image can still be checked.');
   return data;
 }
@@ -574,13 +583,13 @@ function renderResult(targetId, data) {
   const signals = data.type === 'deepfake'
     ? (result.evidence || result.indicators || [])
     : (result.indicators || []);
-  const confidenceWidth = Math.max(2, Number.parseInt(confidence, 10) || 0);
+  const confidenceWidth = Number.parseInt(primaryScore, 10) || 0;
 
   target.innerHTML = `
     <div class="result-summary">
       <div>
         <span class="result-kicker">Verdict</span>
-        <span class="final-label ${isBad ? 'bad' : 'good'}">${escapeHtml(result.label || 'Unknown')}</span>
+        <span class="final-label ${isBad ? 'bad' : ['real', 'likely benign', 'legitimate'].includes(labelLower) ? 'good' : ''}">${escapeHtml(result.label || 'Unknown')}</span>
       </div>
       <span class="status-pill">${escapeHtml(modelLabel)}</span>
     </div>
@@ -588,7 +597,7 @@ function renderResult(targetId, data) {
     <div class="result-metrics">
       <div class="metric"><span>Confidence</span><strong>${confidence}</strong></div>
       <div class="metric"><span>${data.type === 'deepfake' ? 'Fake score' : 'Phishing score'}</span><strong>${primaryScore}</strong></div>
-      <div class="metric"><span>Risk</span><strong class="${riskBadgeClass(result.risk_level || 'Low')}">${escapeHtml(result.risk_level || 'Low')}</strong></div>
+      <div class="metric"><span>Risk</span><strong class="${riskBadgeClass(result.risk_level || 'Unknown')}">${escapeHtml(result.risk_level || 'Unknown')}</strong></div>
     </div>
     <p class="result-note">${escapeHtml(explanation)}</p>
     ${data.model?.fallback_used || data.model?.fallback_from ? '<p class="fallback-notice">Backup model used because the selected model was unavailable.</p>' : ''}
@@ -629,7 +638,9 @@ function renderResult(targetId, data) {
       setLog('Unable to copy summary.');
     }
   });
-  window.VeriTrustResultDialog?.openFor(targetId);
+  const shell = document.getElementById(`${targetId}Shell`);
+  if (shell) { shell.hidden = false; shell.focus({ preventScroll: true }); }
+  else window.VeriTrustResultDialog?.openFor(targetId);
 }
 
 async function analyzeDeepfake() {
@@ -640,6 +651,7 @@ async function analyzeDeepfake() {
     try {
       await cropImage();
     } catch {
+      analysisProgress.update({ stage: 'crop', state: 'failed', message: 'Face preparation was unavailable. Continuing with the original image.' });
       state.selectedDeepfakeFile = state.originalImageFile;
       const cropResults = qs('#cropResults');
       if (cropResults) {
@@ -665,10 +677,9 @@ async function analyzeDeepfake() {
   form.append('org_id', context.organization.id);
 
   setLog('Checking image...');
-  const data = await requestJson(
+  const data = await analysisProgress.request(
     apiConfig.deepfake || '/api/deepfake',
     { method: 'POST', body: form, headers },
-    'Unable to reach image analysis. Please check your connection and try again.'
   );
   renderResult('deepfakeResult', data);
   setLog('Image check complete.');
@@ -806,6 +817,8 @@ async function checkHealth() {
   }
 }
 
+const analysisProgress = window.VeriTrustAnalysisProgress.create();
+
 document.addEventListener('DOMContentLoaded', async () => {
   const access = await window.VeriTrustPageAccess;
   if (!access?.allowed) return;
@@ -813,8 +826,23 @@ document.addEventListener('DOMContentLoaded', async () => {
   bindModules();
   bindCustomModelSelects();
   checkHealth();
+  let imageBusy = false;
+  let imageControls = [];
+  function lockImageControls(busy) {
+    imageBusy = busy;
+    state.imageBusy = busy;
+    if (busy) {
+      imageControls = qsa('#deepfakeForm input, #deepfakeForm button, #deepfakeForm select, #cropButton')
+        .map((control) => ({ control, disabled: control.disabled }));
+      imageControls.forEach(({ control }) => { control.disabled = true; });
+    } else {
+      imageControls.forEach(({ control, disabled }) => { control.disabled = disabled; });
+      imageControls = [];
+    }
+  }
 
   qs('#deepfakeImage')?.addEventListener('change', (event) => {
+    if (imageBusy) return;
     const file = event.target.files && event.target.files[0];
     if (!file) return;
     state.originalImageFile = file;
@@ -826,6 +854,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (cropResults) {
       cropResults.classList.remove('has-crop');
       cropResults.textContent = 'Face preview will appear here after preparation.';
+      cropResults.hidden = true;
     }
     resetResult('deepfakeResult', 'Your image result will appear here.');
     const maxBytes = Number(config.maxImageBytes || 0);
@@ -837,35 +866,49 @@ document.addEventListener('DOMContentLoaded', async () => {
   });
 
   qs('#cropButton')?.addEventListener('click', async (event) => {
+    if (imageBusy) return;
     const button = event.currentTarget;
+    lockImageControls(true);
+    analysisProgress.begin('Preparing the selected image.');
     try {
       setLoading(button, true, 'Preparing...');
       await cropImage();
+      analysisProgress.finish(null, { pending: true });
+      document.getElementById('analysisProgressTitle').textContent = 'Face preparation finished';
+      document.getElementById('analysisProgressMessage').textContent = 'Review the preview, then choose Analyze image to run detection.';
     } catch (error) {
+      analysisProgress.finish(error);
       setLog(error.message);
       const cropResults = qs('#cropResults');
       if (cropResults) cropResults.textContent = error.message;
     } finally {
+      lockImageControls(false);
       setLoading(button, false);
     }
   });
 
   qs('#deepfakeForm')?.addEventListener('submit', async (event) => {
     event.preventDefault();
+    if (imageBusy) return;
+    lockImageControls(true);
     const button = qs('#deepfakeSubmit');
     try {
+      analysisProgress.begin();
       resetResult('deepfakeResult', '');
       renderLoadingResult('deepfakeResult', 'Checking image', 'Please wait while VeriTrust reviews the image.');
       setLoading(button, true, 'Checking...');
       await analyzeDeepfake();
+      analysisProgress.finish();
     } catch (error) {
+      analysisProgress.finish(error);
       renderResult('deepfakeResult', {
         type: 'deepfake',
         model: { name: 'VeriTrust' },
-        result: { label: 'Error', confidence: 0, risk_level: 'Low', fake_score: 0, explanation: error.message },
+        result: { label: 'Error', confidence: null, risk_level: 'Unknown', fake_score: null, explanation: error.message },
       });
       setLog(error.message);
     } finally {
+      lockImageControls(false);
       setLoading(button, false);
     }
   });
@@ -882,7 +925,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       renderResult('phishingResult', {
         type: 'phishing',
         model: { name: 'VeriTrust' },
-        result: { label: 'Error', confidence: 0, risk_level: 'Low', phishing_score: 0, explanation: error.message },
+        result: { label: 'Error', confidence: null, risk_level: 'Unknown', phishing_score: null, explanation: error.message },
       });
       setLog(error.message);
     } finally {

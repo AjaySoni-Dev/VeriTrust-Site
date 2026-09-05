@@ -1,18 +1,25 @@
 (function initGateway(global) {
   const api = global.VeriTrustSupabase;
+  const results = global.VeriTrustAnalysisResult;
   const form = document.getElementById('gateway-form');
   if (!form || !api) return;
   const elements = Object.fromEntries(['auth','error','text','urls','file','file-label','context','submit','cancel','status','status-copy','empty','output','recommendation','risk','verdict','reasons','evidence','audit','refresh','result-loading','history-list','history-pagination','history-count','history-more'].map((name) => [name, document.getElementById(`gateway-${name}`)]));
   const resultPanel = document.querySelector('.gateway-result');
   let activeScanId = null;
   let polling = null;
+  let viewGeneration = 0;
+  let submitting = false;
   let historyRows = [];
   let visibleHistoryCount = 5;
   let historySelectionPending = false;
   const HISTORY_PAGE_SIZE = 5;
   const requestedScanId = new URLSearchParams(global.location.search).get('scan_id');
 
-  function setError(message) { elements.error.textContent = message || ''; elements.error.hidden = !message; }
+  function setError(message) {
+    elements.error.textContent = message || '';
+    elements.error.hidden = !message;
+    if (message) { elements.error.tabIndex = -1; elements.error.focus(); }
+  }
   function setBusy(busy, message) {
     form.querySelectorAll('input,textarea,select,button').forEach((item) => {
       if (item !== elements.cancel) item.disabled = busy;
@@ -26,14 +33,22 @@
     resultPanel?.classList.remove('vt-loading-shimmer');
     if (message) elements['status-copy'].textContent = message;
   }
-  async function request(url, options = {}) { return api.callAppApi(url, options); }
+  async function request(url, options = {}) {
+    return results.withDeadline((signal) => api.callAppApi(url, { ...options, signal }));
+  }
+
+  function resetPolling() {
+    clearTimeout(polling);
+    viewGeneration += 1;
+    return viewGeneration;
+  }
 
   async function uploadMedia(file) {
     const registered = await request('/api/v1/gateway/uploads', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ kind: file.type.startsWith('image/') ? 'image' : file.type.startsWith('audio/') ? 'audio' : 'video', mime_type: file.type, size_bytes: file.size }) });
     const config = global.VeriTrust_CONFIG || {};
     if (!registered.signed_upload || !registered.signed_upload.url) throw new Error('A signed private upload URL was not returned.');
     const signedUrl = /^https?:/i.test(registered.signed_upload.url || '') ? registered.signed_upload.url : `${String(config.supabase?.url || '').replace(/\/$/,'')}/storage/v1${registered.signed_upload.url}`;
-    const uploadResponse = await fetch(signedUrl, { method: 'PUT', headers: { 'Content-Type': file.type, 'x-upsert': 'false' }, body: file });
+    const uploadResponse = await results.withDeadline((signal) => fetch(signedUrl, { method: 'PUT', headers: { 'Content-Type': file.type, 'x-upsert': 'false' }, body: file, signal }), 180000);
     if (!uploadResponse.ok) throw new Error('The private media upload failed.');
     await request(`/api/v1/gateway/uploads/${registered.upload_id}/complete`, { method: 'POST' });
     return { upload_id: registered.upload_id, kind: file.type.startsWith('image/') ? 'image' : file.type.startsWith('audio/') ? 'audio' : 'video' };
@@ -47,25 +62,75 @@
       node.classList.remove('vt-loading-shimmer');
     });
     elements.empty.hidden = true; elements.output.hidden = false;
-    elements.status.textContent = data.status || 'unknown'; elements['status-copy'].textContent = data.status === 'completed' ? 'Final policy decision available.' : 'Analysis is continuing in the durable worker.';
-    elements.recommendation.textContent = decision.recommendation || 'Pending'; elements.risk.textContent = Number.isFinite(Number(decision.risk)) ? `${Math.round(Number(decision.risk) * 100)}%` : 'Pending'; elements.verdict.textContent = decision.verdict || 'Unknown';
+    elements.status.textContent = (data.status || 'unknown').replaceAll('_', ' ');
+    elements['status-copy'].textContent = results.statusCopy(data.status);
+    elements.recommendation.textContent = (decision.recommendation || 'Pending').replaceAll('_', ' ');
+    elements.risk.textContent = results.percent(decision.risk);
+    elements.verdict.textContent = decision.verdict || 'Unknown';
     elements.reasons.replaceChildren(...(decision.reason_codes || []).map((code) => { const span=document.createElement('span'); span.textContent=code.replaceAll('_',' '); return span; }));
-    elements.evidence.replaceChildren(...(data.evidence || []).map((item) => { const article=document.createElement('article'); const heading=document.createElement('div'); heading.className='gateway-evidence-head'; const strong=document.createElement('strong'); strong.textContent=String(item.model||'Model').replaceAll('_',' '); const status=document.createElement('span'); status.textContent=item.status; status.dataset.status=String(item.status||'unknown').toLowerCase(); heading.append(strong,status); const detail=document.createElement('p'); detail.textContent=item.score===null||item.score===undefined?'No score available':`Score ${Math.round(Number(item.score)*100)}% · ${item.verdict} · ${item.model_version}`; article.append(heading,detail); return article; }));
+    renderEvidence(data);
     elements.audit.replaceChildren(...[['Scan',data.display_id||data.scan_id],['Request',data.submission_request_id||data.request_id],['Policy',data.policy_version_id],['Correlation',data.correlation_version]].map(([label,value])=>{const line=document.createElement('div');line.textContent=`${label}: ${value||'—'}`;return line;}));
     elements.cancel.hidden = !['accepted','queued','processing','partially_completed','cancel_requested'].includes(data.status);
   }
 
-  async function poll(scanId) {
+  function renderEvidence(data) {
+    const artifacts = new Map((data.artifacts || []).map((item) => [item.id, item]));
+    elements.evidence.replaceChildren(...(data.evidence || []).map((item) => {
+      const article = document.createElement('article');
+      const heading = document.createElement('div');
+      heading.className = 'gateway-evidence-head';
+      const title = document.createElement('strong');
+      title.textContent = String(item.model || 'Analysis').replaceAll('_', ' ');
+      const status = document.createElement('span');
+      status.textContent = String(item.status || 'unknown').replaceAll('_', ' ');
+      status.dataset.status = item.status || 'unknown';
+      heading.append(title, status);
+      const summary = document.createElement('p');
+      summary.textContent = item.status === 'completed'
+        ? `Risk score: ${results.percent(item.score)}. Verdict: ${item.verdict || 'unknown'}.`
+        : 'This check did not produce a final score.';
+      article.append(heading, summary);
+      const reasons = document.createElement('ul');
+      for (const reason of item.reason_codes || []) {
+        const line = document.createElement('li');
+        line.textContent = String(reason).replaceAll('_', ' ').toLowerCase();
+        reasons.append(line);
+      }
+      if (reasons.childElementCount) article.append(reasons);
+      const details = document.createElement('details');
+      const label = document.createElement('summary');
+      label.textContent = 'Evidence provenance';
+      const provenance = document.createElement('p');
+      const artifact = artifacts.get(item.artifact_id);
+      provenance.textContent = `Artifact: ${artifact?.type || 'unknown'} · ${item.artifact_id || 'unavailable'}. Model version: ${item.model_version || 'unavailable'}. Confidence: ${results.percent(item.confidence_value)}.`;
+      details.append(label, provenance);
+      article.append(details);
+      return article;
+    }));
+    if (!elements.evidence.childElementCount) elements.evidence.textContent = 'No specialist evidence is available yet.';
+  }
+
+  async function poll(scanId, generation = viewGeneration) {
     clearTimeout(polling);
-    try { const data=await request(`/api/v1/gateway/scans/${scanId}`,{cache:'no-store'}); render(data); if (!['completed','failed','cancelled'].includes(data.status)) polling=setTimeout(()=>poll(scanId),2500); else setBusy(false); }
-    catch(error){setError(error.message);setBusy(false);}
+    try {
+      const data = await request(`/api/v1/gateway/scans/${scanId}`, { cache: 'no-store' });
+      if (generation !== viewGeneration) return;
+      render(data);
+      if (!results.terminal(data.status)) polling = setTimeout(() => poll(scanId, generation), 2500);
+      else { setBusy(false); refreshHistory(); }
+    } catch (error) {
+      if (generation !== viewGeneration) return;
+      setError(error.message);
+      elements['status-copy'].textContent = 'Status updates paused. Reopen the scan from history to resume. The server may still be processing it.';
+      setBusy(false);
+    }
   }
 
   async function openHistoryScan(scan, item) {
-    if (historySelectionPending) return;
+    if (historySelectionPending || submitting) return;
     historySelectionPending = true;
     setError('');
-    clearTimeout(polling);
+    const generation = resetPolling();
     elements['history-list'].querySelectorAll('.gateway-history-item').forEach((historyItem) => {
       historyItem.classList.toggle('is-selected', historyItem === item);
       historyItem.removeAttribute('aria-current');
@@ -80,10 +145,14 @@
 
     try {
       const data = await request(`/api/v1/gateway/scans/${scan.id}`, { cache: 'no-store' });
+      if (generation !== viewGeneration) return;
       render(data);
+      setBusy(!results.terminal(data.status));
+      if (!results.terminal(data.status)) polling = setTimeout(() => poll(scan.id, generation), 2500);
     } catch (error) {
       setError(error.message);
       elements['status-copy'].textContent = 'The selected scan could not be loaded.';
+      setBusy(false);
     } finally {
       historySelectionPending = false;
       item.disabled = false;
@@ -145,21 +214,36 @@
   }
 
   form.addEventListener('submit', async (event) => {
-    event.preventDefault(); setError(''); setBusy(true,'Validating and routing applicable models…');
+    event.preventDefault();
+    if (submitting || historySelectionPending) return;
+    submitting = true;
+    resetPolling();
+    setError(''); setBusy(true,'Validating and routing applicable models…');
     try {
       const session=await api.getSession(); if(!session)throw new Error('Sign in before submitting a gateway scan.');
       const files=[...elements.file.files];
-      if(files.length>10)throw new Error('Choose no more than 10 media files.');
+      const urls=elements.urls.value.split(/\r?\n/).map((value)=>value.trim()).filter(Boolean);
+      results.validateGatewayInput({ text: elements.text.value, urls, files });
       const media=[];
       for(const file of files)media.push(await uploadMedia(file));
-      const urls=elements.urls.value.split(/\r?\n/).map((value)=>value.trim()).filter(Boolean);
       const context=elements.context.value;
       const data=await request('/api/v1/gateway/scans',{method:'POST',headers:{'Content-Type':'application/json','Idempotency-Key':crypto.randomUUID()},body:JSON.stringify({source:{kind:'web'},content:{text:elements.text.value,urls,media},processing_mode:media.length?'hybrid':'synchronous',metadata:{context_categories:context?[context]:[]}})});
       render(data); await refreshHistory(); if(!['completed','failed','cancelled'].includes(data.status))poll(data.scan_id);else setBusy(false);
     } catch(error){setError(error.message);setBusy(false);}
+    finally { submitting = false; }
   });
   elements.file.addEventListener('change',()=>{const files=[...elements.file.files];elements['file-label'].textContent=files.length?`${files.length} file${files.length===1?'':'s'} selected`:'Choose up to 10 images, audio, or video files';});
-  elements.cancel.addEventListener('click',async()=>{if(!activeScanId)return;try{await request(`/api/v1/gateway/scans/${activeScanId}/cancel`,{method:'POST'});poll(activeScanId);}catch(error){setError(error.message);}});
+  elements.cancel.addEventListener('click', async () => {
+    if (!activeScanId || submitting || elements.cancel.disabled) return;
+    const scanId = activeScanId;
+    const generation = resetPolling();
+    elements.cancel.disabled = true;
+    try {
+      await request(`/api/v1/gateway/scans/${scanId}/cancel`, { method: 'POST' });
+      if (generation === viewGeneration) poll(scanId, generation);
+    } catch (error) { if (generation === viewGeneration) { setError(error.message); poll(scanId, generation); } }
+    finally { elements.cancel.disabled = false; }
+  });
   elements.refresh.addEventListener('click',refreshHistory);
   elements['history-more'].addEventListener('click', () => {
     visibleHistoryCount = Math.min(historyRows.length, visibleHistoryCount + HISTORY_PAGE_SIZE);
@@ -174,5 +258,5 @@
       setBusy(true, 'Loading requested scan...');
       poll(requestedScanId);
     }
-  });
+  }).catch((error) => { setError(error.message || 'Unable to load your session. Reload and sign in again.'); });
 })(window);

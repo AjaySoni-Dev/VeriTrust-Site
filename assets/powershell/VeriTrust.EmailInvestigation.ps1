@@ -35,7 +35,13 @@ function Invoke-VeriTrustEmailInvestigation {
 
         [Parameter()]
         [ValidateNotNullOrEmpty()]
-        [string] $BaseUrl = 'https://www.veritrustlab.in'
+        [string] $BaseUrl = 'https://www.veritrustlab.in',
+
+        [ValidateRange(1, 300)]
+        [int] $TimeoutSec = 90,
+
+        [ValidateNotNullOrEmpty()]
+        [string] $IdempotencyKey = [Guid]::NewGuid().ToString()
     )
 
     if ([string]::IsNullOrWhiteSpace($ApiKey)) {
@@ -54,9 +60,15 @@ function Invoke-VeriTrustEmailInvestigation {
     }
 
     $BaseUrl = $BaseUrl.TrimEnd('/')
+    $ParsedBaseUrl = $null
+    if (-not [Uri]::TryCreate($BaseUrl, [UriKind]::Absolute, [ref] $ParsedBaseUrl) -or
+        $ParsedBaseUrl.Scheme -ne 'https' -or $ParsedBaseUrl.UserInfo -or
+        $ParsedBaseUrl.Query -or $ParsedBaseUrl.Fragment -or $ParsedBaseUrl.AbsolutePath -ne '/') {
+        throw 'BaseUrl must be an HTTPS origin without credentials, a path, a query, or a fragment.'
+    }
     $RequestHeaders = @{
         Authorization     = "Bearer $ApiKey"
-        'Idempotency-Key' = [Guid]::NewGuid().ToString()
+        'Idempotency-Key' = $IdempotencyKey
     }
 
     if ($PSCmdlet.ParameterSetName -eq 'Eml') {
@@ -78,9 +90,12 @@ function Invoke-VeriTrustEmailInvestigation {
             -Headers $RequestHeaders `
             -ContentType 'message/rfc822' `
             -InFile $EmailFile.FullName `
+            -TimeoutSec $TimeoutSec `
+            -MaximumRedirection 0 `
             -ErrorAction Stop
     }
     else {
+        if ([string]::IsNullOrWhiteSpace($Body)) { throw 'Provide a non-empty email body.' }
         $Payload = @{
             subject          = $Subject
             body             = $Body
@@ -92,13 +107,20 @@ function Invoke-VeriTrustEmailInvestigation {
             -Method Post `
             -Uri "$BaseUrl/api/v1/gateway/email/analyze-text" `
             -Headers $RequestHeaders `
-            -ContentType 'application/json' `
-            -Body ($Payload | ConvertTo-Json -Compress) `
+            -ContentType 'application/json; charset=utf-8' `
+            -Body ([Text.Encoding]::UTF8.GetBytes(($Payload | ConvertTo-Json -Compress))) `
+            -TimeoutSec $TimeoutSec `
+            -MaximumRedirection 0 `
             -ErrorAction Stop
     }
 
     if ($null -eq $Response -or $Response.ok -ne $true) {
         throw 'VeriTrust returned an incomplete email investigation response.'
+    }
+    if (-not $Response.PSObject.Properties['evidence'] -or -not $Response.evidence -or
+        -not $Response.PSObject.Properties['gateway_decision'] -or -not $Response.gateway_decision -or
+        -not $Response.PSObject.Properties['scan_id'] -or -not $Response.scan_id) {
+        throw 'VeriTrust did not return the evidence, policy decision, and report ID required for a complete report.'
     }
 
     $Evidence = $Response.evidence
@@ -113,10 +135,14 @@ function Invoke-VeriTrustEmailInvestigation {
 
     $RiskPercent = $null
     if ($null -ne $Decision -and $null -ne $Decision.risk) {
-        $RiskPercent = [Math]::Round(([double] $Decision.risk * 100), 1)
+        $RiskValue = [double] $Decision.risk
+        if ([double]::IsNaN($RiskValue) -or [double]::IsInfinity($RiskValue) -or $RiskValue -lt 0 -or $RiskValue -gt 1) {
+            throw 'VeriTrust returned an invalid risk score.'
+        }
+        $RiskPercent = [Math]::Round(($RiskValue * 100), 1)
     }
 
-    [PSCustomObject] @{
+    $Report = [PSCustomObject] @{
         Result            = $ResultLabel
         RiskPercent       = $RiskPercent
         RecommendedAction = [string] $Decision.recommendation
@@ -125,4 +151,11 @@ function Invoke-VeriTrustEmailInvestigation {
         ReportId          = [string] $Response.scan_id
         TechnicalReport   = $Response
     }
+    $DisplayProperties = [System.Management.Automation.PSPropertySet]::new(
+        'DefaultDisplayPropertySet',
+        [string[]] @('Result', 'RiskPercent', 'RecommendedAction', 'InputType', 'MissingChecks', 'ReportId')
+    )
+    $StandardMembers = [System.Management.Automation.PSMemberInfo[]] @($DisplayProperties)
+    $Report | Add-Member -MemberType MemberSet -Name PSStandardMembers -Value $StandardMembers
+    $Report
 }

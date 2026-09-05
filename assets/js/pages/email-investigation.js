@@ -117,6 +117,7 @@
 
   function setBusy(busy) {
     state.busy = busy;
+    all('[data-email-mode], #emailSubject, #phishingText, #emailEmlFile').forEach((input) => { input.disabled = busy; });
     const button = one('#phishingSubmit');
     if (!button) return;
     button.disabled = busy;
@@ -125,6 +126,7 @@
   }
 
   function setMode(mode, focusPanel = false) {
+    if (state.busy) return;
     state.mode = mode;
     const tabs = all('[data-email-mode]');
     tabs.forEach((tab) => {
@@ -157,11 +159,12 @@
     if (file.size > MAX_EML_BYTES) throw new Error('The selected email exceeds the 10 MiB limit.');
     const extensionOk = /\.eml$/iu.test(file.name || '');
     const typeOk = !file.type || ['message/rfc822', 'application/octet-stream', 'text/plain'].includes(file.type);
-    if (!extensionOk && !typeOk) throw new Error('Choose an .eml or message/rfc822 file.');
+    if (!extensionOk || !typeOk) throw new Error('Choose an original .eml file with a supported email content type.');
     return file;
   }
 
   function chooseFile(file) {
+    if (state.busy) return;
     state.file = validateFile(file);
     const label = one('#emailFileLabel');
     if (label) label.textContent = `${state.file.name} · ${(state.file.size / 1024).toLocaleString(undefined, { maximumFractionDigits: 0 })} KiB`;
@@ -181,7 +184,7 @@
     return payload;
   }
 
-  async function requestInvestigation() {
+  async function requestInvestigation(signal) {
     if (!global.VeriTrustSupabase?.isConfigured()) throw new Error('Account access is temporarily unavailable.');
     const context = await global.VeriTrustSupabase.getSessionContext();
     if (!context?.organization?.id) throw new Error('Sign in and select a workspace before starting an investigation.');
@@ -189,6 +192,7 @@
     if (state.mode === 'eml') {
       const file = validateFile(state.file || one('#emailEmlFile')?.files?.[0]);
       return parseResponse(await fetch(endpoint('emailAnalyzeEml', '/api/v1/gateway/email/analyze-eml'), {
+        signal,
         method: 'POST',
         headers: { 'Content-Type': 'message/rfc822', 'Idempotency-Key': idempotencyKey, 'X-Retention-Policy': 'ephemeral_24h' },
         body: file,
@@ -199,6 +203,7 @@
     if (!subject && !body) throw new Error('Provide an email subject or message body.');
     if (body.length > 12000) throw new Error('Keep the message body at or below 12,000 characters.');
     return parseResponse(await fetch(endpoint('emailAnalyzeText', '/api/v1/gateway/email/analyze-text'), {
+      signal,
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'Idempotency-Key': idempotencyKey },
       body: JSON.stringify({ subject, body, channel: 'email', retention_policy: 'metadata_only', org_id: context.organization.id }),
@@ -438,7 +443,7 @@
       setBusy(true);
       setStatus('Checking the message and available sender evidence...');
       try {
-        const payload = await requestInvestigation();
+        const payload = await global.VeriTrustAnalysisResult.withDeadline(requestInvestigation);
         renderResult(payload);
         setStatus('Check complete. Review the result and any missing evidence.');
       } catch (error) {

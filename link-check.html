@@ -31,11 +31,12 @@
   <script src="/assets/js/core/supabase-client.js" defer></script>
   <script src="/assets/js/core/site.js" defer></script>
   <script src="/assets/js/core/reporting.js" defer></script>
-  <script src="/assets/js/core/result-dialog.js" defer></script>
+  <script src="/assets/js/core/analysis-result.js" defer></script>
+  <script src="/assets/js/core/analysis-progress.js" defer></script>
   <script src="/assets/js/pages/link-check.js" defer></script>
-  <link rel="stylesheet" href="/assets/css/base/glass-system.css">
+  <link rel="stylesheet" href="/assets/css/pages/analysis-workspace.css">
 </head>
-<body class="vt-tool-page vt-graphite-theme">
+<body class="vt-tool-page vt-graphite-theme vt-analysis-page">
   <header class="tool-header-shell vt-page-header">
     <div class="tool-header-inner">
       <a href="index.html" class="tool-header-brand" aria-label="VeriTrust home">
@@ -63,66 +64,23 @@
     </div>
   </header>
 
-  <main class="tool-shell">
-    <section class="tool-topbar">
-      <div class="tool-title">
-        <p class="eyebrow">Link check</p>
-        <h1>VeriTrust Link Intelligence</h1>
-        <p>Analyze an HTTP or HTTPS URL string and optional context with VeriTrust Swift plus deterministic URL indicators. The target page is not fetched.</p>
-      </div>
-    </section>
-
-    <section class="tool-grid link-grid">
-      <form id="linkCheckForm" class="tool-panel">
-        <div class="panel-title">
-          <div>
-            <h2>Analyze link</h2>
-            <p>Paste a URL or message containing a URL. The target page is not fetched.</p>
-          </div>
-          <span class="hint">HTTP or HTTPS</span>
-        </div>
-
-        <label class="field">
-          <span>URL</span>
-          <input id="linkUrl" class="input" type="text" inputmode="url" placeholder="https://example.com/login" autocomplete="off">
-        </label>
-
-        <label class="field link-context-field">
-          <span>Optional context</span>
-          <textarea id="linkContext" class="textarea link-context-textarea" placeholder="Paste surrounding email, SMS, or message text..."></textarea>
-        </label>
-
-        <div class="action-row">
-          <div class="field model-field">
-            <label for="linkModel">Model</label>
-            <select id="linkModel" class="select" aria-label="Model">
-              <option value="swift" selected>VeriTrust Swift</option>
-            </select>
-            <span class="hint">Hosted classifier with URL-pattern checks.</span>
-          </div>
-          <button id="linkSubmit" class="btn btn-primary" type="submit">Analyze Link</button>
-        </div>
-      </form>
-
-      <aside class="tool-panel result-panel-v2 result-status-panel">
-        <div class="panel-title">
-          <div>
-            <h2>Analysis status</h2>
-            <p id="activityLog">Waiting for a link</p>
-          </div>
-        </div>
-      </aside>
-    </section>
-    <dialog id="linkResultDialog" class="result-dialog" aria-labelledby="linkResultTitle">
-      <div class="result-dialog-shell">
-        <header class="result-dialog-header">
-          <div><span>Analysis complete</span><h2 id="linkResultTitle">Link intelligence result</h2></div>
-          <button type="button" class="result-dialog-close" data-result-dialog-close aria-label="Close result dialog">&times;</button>
-        </header>
-        <div class="result-dialog-body"><div id="linkResult" class="result-empty tool-result-empty">Your link result will appear here.</div></div>
-      </div>
-    </dialog>
-  </main>
+  <main class="tool-shell analysis-shell"><nav class="analysis-module-nav" aria-label="Detection modules"><a href="/deepfake">Deepfake</a><a href="/phishing">Phishing</a><a href="/link-check" aria-current="page">Link detection</a></nav><section class="analysis-heading"><p class="analysis-section-label">DETECTION WORKSPACE</p><h1>Link detection</h1><p>Review a suspicious URL before deciding what to do next.</p></section><section class="analysis-layout">
+      <form id="linkCheckForm" class="analysis-input" novalidate>
+        <div class="analysis-form-heading"><h2>Enter a link</h2><span>HTTP or HTTPS</span></div>
+        <div class="field"><label for="linkUrl">URL</label><input id="linkUrl" class="input" type="text" inputmode="url" placeholder="https://" autocomplete="off" spellcheck="false" aria-describedby="linkInputHelp"></div>
+        <p id="linkInputHelp" class="analysis-field-help">The URL is analyzed without opening the destination page.</p>
+        <div class="field"><label for="linkContext">Message or context <span class="analysis-optional">optional</span></label><textarea id="linkContext" class="textarea" maxlength="12000" placeholder="Add the message that contained this link, or paste a message with a URL."></textarea></div>
+        <input id="linkModel" type="hidden" value="swift">
+        <div class="analysis-submit"><span>VeriTrust Swift · URL and context analysis</span><button id="linkSubmit" class="btn btn-primary" type="submit">Analyze link <span aria-hidden="true">↗</span></button></div>
+      </form><aside class="analysis-activity" aria-label="Analysis activity">
+        <div class="analysis-idle" id="analysisIdle"><span class="analysis-section-label">YOUR ANALYSIS</span><h2>Ready when you are</h2><p>Submit your input to follow processing here. Your report appears below when the server returns a result.</p></div>
+        <section id="analysisProgress" class="analysis-progress" hidden>
+          <div class="analysis-progress-heading"><span class="analysis-status-dot" aria-hidden="true"></span><h2 id="analysisProgressTitle">Analysis in progress</h2></div>
+          <p id="analysisProgressMessage" role="status" aria-live="polite" aria-atomic="true"></p>
+          <details open><summary>Processing activity</summary><ol id="analysisProgressEvents"></ol></details>
+        </section>
+        <p id="activityLog" class="analysis-secondary-status"></p>
+      </aside></section><section id="linkResultShell" class="analysis-report" aria-label="Link detection report" tabindex="-1" hidden><div id="linkResult"></div></section></main>
 
   <footer class="legal-footer">
     <a href="docs.html">Docs</a><span aria-hidden="true">&middot;</span><a href="developers.html">Developers</a><span aria-hidden="true">&middot;</span><a href="model-performance.html">Model Performance</a><span aria-hidden="true">&middot;</span><a href="privacy.html">Privacy</a><span aria-hidden="true">&middot;</span><a href="terms.html">Terms</a><span aria-hidden="true">&middot;</span><a href="security.html">Security</a><span aria-hidden="true">&middot;</span><a href="disclaimer.html">Disclaimer</a>
