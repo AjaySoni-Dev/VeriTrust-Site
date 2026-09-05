@@ -450,6 +450,9 @@ Never hardcode production API keys in public notebooks, frontend JavaScript, rep
 The gateway is available under `/api/v1/gateway`.
 
 - `POST /api/v1/gateway/scans` submits text, URLs, and registered media. `Idempotency-Key` is required.
+- `POST /api/v1/gateway/email/analyze-text` submits an email subject and body to the email forensic specialist.
+- `POST /api/v1/gateway/email/analyze-eml` uploads an original RFC 822 `.eml` file, up to 10 MiB, to the same specialist.
+- `GET /api/v1/gateway/email/evidence/{id}` returns the normalized email evidence behind a Gateway result.
 - `GET /api/v1/gateway/scans` lists tenant-scoped gateway scans.
 - `GET /api/v1/gateway/scans/{id}` returns status, artifacts, evidence, and the current decision.
 - `POST /api/v1/gateway/scans/{id}/cancel` requests idempotent cancellation.
@@ -462,6 +465,11 @@ The machine-readable contract is [`openapi/veritrust-gateway-v1.yaml`](openapi/v
 The email specialist is implemented inside the Gateway with three explicit capability modes:
 
 ```text
+POST /api/v1/gateway/email/analyze-text
+POST /api/v1/gateway/email/analyze-eml
+GET  /api/v1/gateway/email/evidence/{scan_id}
+
+# Backward-compatible specialist paths
 POST /api/v2/phishing/analyze-text
 POST /api/v2/phishing/analyze-eml
 GET  /api/v2/phishing/evidence/{scan_id}

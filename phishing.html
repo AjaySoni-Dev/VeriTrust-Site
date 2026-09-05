@@ -27,7 +27,7 @@
   <link rel="stylesheet" href="/assets/css/base/veritrust.css">
   <link rel="stylesheet" href="/assets/css/base/tool-pages.css">
   <link rel="stylesheet" href="/assets/css/base/graphite-orange-theme.css">
-  <link rel="stylesheet" href="/assets/css/pages/email-investigation.css?v=20260825-compact">
+  <link rel="stylesheet" href="/assets/css/pages/email-investigation.css?v=20260905-final">
   <script src="/assets/js/core/config.js"></script>
   <script src="/assets/js/core/supabase-client.js" defer></script>
   <script src="/assets/js/core/site.js" defer></script>
@@ -68,9 +68,14 @@
   <main class="tool-shell">
     <section class="tool-topbar">
       <div class="tool-title">
-        <p class="eyebrow">Email threat investigation</p>
-        <h1>Investigate a suspicious email.</h1>
-        <p>Examine available content, authentication, identity relationships, URLs, attachments, and sending infrastructure. Results state evidence gaps explicitly.</p>
+        <p class="eyebrow">Suspicious email check</p>
+        <h1>Find out whether an email is trying to deceive you.</h1>
+        <p>Paste the message for a quick content check, or upload the original email file for deeper sender, link, attachment, and delivery-route checks.</p>
+        <div class="email-assurance-strip" aria-label="Investigation highlights">
+          <span>Plain-language result</span>
+          <span>Evidence behind every decision</span>
+          <span>No automatic blocking</span>
+        </div>
       </div>
     </section>
 
@@ -78,71 +83,63 @@
       <form id="phishingForm" class="tool-panel email-input-panel" data-email-workbench novalidate>
         <div class="panel-title">
           <div>
-            <h2 id="emailInputTitle">Investigation input</h2>
-            <p>Choose the strongest evidence source you have.</p>
+            <h2 id="emailInputTitle">Check an email</h2>
+            <p>Choose what you have available. The original file gives the most complete result.</p>
           </div>
-          <span class="hint">Up to 10 MiB EML</span>
+          <span class="hint">10 MB maximum</span>
         </div>
 
         <div class="email-mode-tabs" role="tablist" aria-label="Email evidence source">
-          <button id="emailTabText" class="email-mode-tab is-active" type="button" role="tab" aria-selected="true" aria-controls="emailPanelText" tabindex="0" data-email-mode="text">Paste message</button>
-          <button id="emailTabEml" class="email-mode-tab" type="button" role="tab" aria-selected="false" aria-controls="emailPanelEml" tabindex="-1" data-email-mode="eml">Upload .eml</button>
-          <button id="emailTabReceiver" class="email-mode-tab" type="button" role="tab" aria-selected="false" aria-controls="emailPanelReceiver" tabindex="-1" data-email-mode="receiver">Trusted receiver</button>
+          <button id="emailTabText" class="email-mode-tab is-active" type="button" role="tab" aria-selected="true" aria-controls="emailPanelText" tabindex="0" data-email-mode="text">Paste email text</button>
+          <button id="emailTabEml" class="email-mode-tab" type="button" role="tab" aria-selected="false" aria-controls="emailPanelEml" tabindex="-1" data-email-mode="eml">Upload original email</button>
         </div>
 
         <section id="emailPanelText" class="email-mode-panel" role="tabpanel" aria-labelledby="emailTabText" data-email-panel="text">
           <div class="field email-subject-field">
-            <label for="emailSubject">Subject <span>optional</span></label>
+            <label for="emailSubject">Email subject <span>optional</span></label>
             <input id="emailSubject" class="input" type="text" maxlength="998" autocomplete="off" placeholder="Account access requires attention">
           </div>
           <div class="field">
-            <label for="phishingText">Message body</label>
-            <textarea id="phishingText" class="textarea tool-textarea" maxlength="12000" aria-describedby="emailTextHelp emailInputError" placeholder="Paste the visible email or SMS content here..."></textarea>
-            <div class="email-field-meta"><span id="emailTextHelp">Content-only mode cannot verify headers, SPF, DKIM, DMARC, ARC, attachments, or routing.</span><output id="emailCharacterCount" for="phishingText">0 / 12,000</output></div>
+            <label for="phishingText">Email message</label>
+            <textarea id="phishingText" class="textarea tool-textarea" maxlength="12000" aria-describedby="emailTextHelp emailInputError" placeholder="Paste the email message here..."></textarea>
+            <div class="email-field-meta"><span id="emailTextHelp">This checks the wording and any links. Upload the original email to verify sender details and attachments.</span><output id="emailCharacterCount" for="phishingText">0 / 12,000</output></div>
           </div>
         </section>
 
         <section id="emailPanelEml" class="email-mode-panel" role="tabpanel" aria-labelledby="emailTabEml" data-email-panel="eml" hidden>
+          <div class="email-mode-intro"><span data-email-term=".eml file" data-email-help="An .eml file preserves the message, sender information, delivery path, and attachment details exactly as the mail application received them.">Why use an .eml file?</span><small>It gives VeriTrust the strongest available email evidence.</small></div>
           <label class="email-dropzone" for="emailEmlFile">
             <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 3.75h7l3 3V20.25H7zM14 3.75v3h3M9.5 11.25h5M9.5 14.5h5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            <span><strong>Choose a raw email file</strong><small id="emailFileLabel">.eml or message/rfc822, maximum 10 MiB</small></span>
-            <span class="email-dropzone-action">Browse</span>
+            <span><strong>Choose the original email file</strong><small id="emailFileLabel">.eml file, maximum 10 MB</small></span>
+            <span class="email-dropzone-action">Choose file</span>
           </label>
           <input id="emailEmlFile" class="email-file-input" type="file" accept=".eml,message/rfc822" aria-describedby="emailEmlHelp emailInputError">
-          <p id="emailEmlHelp" class="email-retention-note"><strong>Temporary evidence:</strong> the original file is stored in the private Gateway bucket for no more than 24 hours. Only bounded, non-executable parsing is performed.</p>
-        </section>
-
-        <section id="emailPanelReceiver" class="email-mode-panel" role="tabpanel" aria-labelledby="emailTabReceiver" data-email-panel="receiver" hidden>
-          <div class="email-receiver-card">
-            <span class="email-state-dot" aria-hidden="true"></span>
-            <div><strong>Integration endpoint available</strong><p>Trusted receivers can add SMTP client IP, HELO, MAIL FROM, and receiver identity so SPF and trust-boundary checks become observable. Configure the server-side receiver secret and integration before sending events.</p></div>
-          </div>
-          <a class="btn btn-secondary" href="developers.html#email-receiver">View receiver contract</a>
+          <p id="emailEmlHelp" class="email-retention-note"><strong data-email-term="Temporary storage" data-email-help="The uploaded file is kept in private storage for no more than 24 hours and is never opened or executed like an application.">Private and temporary:</strong> the original file is kept for no more than 24 hours and is analyzed without opening its attachments.</p>
         </section>
 
         <p id="emailInputError" class="email-form-error" role="alert" tabindex="-1" hidden></p>
         <div class="email-submit-row">
-          <p><strong>Interpretation matters.</strong> A lower-risk result is not a safety guarantee.</p>
-          <button id="phishingSubmit" class="btn btn-primary" type="submit">Run investigation</button>
+          <p><strong>Stay cautious.</strong> No automated result can guarantee that an email is safe.</p>
+          <button id="phishingSubmit" class="btn btn-primary" type="submit">Check email</button>
         </div>
       </form>
 
       <aside class="tool-panel email-coverage-panel" aria-labelledby="coverageTitle">
         <div class="panel-title">
           <div>
-            <h2 id="coverageTitle">Evidence coverage</h2>
-            <p id="activityLog" role="status" aria-live="polite">Waiting for an investigation</p>
+            <h2 id="coverageTitle"><span data-email-term="Checks available" data-email-help="The available checks depend on what you submit. Pasted text supports a quick wording and link check; an original .eml file also preserves sender and delivery evidence.">What VeriTrust can check</span></h2>
+            <p id="activityLog" role="status" aria-live="polite">Ready when you are</p>
           </div>
         </div>
         <div id="emailCoveragePreview" class="email-coverage-list">
-          <div><span>Content signals</span><strong>Available</strong></div>
-          <div><span>Authentication</span><strong data-preview-auth>Unavailable in paste mode</strong></div>
-          <div><span>Identity graph</span><strong data-preview-identity>Limited</strong></div>
-          <div><span>URL intelligence</span><strong>When URLs are present</strong></div>
-          <div><span>Sending infrastructure</span><strong data-preview-infra>Unavailable in paste mode</strong></div>
-          <div><span>Media authenticity</span><strong><a class="email-coverage-link" href="gateway.html">Open media analysis</a></strong></div>
+          <div><span>Message wording</span><strong>Available</strong></div>
+          <div><span data-email-term="Sender verification" data-email-help="Sender verification uses email standards such as SPF, DKIM, and DMARC to look for signs that the claimed sender or message was forged.">Sender verification</span><strong data-preview-auth>Needs original email</strong></div>
+          <div><span data-email-term="Sender consistency" data-email-help="Compares the visible From address with reply, return-path, signature, and linked domains to reveal mismatches.">Sender consistency</span><strong data-preview-identity>Limited with pasted text</strong></div>
+          <div><span>Links in the email</span><strong>When links are present</strong></div>
+          <div><span data-email-term="Delivery route" data-email-help="The delivery route is the chain of mail servers recorded in the original email. It can describe server networks, but never proves a person's physical location.">Delivery route</span><strong data-preview-infra>Needs original email</strong></div>
+          <div><span>Attachments</span><strong data-preview-attachments>Needs original email</strong></div>
         </div>
-        <div class="email-boundary-note"><strong>Trust boundary</strong><p>Authentication-Results headers are not treated as trusted receiver evidence unless they arrive through the configured receiver endpoint.</p></div>
+        <div class="email-boundary-note"><strong>Need automated checks?</strong><p>Use the <a class="email-coverage-link" href="gateway-powershell.html#phishing">Unified Gateway PowerShell guide</a> to submit pasted text or an .eml file from a terminal.</p></div>
       </aside>
     </section>
 
@@ -150,6 +147,7 @@
       <div id="phishingResult" class="email-result-content"></div>
     </section>
   </main>
+  <div id="emailHelpTooltip" class="email-help-tooltip" role="tooltip" hidden></div>
   <footer class="legal-footer">
     <a href="privacy.html">Privacy</a><span aria-hidden="true">&middot;</span><a href="terms.html">Terms</a><span aria-hidden="true">&middot;</span><a href="security.html">Security</a><span aria-hidden="true">&middot;</span><a href="disclaimer.html">Disclaimer</a><span aria-hidden="true">&middot;</span><a href="docs.html">Docs</a><span aria-hidden="true">&middot;</span><a href="developers.html">Developers</a><span aria-hidden="true">&middot;</span><a href="model-performance.html">Model Performance</a>
   </footer>

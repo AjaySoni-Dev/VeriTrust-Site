@@ -64,7 +64,7 @@
       <div class="ps-hero-copy">
         <div class="ps-kicker"><span></span> Unified Security Gateway</div>
         <h1 id="guide-title">Run VeriTrust from Windows PowerShell.</h1>
-        <p>Authenticate, submit a scan, and retrieve the policy decision. Every example below is ready to copy.</p>
+        <p>Paste suspicious email text or upload an original .eml file, then receive the same forensic result available in the VeriTrust interface. Every example below is ready to copy.</p>
         <div class="ps-hero-actions">
           <a class="btn btn-primary" href="#setup">Start with setup</a>
           <a class="btn btn-secondary" href="api-access.html">Create an API key</a>
@@ -87,7 +87,7 @@
     <section class="ps-flow" aria-label="Integration flow">
       <div><span>01</span><strong>Create key</strong><small>Organization-scoped access</small></div>
       <b aria-hidden="true">&rarr;</b>
-      <div><span>02</span><strong>Submit</strong><small>Text, URL, or image</small></div>
+      <div><span>02</span><strong>Submit</strong><small>Email text, .eml, URL, or media</small></div>
       <b aria-hidden="true">&rarr;</b>
       <div><span>03</span><strong>Wait</strong><small>Fast path or worker</small></div>
       <b aria-hidden="true">&rarr;</b>
@@ -98,7 +98,7 @@
       <nav class="ps-guide-nav" aria-label="PowerShell guide sections">
         <a href="#before-you-start" aria-label="Before you start">Start</a>
         <a href="#setup" aria-label="Secure setup">Setup</a>
-        <a href="#phishing" aria-label="Phishing-only detection">Phishing</a>
+        <a href="#phishing" aria-label="Email forensic investigation">Email forensics</a>
         <a href="#link" aria-label="Link-only detection">Link</a>
         <a href="#combined" aria-label="Combined scan">Combined</a>
         <a href="#deepfake" aria-label="Image deepfake detection">Deepfake</a>
@@ -161,66 +161,123 @@ Write-Host "Authenticated with VeriTrust." -ForegroundColor Green</code></pre>
         <section id="phishing" class="ps-guide-section">
           <div class="ps-section-heading">
             <span class="ps-step-number">03</span>
-            <div><p class="eyebrow">Core email workflow</p><h2>Email threat intelligence</h2></div>
+            <div><p class="eyebrow">Core SIH workflow</p><h2>Investigate email text or an .eml file</h2></div>
           </div>
-          <p class="ps-lead">Use this PowerShell flow to assess suspicious email, SMS, or chat text. URLs found inside the message are extracted and assessed automatically, and the resulting report preserves the evidence used for the decision.</p>
+          <p class="ps-lead">Add this function once per PowerShell session. It sends pasted text or the exact bytes of an original email through the Unified Gateway and returns a clear result, risk score, recommended action, and report ID.</p>
+          <div class="ps-callout ps-callout-info"><strong>Which input should I use?</strong><span>Text is fastest and checks wording plus links. An <code>.eml</code> file also preserves sender verification, sender consistency, attachment details, and the recorded delivery route.</span></div>
           <div class="ps-code-card">
-            <div class="ps-code-head"><div><span>PowerShell</span><strong>Submit, wait, and show phishing result</strong></div><button type="button" data-copy-code>Copy block</button></div>
-            <pre><code>$PhishingText = @"
+            <div class="ps-code-head"><div><span>PowerShell</span><strong>Create the email investigation command</strong></div><button type="button" data-copy-code>Copy block</button></div>
+            <pre><code>function Invoke-VeriTrustEmailInvestigation {
+    [CmdletBinding(DefaultParameterSetName = "Text")]
+    param(
+        [Parameter(Mandatory, ParameterSetName = "Text")]
+        [ValidateLength(1, 12000)]
+        [string] $Body,
+
+        [Parameter(ParameterSetName = "Text")]
+        [ValidateLength(0, 998)]
+        [string] $Subject = "",
+
+        [Parameter(Mandatory, ParameterSetName = "Eml")]
+        [string] $EmlPath
+    )
+
+    if ([string]::IsNullOrWhiteSpace($ApiKey)) {
+        throw "Run the secure setup block first."
+    }
+
+    $RequestHeaders = @{
+        Authorization      = "Bearer $ApiKey"
+        "Idempotency-Key" = [Guid]::NewGuid().ToString()
+    }
+
+    if ($PSCmdlet.ParameterSetName -eq "Eml") {
+        if (-not (Test-Path -LiteralPath $EmlPath -PathType Leaf)) {
+            throw "Email file not found: $EmlPath"
+        }
+
+        $EmailFile = Get-Item -LiteralPath $EmlPath
+        if ($EmailFile.Extension -ne ".eml") {
+            throw "Choose a file with the .eml extension."
+        }
+        if ($EmailFile.Length -lt 1 -or $EmailFile.Length -gt 10MB) {
+            throw "The .eml file must contain data and must not exceed 10 MB."
+        }
+
+        $Response = Invoke-RestMethod `
+            -Method Post `
+            -Uri "$BaseUrl/api/v1/gateway/email/analyze-eml" `
+            -Headers $RequestHeaders `
+            -ContentType "message/rfc822" `
+            -InFile $EmailFile.FullName `
+            -ErrorAction Stop
+    }
+    else {
+        $Payload = @{
+            subject          = $Subject
+            body             = $Body
+            channel          = "email"
+            retention_policy = "metadata_only"
+        }
+
+        $Response = Invoke-RestMethod `
+            -Method Post `
+            -Uri "$BaseUrl/api/v1/gateway/email/analyze-text" `
+            -Headers $RequestHeaders `
+            -ContentType "application/json" `
+            -Body ($Payload | ConvertTo-Json -Compress) `
+            -ErrorAction Stop
+    }
+
+    $Evidence = $Response.evidence
+    $Decision = $Response.gateway_decision
+    $ResultLabel = switch ([string] $Evidence.state) {
+        "LIKELY_PHISHING" { "Likely phishing" }
+        "LIKELY_BENIGN"   { "No strong phishing signs found" }
+        "UNCERTAIN"       { "Needs a closer look" }
+        "UNSUPPORTED"     { "Could not fully check this email" }
+        default            { "Check could not be completed" }
+    }
+
+    [PSCustomObject] @{
+        Result            = $ResultLabel
+        RiskPercent       = [Math]::Round(([double] $Decision.risk * 100), 1)
+        RecommendedAction = [string] $Decision.recommendation
+        InputType         = [string] $Evidence.input_mode
+        MissingChecks     = @($Evidence.limitations).Count
+        ReportId          = [string] $Response.scan_id
+        TechnicalReport   = $Response
+    }
+}</code></pre>
+          </div>
+          <div class="ps-code-card ps-code-card-compact">
+            <div class="ps-code-head"><div><span>PowerShell</span><strong>Option A: investigate pasted email text</strong></div><button type="button" data-copy-code>Copy block</button></div>
+            <pre><code>$EmailText = @"
 URGENT: Your Microsoft 365 account will be suspended today.
 Confirm your password immediately using the verification link.
 "@
 
-$IdempotencyKey = [Guid]::NewGuid().ToString()
-$Headers = @{
-    Authorization     = "Bearer $ApiKey"
-    "Idempotency-Key" = $IdempotencyKey
-}
+$EmailResult = Invoke-VeriTrustEmailInvestigation `
+    -Subject "Action required" `
+    -Body $EmailText
 
-$Payload = @{
-    source = @{
-        kind              = "powershell"
-        external_event_id = "phishing-$([Guid]::NewGuid())"
-    }
-    content = @{
-        text  = $PhishingText
-        urls  = @()
-        media = @()
-    }
-    processing_mode = "synchronous"
-    metadata = @{
-        client             = "windows-powershell"
-        context_categories = @("email")
-    }
-}
-
-$Submission = Invoke-RestMethod `
-    -Method Post `
-    -Uri "$BaseUrl/api/v1/gateway/scans" `
-    -Headers $Headers `
-    -ContentType "application/json" `
-    -Body ($Payload | ConvertTo-Json -Depth 20 -Compress) `
-    -ErrorAction Stop
-
-$ScanId = $Submission.scan_id
-do {
-    $Result = Invoke-RestMethod `
-        -Method Get `
-        -Uri "$BaseUrl/api/v1/gateway/scans/$ScanId" `
-        -Headers $AuthHeaders `
-        -ErrorAction Stop
-
-    Write-Host "Status: $($Result.status)"
-    if (@("completed", "failed", "cancelled") -notcontains $Result.status) {
-        Start-Sleep -Seconds 3
-    }
-} while (@("completed", "failed", "cancelled") -notcontains $Result.status)
-
-$Result.decision | Format-List
-$Result.evidence |
-    Select-Object model, status, score, verdict, confidence, reason_codes |
+$EmailResult | Select-Object `
+    Result, RiskPercent, RecommendedAction, MissingChecks, ReportId |
     Format-List</code></pre>
           </div>
+          <div class="ps-code-card ps-code-card-compact">
+            <div class="ps-code-head"><div><span>PowerShell</span><strong>Option B: upload an original .eml file</strong></div><button type="button" data-copy-code>Copy block</button></div>
+            <pre><code>$EmailResult = Invoke-VeriTrustEmailInvestigation `
+    -EmlPath "C:\SecurityTests\suspicious-email.eml"
+
+$EmailResult | Select-Object `
+    Result, RiskPercent, RecommendedAction, InputType, MissingChecks, ReportId |
+    Format-List
+
+# Show the complete forensic evidence when needed:
+$EmailResult.TechnicalReport.evidence | ConvertTo-Json -Depth 30</code></pre>
+          </div>
+          <div class="ps-callout ps-callout-success"><strong>Same evidence, any interface.</strong><span>Both commands use the production email investigation service behind VeriTrust. The report ID can be opened in the Gateway and appears in the organization case history.</span></div>
         </section>
 
         <section id="link" class="ps-guide-section">
