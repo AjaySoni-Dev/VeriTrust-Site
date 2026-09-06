@@ -265,7 +265,7 @@ const VeriTrustSiteChrome = (() => {
 
   const createFooter = () => {
     const footer = document.createElement('footer');
-    if (document.body.classList.contains('vt-analysis-page')) {
+    if (document.body.matches('.vt-analysis-page, .vt-detection-page')) {
       footer.className = 'analysis-footer';
       footer.innerHTML = '<span>VeriTrust · AI-assisted security review</span><nav aria-label="Legal and help"><a href="/docs">Help</a><a href="/privacy">Privacy</a><a href="/terms">Terms</a></nav>';
       return footer;
