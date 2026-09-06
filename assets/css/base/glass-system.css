@@ -70,6 +70,16 @@ body :where(pre, .code-block, .terminal-content, .ps-code) {
   overscroll-behavior-inline: contain;
 }
 
+/* Analysis workspaces use the same glass regions as the landing page. */
+html body.vt-tool-page.vt-analysis-page :is(.analysis-input, .analysis-report, .analysis-activity) {
+  border: 1px solid var(--vt-glass-border);
+  border-radius: 14px;
+  background: var(--vt-glass-surface);
+  box-shadow: var(--vt-glass-shadow);
+  backdrop-filter: var(--vt-glass-blur);
+  -webkit-backdrop-filter: var(--vt-glass-blur);
+}
+
 /* Shared site chrome */
 body.vt-graphite-theme :where(.site-header, .tool-header-shell, .vt-page-header, .vt-site-header),
 body:not(.vt-graphite-theme) :where(.site-header, .tool-header-shell, .vt-page-header, .vt-site-header) {
