@@ -60,6 +60,7 @@
     AMBIGUOUS_MULTIPLE_SENDER: 'The email lists more than one sender address.',
   });
   const state = { mode: 'text', file: null, busy: false, lastScanId: null };
+  const analysisProgress = global.VeriTrustAnalysisProgress.create();
   const one = (selector, root = document) => root.querySelector(selector);
   const all = (selector, root = document) => [...root.querySelectorAll(selector)];
   const escapeHtml = (value) => String(value ?? '').replace(/[&<>"']/g, (character) => ({
@@ -167,7 +168,7 @@
     if (state.busy) return;
     state.file = validateFile(file);
     const label = one('#emailFileLabel');
-    if (label) label.textContent = `${state.file.name} · ${(state.file.size / 1024).toLocaleString(undefined, { maximumFractionDigits: 0 })} KiB`;
+    if (label) label.textContent = `${state.file.name} · ${state.file.size < 1024 ? `${state.file.size} bytes` : `${(state.file.size / 1024).toLocaleString(undefined, { maximumFractionDigits: 1 })} KiB`}`;
   }
 
   async function parseResponse(response) {
@@ -191,23 +192,23 @@
     const idempotencyKey = global.crypto?.randomUUID?.() || `email-web-${Date.now()}-${Math.random().toString(36).slice(2)}`;
     if (state.mode === 'eml') {
       const file = validateFile(state.file || one('#emailEmlFile')?.files?.[0]);
-      return parseResponse(await fetch(endpoint('emailAnalyzeEml', '/api/v1/gateway/email/analyze-eml'), {
+      return analysisProgress.request(endpoint('emailAnalyzeEml', '/api/v1/gateway/email/analyze-eml'), {
         signal,
         method: 'POST',
         headers: { 'Content-Type': 'message/rfc822', 'Idempotency-Key': idempotencyKey, 'X-Retention-Policy': 'ephemeral_24h' },
         body: file,
-      }));
+      });
     }
     const subject = one('#emailSubject')?.value.trim() || '';
     const body = one('#phishingText')?.value.trim() || '';
     if (!subject && !body) throw new Error('Provide an email subject or message body.');
     if (body.length > 12000) throw new Error('Keep the message body at or below 12,000 characters.');
-    return parseResponse(await fetch(endpoint('emailAnalyzeText', '/api/v1/gateway/email/analyze-text'), {
+    return analysisProgress.request(endpoint('emailAnalyzeText', '/api/v1/gateway/email/analyze-text'), {
       signal,
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'Idempotency-Key': idempotencyKey },
       body: JSON.stringify({ subject, body, channel: 'email', retention_policy: 'metadata_only', org_id: context.organization.id }),
-    }));
+    });
   }
 
   function coverageData(evidence) {
@@ -221,8 +222,9 @@
     const urls = children.filter((item) => item.type === 'url');
     const attachments = children.filter((item) => item.type === 'attachment');
     const availableAuth = authentication.filter((item) => item.result !== 'UNAVAILABLE');
+    const parsed = ['plain_text', 'raw_eml', 'trusted_receiver_event'].includes(evidence.input_mode) && !['FAILED', 'UNSUPPORTED'].includes(evidence.state);
     return [
-      ['Message wording', 'checked', `${observations.filter((item) => item.code).length} notable pattern(s) found`, null],
+      ['Message wording', parsed ? 'checked' : 'not available', parsed ? `${observations.filter((item) => item.code).length} notable pattern(s) found` : 'Message parsing was not confirmed', null],
       ['Sender verification', capabilities.headers ? (availableAuth.length ? 'checked' : 'limited') : 'not available', capabilities.headers ? `${availableAuth.length} sender check(s) completed; SPF needs live server data` : 'Upload the original email to enable this', HELP.authentication],
       ['Sender consistency', relationships.length ? 'checked' : capabilities.headers ? 'limited' : 'not available', relationships.length ? `${relationships.length} sender relationship(s) compared` : 'No sender details were available to compare', HELP.identity],
       ['Links', urls.length ? (urls.some((item) => item.state !== 'completed') ? 'limited' : 'checked') : 'not present', urls.length ? `${urls.length} link(s) found in the email` : 'No link was found'],
@@ -233,7 +235,7 @@
   }
 
   function renderCoverage(items) {
-    return `<section class="email-coverage-summary" aria-labelledby="coverageResultTitle"><div class="email-section-heading"><div><p class="email-result-kicker">Evidence used</p><h3 id="coverageResultTitle">Checks completed</h3></div>${helpLabel('Coverage', HELP.coverage)}</div><div class="email-coverage-results">${items.map(([name, status, detail, help]) => `
+    return `<section class="email-coverage-summary" aria-labelledby="coverageResultTitle"><div class="email-section-heading"><div><p class="email-result-kicker">Evidence used</p><h3 id="coverageResultTitle">Evidence coverage</h3></div>${helpLabel('Coverage', HELP.coverage)}</div><div class="email-coverage-results">${items.map(([name, status, detail, help]) => `
       <article class="email-coverage-item" data-coverage="${escapeHtml(status)}">
         <span>${help ? helpLabel(name, help) : escapeHtml(name)}</span><strong>${escapeHtml(titleCase(status))}</strong><small>${escapeHtml(detail)}</small>
       </article>`).join('')}</div></section>`;
@@ -261,7 +263,7 @@
     const attachments = children.filter((item) => item.type === 'attachment');
     const model = Array.isArray(evidence.model_evidence) ? evidence.model_evidence[0] : null;
     const limitations = Array.isArray(evidence.limitations) ? evidence.limitations : [];
-    const risk = Number.isFinite(Number(decision.risk)) ? `${Math.round(Number(decision.risk) * 100)}%` : 'Not available';
+    const risk = global.VeriTrustAnalysisResult.percent(decision.risk);
     const stateCopy = {
       LIKELY_PHISHING: 'This email shows signs commonly associated with phishing. Do not click links, open attachments, reply, or share information until it is verified through another channel.',
       LIKELY_BENIGN: 'The available checks did not find strong phishing signs. This is not a guarantee of safety, especially where checks were unavailable.',
@@ -282,23 +284,23 @@
           <p>${escapeHtml(stateCopy)}</p>
           <div class="email-result-actions">
             <a class="btn btn-primary" href="gateway.html?scan_id=${encodeURIComponent(payload.scan_id || '')}">View full report</a>
-            <button class="btn btn-secondary email-pdf-download" type="button" data-download-email-pdf>Download light PDF report</button>
-            ${['manual_review', 'hold', 'quarantine', 'block'].includes(decision.recommendation) ? '<a class="btn btn-secondary" href="cases.html">Send to case review</a>' : ''}
+            <button class="btn btn-secondary email-pdf-download" type="button" data-download-email-pdf>Download PDF</button>
+            ${['manual_review', 'hold', 'quarantine', 'block'].includes(decision.recommendation) ? '<a class="btn btn-secondary" href="cases.html">Open cases</a>' : ''}
             <button class="btn btn-secondary" type="button" data-copy-scan>Copy report ID</button>
           </div>
         </div>
         <div class="email-result-state"><span>Recommended next step</span><strong>${escapeHtml(recommendation)}</strong><small>${helpLabel(`Risk score: ${risk}`, HELP.risk)}<br>${escapeHtml(certainty)}</small></div>
       </article>
       ${renderCoverage(coverageData(evidence))}
-      <div class="email-evidence-grid">
+      <details class="analysis-evidence-details"><summary>Evidence details and limitations <span>${limitations.length} recorded limitations</span></summary><div class="email-evidence-grid">
         <article class="email-evidence-card"><header><h3>What the message says</h3><span>${deterministic.length} finding${deterministic.length === 1 ? '' : 's'}</span></header>${evidenceList(deterministic, 'No obvious wording or formatting pattern was found. This does not prove the email is safe.', (item) => ({ label: friendlyCode(item.code), detail: 'Found by a rule-based check of the message content.', help: `Technical code: ${item.code}. ${HELP.technicalCode}` }))}</article>
         <article class="email-evidence-card"><header><h3>${helpLabel('Sender verification', HELP.authentication)}</h3><span>${authentication.length} check${authentication.length === 1 ? '' : 's'}</span></header>${evidenceList(authentication, 'Sender verification was not available for this type of input.', (item) => ({ label: String(item.protocol || 'Sender check').replaceAll('_', ' '), detail: `${friendlyStatus(item.result)}${item.domain ? ` for ${item.domain}` : ''}${item.failure_reason ? ' - supporting information was unavailable' : ''}`, help: PROTOCOL_HELP[item.protocol] || HELP.authentication }))}</article>
-        <article class="email-evidence-card"><header><h3>${helpLabel('Do sender details match?', HELP.identity)}</h3><span>${relationships.length} comparison${relationships.length === 1 ? '' : 's'}</span></header>${evidenceList(relationships, 'There were not enough sender details to compare.', (item) => ({ label: String(item.edge_type || 'Compared').replaceAll('_', ' '), detail: `${String(item.target_type || 'related domain').replaceAll('_', ' ')}${item.target_value ? `: ${item.target_value}` : ''}`, help: `Technical code: ${item.reason_code || 'not recorded'}. ${HELP.identity}` }))}</article>
+        <article class="email-evidence-card"><header><h3>${helpLabel('Do sender details match?', HELP.identity)}</h3><span>${relationships.length} comparison${relationships.length === 1 ? '' : 's'}</span></header>${evidenceList(relationships, 'There were not enough sender details to compare.', (item) => ({ label: String(item.type || item.edge_type || 'Compared').replaceAll('_', ' '), detail: `${String(item.target_type || 'related domain').replaceAll('_', ' ')}${item.target_value ? `: ${item.target_value}` : ''}`, help: `Technical code: ${item.reason_code || 'not recorded'}. ${HELP.identity}` }))}</article>
         <article class="email-evidence-card"><header><h3>Links and attachments</h3><span>${urls.length + attachments.length} found</span></header>${evidenceList(children, 'No link or attachment was found in the available content.', (item) => ({ label: item.type === 'url' ? (item.metadata?.hostname || 'Link') : (item.metadata?.original_filename_untrusted || 'Attachment'), detail: item.type === 'attachment' ? `${friendlyStatus(item.state)} - identified only and never opened` : friendlyStatus(item.state), help: item.type === 'attachment' ? 'Attachments are identified and recorded, but their contents are never executed during email parsing.' : 'Links are extracted from visible text and HTML destinations, then passed to the link-checking service when available.' }))}</article>
         <article class="email-evidence-card"><header><h3>${helpLabel('Delivery route', HELP.infrastructure)}</h3><span>Approximate</span></header>${evidenceList(infrastructure, 'No eligible public mail-server step was available. This does not mean the email had no delivery route.', (item) => ({ label: `Mail server ${Number(item.hop_index ?? 0) + 1}`, detail: `${item.host || item.ip_address || 'Unknown server'}${item.asn_org ? ` - ${item.asn_org}` : ''}${item.country ? ` - ${item.country}` : ''}`, help: HELP.infrastructure }))}<p class="email-retention-note">Any location shown belongs to network infrastructure, not a person.</p></article>
-        <article class="email-evidence-card"><header><h3>${helpLabel('AI content check', HELP.model)}</h3><span>Supporting signal</span></header>${model ? evidenceList([model], 'No AI result is available.', (item) => ({ label: STATE_LABELS[item.state] || friendlyStatus(item.state), detail: `${friendlyStatus(item.status)}${Number.isFinite(Number(item.p_phish)) ? ` - ${Math.round(Number(item.p_phish) * 100)}% phishing likelihood` : ''}`, help: HELP.model })) : '<p class="email-evidence-empty">No reliable AI result was returned. VeriTrust did not convert that gap into a safe result.</p>'}</article>
+        <article class="email-evidence-card"><header><h3>${helpLabel('AI content check', HELP.model)}</h3><span>Supporting signal</span></header>${model ? evidenceList([model], 'No AI result is available.', (item) => ({ label: STATE_LABELS[item.state] || friendlyStatus(item.state), detail: `${friendlyStatus(item.status)}${typeof item.p_phish === 'number' && Number.isFinite(item.p_phish) ? ` - ${Math.round(Number(item.p_phish) * 100)}% phishing likelihood` : ''}`, help: HELP.model })) : '<p class="email-evidence-empty">No reliable AI result was returned. VeriTrust did not convert that gap into a safe result.</p>'}</article>
         <article class="email-evidence-card is-wide"><header><h3>Important limitations</h3><span>${helpLabel(`${limitations.length} recorded`, HELP.technicalCode)}</span></header>${limitations.length ? `<ul class="email-limitation-list">${limitations.map((item) => `<li>${escapeHtml(friendlyLimitation(item))}</li>`).join('')}</ul>` : '<p class="email-evidence-empty">No additional limitation was recorded for the checks that ran.</p>'}<details class="email-technical-details"><summary>Technical report details</summary><dl><div><dt>Report ID</dt><dd>${escapeHtml(payload.scan_id || 'Unavailable')}</dd></div><div><dt>Evidence format</dt><dd>${escapeHtml(evidence.schema_version || 'Unavailable')}</dd></div><div><dt>Decision method</dt><dd>${escapeHtml(decision.correlation_version || 'Unavailable')}</dd></div></dl></details><p class="email-retention-note">This report supports human review. It is not a safety certificate.</p></article>
-      </div>`;
+      </div></details>`;
     shell.hidden = false;
     enhanceHelpTerms(target);
     state.lastScanId = payload.scan_id || null;
@@ -441,15 +443,30 @@
       if (state.busy) return;
       setError('');
       setBusy(true);
+      analysisProgress.begin();
+      const previousReport = one('#emailInvestigationResult');
+      if (previousReport) previousReport.hidden = true;
       setStatus('Checking the message and available sender evidence...');
       try {
-        const payload = await global.VeriTrustAnalysisResult.withDeadline(requestInvestigation);
+        const payload = await requestInvestigation();
+        if (!payload.evidence && payload.status === 'processing' && payload.scan_id) {
+          const shell = one('#emailInvestigationResult');
+          const target = one('#phishingResult');
+          if (shell && target) {
+            target.innerHTML = `<h2 id="emailResultTitle">This scan is already processing</h2><p>A completed report is not available yet.</p><a class="btn btn-secondary" href="/gateway?scan_id=${encodeURIComponent(payload.scan_id)}">Follow this scan</a>`;
+            shell.hidden = false;
+          }
+          analysisProgress.finish(null, { pending: true });
+          setStatus('The server confirmed that the scan is still processing.');
+          return;
+        }
+        if (!payload.evidence || !payload.gateway_decision) throw new Error('The server response did not contain the email evidence and policy decision.');
         renderResult(payload);
+        analysisProgress.finish();
         setStatus('Check complete. Review the result and any missing evidence.');
       } catch (error) {
-        renderFailure(error);
-        setError(failureGuidance(error).summary);
-        setStatus('The check failed. No safe conclusion was assumed.');
+        analysisProgress.finish(error);
+        setStatus('');
       } finally {
         setBusy(false);
       }

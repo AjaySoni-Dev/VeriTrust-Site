@@ -445,6 +445,7 @@ async function copyResultSummary(data) {
 }
 
 function buildDeepfakeReportVisuals() {
+  if (state.lastReportVisuals) return state.lastReportVisuals;
   const selectedFace = state.cropFaces[state.selectedCropIndex] || null;
   const croppedImageUrl = selectedFace ? cropSource(selectedFace) : '';
   const annotatedImageUrl = absoluteCropUrl(state.lastCropData?.annotated_url || '');
@@ -461,7 +462,12 @@ function buildDeepfakeReportVisuals() {
 async function printReport(data) {
   const report = normalizeReportData(data);
   const isDeepfake = String(report.scan_type || '').toLowerCase() === 'deepfake';
-  if (isDeepfake) await ensureOriginalImageDataUrl();
+  if (isDeepfake) {
+    const originalDataUrl = await ensureOriginalImageDataUrl();
+    if (state.lastReportVisuals && state.lastReportVisuals.selected_face_index === null && originalDataUrl) {
+      state.lastReportVisuals.analyzed_image_url = originalDataUrl;
+    }
+  }
   if (window.VeriTrustReporting?.printReport) {
     await window.VeriTrustReporting.printReport(report, {
       visuals: isDeepfake ? buildDeepfakeReportVisuals() : null,
@@ -508,6 +514,7 @@ function riskClass(result) {
 
 function riskBadgeClass(level) {
   const normalized = String(level || 'low').toLowerCase();
+  if (!['low', 'medium', 'high', 'critical'].includes(normalized)) return 'risk-badge risk-badge-unknown';
   return `risk-badge risk-badge-${['low', 'medium', 'high', 'critical'].includes(normalized) ? normalized : 'medium'}`;
 }
 
@@ -593,7 +600,7 @@ function renderResult(targetId, data) {
       </div>
       <span class="status-pill">${escapeHtml(modelLabel)}</span>
     </div>
-    <div class="score-meter"><span class="${riskClass(result)}" style="width:${confidenceWidth}%"></span></div>
+    ${primaryScore !== 'Not available' ? `<div class="score-meter" aria-hidden="true"><span class="${riskClass(result)}" style="width:${confidenceWidth}%"></span></div>` : ''}
     <div class="result-metrics">
       <div class="metric"><span>Confidence</span><strong>${confidence}</strong></div>
       <div class="metric"><span>${data.type === 'deepfake' ? 'Fake score' : 'Phishing score'}</span><strong>${primaryScore}</strong></div>
@@ -662,7 +669,7 @@ async function analyzeDeepfake() {
     }
   }
 
-  const image = state.selectedDeepfakeFile || state.originalImageFile;
+  const image = autoCrop ? (state.selectedDeepfakeFile || state.originalImageFile) : state.originalImageFile;
   if (!image) throw new Error('No image is ready to check.');
   const maxBytes = Number(config.maxImageBytes || 0);
   if (maxBytes && image.size > maxBytes) {
@@ -681,6 +688,16 @@ async function analyzeDeepfake() {
     apiConfig.deepfake || '/api/deepfake',
     { method: 'POST', body: form, headers },
   );
+  if (!data.result || typeof data.result !== 'object') throw new Error('The server response did not contain an image analysis report.');
+  const analyzedFace = autoCrop ? state.cropFaces[state.selectedCropIndex] : null;
+  const analyzedCropUrl = analyzedFace ? cropSource(analyzedFace) : '';
+  state.lastReportVisuals = {
+    available: true,
+    selected_face_index: analyzedFace ? state.selectedCropIndex : null,
+    analyzed_image_url: analyzedCropUrl || state.originalImageDataUrl || state.originalImageUrl,
+    cropped_image_url: analyzedCropUrl,
+    annotated_image_url: analyzedFace ? absoluteCropUrl(state.lastCropData?.annotated_url || '') : '',
+  };
   renderResult('deepfakeResult', data);
   setLog('Image check complete.');
 }
@@ -825,7 +842,6 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   bindModules();
   bindCustomModelSelects();
-  checkHealth();
   let imageBusy = false;
   let imageControls = [];
   function lockImageControls(busy) {
@@ -846,6 +862,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     const file = event.target.files && event.target.files[0];
     if (!file) return;
     state.originalImageFile = file;
+    state.lastReportVisuals = null;
     state.selectedDeepfakeFile = file;
     state.cropFaces = [];
     state.lastCropData = null;
@@ -873,9 +890,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     try {
       setLoading(button, true, 'Preparing...');
       await cropImage();
-      analysisProgress.finish(null, { pending: true });
-      document.getElementById('analysisProgressTitle').textContent = 'Face preparation finished';
-      document.getElementById('analysisProgressMessage').textContent = 'Review the preview, then choose Analyze image to run detection.';
+      analysisProgress.finish(null, { title: 'Face preparation finished', message: 'Review the preview, then choose Analyze image to run detection.' });
     } catch (error) {
       analysisProgress.finish(error);
       setLog(error.message);
@@ -901,12 +916,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       analysisProgress.finish();
     } catch (error) {
       analysisProgress.finish(error);
-      renderResult('deepfakeResult', {
-        type: 'deepfake',
-        model: { name: 'VeriTrust' },
-        result: { label: 'Error', confidence: null, risk_level: 'Unknown', fake_score: null, explanation: error.message },
-      });
-      setLog(error.message);
+      setLog('');
     } finally {
       lockImageControls(false);
       setLoading(button, false);

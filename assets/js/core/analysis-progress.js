@@ -2,7 +2,7 @@
   'use strict';
 
   function checkedPayload(payload, status = 200) {
-    if (!payload || payload.ok === false || status >= 400) {
+    if (!payload || typeof payload !== 'object' || Array.isArray(payload) || payload.ok !== true || status >= 400) {
       const error = new Error(payload?.error?.message || 'The analysis request could not be completed.');
       error.code = payload?.error?.code || 'ANALYSIS_REQUEST_FAILED';
       error.status = status;
@@ -69,6 +69,7 @@
       if (details) details.open = true;
       if (heading) heading.textContent = 'Analysis in progress';
       if (current) current.textContent = message;
+      panel?.scrollIntoView?.({ block: 'nearest', behavior: 'auto' });
     }
     function update(event) {
       if (!active) return;
@@ -84,11 +85,13 @@
       row.children[0].textContent = { running: 'In progress', completed: 'Done', failed: 'Unavailable', skipped: 'Not applicable' }[event.state];
       row.children[1].textContent = event.message;
     }
-    function finish(error = null, { pending = false } = {}) {
+    function finish(error = null, { pending = false, title, message } = {}) {
       active = false;
       if (panel) panel.dataset.state = error ? 'failed' : 'completed';
       if (heading) heading.textContent = error ? 'Analysis interrupted' : pending ? 'Scan still processing' : 'Report received';
-      if (current) current.textContent = error ? error.message : pending ? 'The server confirmed that this scan is already running. Open its saved status to follow it.' : 'Review the result and any evidence limitations below.';
+      if (current) current.textContent = error ? `${error.message}${error.code ? ` Reference: ${error.code}.` : ''}` : pending ? 'The server confirmed that this scan is already running. Open its saved status to follow it.' : 'Review the result and any evidence limitations below.';
+      if (!error && title && heading) heading.textContent = title;
+      if (!error && message && current) current.textContent = message;
       for (const row of entries.values()) {
         if (row.dataset.state === 'running') {
           row.dataset.state = 'interrupted'; row.children[0].textContent = 'No final update';

@@ -52,6 +52,7 @@ function formatPercent(value) {
 
 function riskBadgeClass(level) {
   const normalized = String(level || 'low').toLowerCase();
+  if (!['low', 'medium', 'high', 'critical'].includes(normalized)) return 'risk-badge risk-badge-unknown';
   return `risk-badge risk-badge-${['low', 'medium', 'high', 'critical'].includes(normalized) ? normalized : 'medium'}`;
 }
 
@@ -284,7 +285,7 @@ function renderResult(data) {
       </div>
       <span class="status-pill">${escapeHtml(model.name || modelMeta.name || 'VeriTrust Swift')}</span>
     </div>
-    <div class="score-meter"><span class="${riskClass(result)}" style="width:${Number.parseInt(score, 10) || 0}%"></span></div>
+    ${score !== 'Not available' ? `<div class="score-meter" aria-hidden="true"><span class="${riskClass(result)}" style="width:${Number.parseInt(score, 10) || 0}%"></span></div>` : ''}
     <div class="result-metrics">
       <div class="metric"><span>Confidence</span><strong>${confidence}</strong></div>
       <div class="metric"><span>Link score</span><strong>${score}</strong></div>
@@ -382,6 +383,7 @@ async function analyzeLink() {
     }),
   });
 
+  if (!data.result || typeof data.result !== 'object') throw new Error('The server response did not contain a link analysis report.');
   renderResult(data);
   if (data.warning?.message) setLog(data.warning.message);
   return data;
@@ -478,11 +480,8 @@ document.addEventListener('DOMContentLoaded', async () => {
       }
     } catch (error) {
       analysisProgress.finish(error);
-      renderError(error.message || 'Link analysis failed.', {
-        code: error.code,
-        status: error.status,
-      });
-      setLog(error.message || 'Link analysis failed.');
+      lastResult = null;
+      setLog('');
     } finally {
       busy = false;
       controls.forEach((control) => { control.disabled = false; });
