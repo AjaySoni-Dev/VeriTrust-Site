@@ -148,6 +148,10 @@
   ],
   "rewrites": [
     {
+      "source": "/vt.ps1",
+      "destination": "/assets/powershell/VeriTrust.EmailInvestigation.ps1"
+    },
+    {
       "source": "/lib/(.*)",
       "destination": "/api/system?route=not-found"
     },

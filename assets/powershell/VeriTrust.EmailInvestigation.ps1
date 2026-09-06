@@ -1,5 +1,35 @@
 #requires -Version 5.1
 
+function Invoke-VeriTrustRequest {
+    [CmdletBinding()]
+    param([string] $Method = 'Get', [string] $Uri, [hashtable] $Headers = @{},
+        [string] $ContentType, [string] $InFile, $Body, [int] $TimeoutSec = 90,
+        [int] $MaximumRedirection = 0)
+    $Request = @{ Method = $Method; Uri = $Uri; Headers = $Headers; TimeoutSec = $TimeoutSec;
+        MaximumRedirection = 0; ErrorAction = 'Stop'; DisableKeepAlive = $true }
+    if ($ContentType) { $Request.ContentType = $ContentType }
+    if ($InFile) { $Request.InFile = $InFile }
+    if ($null -ne $Body) { $Request.Body = $Body }
+    [Net.ServicePointManager]::SecurityProtocol = [Net.ServicePointManager]::SecurityProtocol -bor [Net.SecurityProtocolType]::Tls12
+    for ($Attempt = 0; $Attempt -lt 2; $Attempt++) {
+        try { return Invoke-RestMethod @Request }
+        catch {
+            $Status = 0
+            if ($_.Exception.PSObject.Properties['Response'] -and $_.Exception.Response) { $Status = [int] $_.Exception.Response.StatusCode }
+            $TransportError = $_.Exception -is [Net.WebException] -or $_.Exception.GetType().Name -in @('HttpRequestException','TaskCanceledException')
+            $Transient = ($TransportError -and $Status -eq 0) -or $Status -in @(502,503,504)
+            if ($Attempt -eq 0 -and $Transient -and ($Method -eq 'Get' -or $Headers['Idempotency-Key'])) {
+                Write-Verbose 'Connection interrupted; retrying the same request once.'
+                Start-Sleep -Seconds 1
+                continue
+            }
+            if ($Status -in @(401,403)) { throw 'VeriTrust access denied. Run vt login and check your API key permissions.' }
+            $Reference = if ($Headers['Idempotency-Key']) { " Request ID: $($Headers['Idempotency-Key'])." } else { '' }
+            throw "VeriTrust request failed$(if ($Status) { " (HTTP $Status)" }). The server may still be processing the request; check scan history before submitting again.$Reference"
+        }
+    }
+}
+
 function Invoke-VeriTrustEmailInvestigation {
     <#
     .SYNOPSIS
@@ -44,6 +74,10 @@ function Invoke-VeriTrustEmailInvestigation {
         [string] $IdempotencyKey = [Guid]::NewGuid().ToString()
     )
 
+    if ([string]::IsNullOrWhiteSpace($ApiKey) -and (Get-Variable VeriTrustSession -Scope Script -ErrorAction SilentlyContinue) -and $script:VeriTrustSession) {
+        $ApiKey = $script:VeriTrustSession.Credential.GetNetworkCredential().Password
+        if (-not $PSBoundParameters.ContainsKey('BaseUrl')) { $BaseUrl = $script:VeriTrustSession.BaseUrl }
+    }
     if ([string]::IsNullOrWhiteSpace($ApiKey)) {
         $SessionKey = Get-Variable -Name ApiKey -Scope Global -ValueOnly -ErrorAction SilentlyContinue
         if ($null -ne $SessionKey) {
@@ -84,7 +118,7 @@ function Invoke-VeriTrustEmailInvestigation {
             throw 'The .eml file must contain data and must not exceed 10 MB.'
         }
 
-        $Response = Invoke-RestMethod `
+        $Response = Invoke-VeriTrustRequest `
             -Method Post `
             -Uri "$BaseUrl/api/v1/gateway/email/analyze-eml" `
             -Headers $RequestHeaders `
@@ -103,7 +137,7 @@ function Invoke-VeriTrustEmailInvestigation {
             retention_policy = 'metadata_only'
         }
 
-        $Response = Invoke-RestMethod `
+        $Response = Invoke-VeriTrustRequest `
             -Method Post `
             -Uri "$BaseUrl/api/v1/gateway/email/analyze-text" `
             -Headers $RequestHeaders `
@@ -116,6 +150,9 @@ function Invoke-VeriTrustEmailInvestigation {
 
     if ($null -eq $Response -or $Response.ok -ne $true) {
         throw 'VeriTrust returned an incomplete email investigation response.'
+    }
+    if ($Response.PSObject.Properties['status'] -and $Response.status -eq 'processing' -and $Response.scan_id) {
+        return ConvertTo-VeriTrustScanSummary $Response
     }
     if (-not $Response.PSObject.Properties['evidence'] -or -not $Response.evidence -or
         -not $Response.PSObject.Properties['gateway_decision'] -or -not $Response.gateway_decision -or
@@ -158,4 +195,114 @@ function Invoke-VeriTrustEmailInvestigation {
     $StandardMembers = [System.Management.Automation.PSMemberInfo[]] @($DisplayProperties)
     $Report | Add-Member -MemberType MemberSet -Name PSStandardMembers -Value $StandardMembers
     $Report
+}
+
+function Connect-VeriTrust {
+    [CmdletBinding()]
+    param([string] $BaseUrl = 'https://www.veritrustlab.in', [Security.SecureString] $ApiKey)
+    $script:VeriTrustSession = $null
+    $Origin = $null
+    if (-not [Uri]::TryCreate($BaseUrl, [UriKind]::Absolute, [ref] $Origin) -or
+        $Origin.Scheme -ne 'https' -or $Origin.UserInfo -or $Origin.Query -or $Origin.Fragment -or $Origin.AbsolutePath -ne '/') {
+        throw 'Use a plain HTTPS origin, for example https://www.veritrustlab.in (without Markdown brackets).'
+    }
+    if (-not $ApiKey) { $ApiKey = Read-Host 'VeriTrust API key' -AsSecureString }
+    $Credential = [Management.Automation.PSCredential]::new('VeriTrust', $ApiKey)
+    $Key = $Credential.GetNetworkCredential().Password
+    if ($Key -notmatch '^vtg_(live|test)_[A-Za-z0-9_-]{20,}$') { throw 'Invalid VeriTrust API key format.' }
+    $BaseUrl = $Origin.GetLeftPart([UriPartial]::Authority)
+    $Auth = Invoke-VeriTrustRequest -Uri "$BaseUrl/api/v1/gateway/scans?limit=1" -Headers @{ Authorization = "Bearer $Key" }
+    if ($Auth.ok -ne $true) { throw 'VeriTrust authentication was not confirmed.' }
+    $script:VeriTrustSession = @{ BaseUrl = $BaseUrl; Credential = $Credential }
+    Write-Host 'Connected to VeriTrust.' -ForegroundColor Green
+}
+
+function ConvertTo-VeriTrustScanSummary {
+    param($Response)
+    $Risk = $null
+    $Decision = $null
+    if ($Response.PSObject.Properties['decision']) { $Decision = $Response.decision }
+    if ($Decision -and $null -ne $Decision.risk) {
+        $Value = [double] $Decision.risk
+        if ([double]::IsNaN($Value) -or [double]::IsInfinity($Value) -or $Value -lt 0 -or $Value -gt 1) { throw 'Invalid risk score returned.' }
+        $Risk = [Math]::Round(100 * $Value, 1)
+    }
+    $Report = [PSCustomObject]@{ Status = $Response.status; Result = $(if ($Decision) { $Decision.verdict } else { 'No decision available' });
+        RiskPercent = $Risk; RecommendedAction = $(if ($Decision) { $Decision.recommendation } else { 'Review scan status' });
+        ReportId = $Response.scan_id; TechnicalReport = $Response }
+    $Display = [Management.Automation.PSPropertySet]::new('DefaultDisplayPropertySet', [string[]]@('Status','Result','RiskPercent','RecommendedAction','ReportId'))
+    $Report | Add-Member -MemberType MemberSet -Name PSStandardMembers -Value ([Management.Automation.PSMemberInfo[]]@($Display))
+    $Report
+}
+
+function vt {
+    <# .SYNOPSIS
+    Short commands: vt login; vt email email.eml; vt text "Message"; vt link https://example.com; vt image face.png; vt status SCAN_ID; vt logout.
+    #>
+    [CmdletBinding()]
+    param(
+        [Parameter(Position=0, Mandatory)][ValidateSet('login','logout','email','text','link','image','status')][string] $Command,
+        [Parameter(Position=1)][string] $InputValue,
+        [string] $Subject = '',
+        [ValidateRange(1,300)][int] $WaitSeconds = 90,
+        [string] $IdempotencyKey = [Guid]::NewGuid().ToString()
+    )
+    $ErrorActionPreference = 'Stop'
+    if ($Command -eq 'login') { Connect-VeriTrust; return }
+    if ($Command -eq 'logout') { $script:VeriTrustSession = $null; Write-Host 'Disconnected.'; return }
+    if (-not (Get-Variable VeriTrustSession -Scope Script -ErrorAction SilentlyContinue) -or -not $script:VeriTrustSession) { throw 'Run vt login first.' }
+    if ([string]::IsNullOrWhiteSpace($InputValue)) { throw "Provide an input: vt $Command <value>." }
+    $Base = $script:VeriTrustSession.BaseUrl
+    $Headers = @{ Authorization = "Bearer $($script:VeriTrustSession.Credential.GetNetworkCredential().Password)" }
+    try {
+        if ($Command -in @('email','text')) {
+            Write-Progress -Activity 'VeriTrust email analysis' -Status 'Waiting for the email service response'
+            $Args = @{ IdempotencyKey = $IdempotencyKey; TimeoutSec = $WaitSeconds }
+            if ($Command -eq 'email') { $Args.EmlPath = $InputValue } else { $Args.Body = $InputValue; $Args.Subject = $Subject }
+            return Invoke-VeriTrustEmailInvestigation @Args
+        }
+        if ($Command -eq 'status') {
+            $ScanId = [Guid]::Parse($InputValue).ToString()
+            $Response = Invoke-VeriTrustRequest -Uri "$Base/api/v1/gateway/scans/$ScanId" -Headers $Headers
+        } else {
+            $Content = @{}
+            if ($Command -eq 'link') {
+                $Url = $null
+                if (-not [Uri]::TryCreate($InputValue, [UriKind]::Absolute, [ref]$Url) -or $Url.Scheme -notin @('http','https') -or $Url.UserInfo) { throw 'Provide a valid HTTP or HTTPS URL.' }
+                $Content.urls = @($InputValue)
+            } else {
+                $File = Get-Item -LiteralPath $InputValue -ErrorAction Stop
+                $Types = @{ '.jpg'='image/jpeg'; '.jpeg'='image/jpeg'; '.png'='image/png'; '.webp'='image/webp'; '.bmp'='image/bmp' }
+                $Mime = $Types[$File.Extension.ToLowerInvariant()]
+                if ($File.PSIsContainer -or -not $Mime -or $File.Length -lt 1 -or $File.Length -gt 10MB) { throw 'Choose a JPG, PNG, WebP, or BMP image between 1 byte and 10 MB.' }
+                Write-Progress -Activity 'VeriTrust analysis' -Status 'Registering private image upload'
+                $Payload = @{kind='image'; mime_type=$Mime; size_bytes=$File.Length} | ConvertTo-Json -Compress
+                $Upload = Invoke-VeriTrustRequest -Method Post -Uri "$Base/api/v1/gateway/uploads" -Headers $Headers -ContentType 'application/json' -Body $Payload
+                $SignedUrl = [string]$Upload.signed_upload.url
+                if ($SignedUrl.StartsWith('/')) {
+                    $Config = Invoke-VeriTrustRequest -Uri "$Base/api/client-config"
+                    $SignedUrl = $Config.config.supabase.url.TrimEnd('/') + '/storage/v1' + $SignedUrl
+                }
+                $UploadUri = $null
+                if (-not [Uri]::TryCreate($SignedUrl,[UriKind]::Absolute,[ref]$UploadUri) -or $UploadUri.Scheme -ne 'https' -or $UploadUri.UserInfo) { throw 'The server returned an invalid private upload URL.' }
+                Write-Progress -Activity 'VeriTrust analysis' -Status 'Uploading image to private storage'
+                $null = Invoke-VeriTrustRequest -Method Put -Uri $SignedUrl -Headers @{'x-upsert'='false'} -ContentType $Mime -InFile $File.FullName
+                $null = Invoke-VeriTrustRequest -Method Post -Uri "$Base/api/v1/gateway/uploads/$($Upload.upload_id)/complete" -Headers $Headers
+                $Content.media = @(@{upload_id=$Upload.upload_id;kind='image'})
+            }
+            $Headers['Idempotency-Key'] = $IdempotencyKey
+            Write-Progress -Activity 'VeriTrust analysis' -Status 'Submitting to Gateway'
+            $Payload = @{schema_version='1.0';processing_mode='hybrid';content=$Content} | ConvertTo-Json -Depth 6 -Compress
+            $Response = Invoke-VeriTrustRequest -Method Post -Uri "$Base/api/v1/gateway/scans" -Headers $Headers -ContentType 'application/json; charset=utf-8' -Body ([Text.Encoding]::UTF8.GetBytes($Payload))
+        }
+        if ($Response.ok -ne $true -or -not $Response.scan_id) { throw 'The Gateway did not return a scan ID.' }
+        $Clock = [Diagnostics.Stopwatch]::StartNew()
+        while ($Response.status -notin @('completed','failed','cancelled','expired') -and $Clock.Elapsed.TotalSeconds -lt $WaitSeconds) {
+            Write-Progress -Activity 'VeriTrust analysis' -Status "Server status: $($Response.status)"
+            Start-Sleep -Seconds 2
+            $Response = Invoke-VeriTrustRequest -Uri "$Base/api/v1/gateway/scans/$($Response.scan_id)" -Headers $Headers
+            if ($Response.ok -ne $true -or -not $Response.scan_id) { throw 'The Gateway status response was incomplete.' }
+        }
+        ConvertTo-VeriTrustScanSummary $Response
+    } finally { Write-Progress -Activity 'VeriTrust analysis' -Completed; Write-Progress -Activity 'VeriTrust email analysis' -Completed }
 }

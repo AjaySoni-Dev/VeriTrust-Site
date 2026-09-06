@@ -475,3 +475,22 @@
 @media (prefers-reduced-motion: reduce) {
   .ps-copy-status { transition: none; }
 }
+/* Short-command guide: setup first, then a scannable command reference. */
+.ps-quick-guide .ps-hero { min-height: 0; display: block; padding: 24px 28px; margin-bottom: 20px; }
+.ps-quick-guide .ps-hero h1 { font-size: clamp(28px, 4vw, 40px); margin: 8px 0; }
+.ps-quick-guide .ps-hero p { margin: 8px 0; color: var(--text-secondary); }
+.ps-quick-guide .ps-hero a { display: inline-block; margin-top: 8px; font-size: 13px; }
+.ps-quick-guide .ps-guide-content { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+.ps-quick-guide .ps-guide-section { padding: 24px; margin: 0; min-width: 0; scroll-margin-top: calc(var(--header-height) + 70px); }
+.ps-quick-guide :is(#setup, #troubleshooting, .ps-command-heading) { grid-column: 1 / -1; }
+.ps-quick-guide .ps-guide-section h2 { font-size: 20px; line-height: 1.35; margin: 0 0 10px; }
+.ps-quick-guide .ps-guide-section p { font-size: 14px; line-height: 1.65; color: var(--text-secondary); }
+.ps-quick-guide .ps-code-card { margin: 16px 0 0; }
+.ps-quick-guide .ps-code-card pre { min-height: 0; padding: 16px; font-size: 13px; white-space: pre-wrap; overflow-wrap: anywhere; }
+.ps-quick-guide .ps-code-head button { min-height: 44px; }
+.ps-quick-guide .ps-command-heading { font-size: 20px; margin: 10px 0 0; }
+.ps-quick-guide .ps-guide-nav a { min-height: 44px; }
+@media (max-width: 700px) {
+  .ps-quick-guide .ps-guide-content { grid-template-columns: minmax(0, 1fr); }
+  .ps-quick-guide .ps-guide-section, .ps-quick-guide .ps-hero { padding: 20px 16px; }
+}

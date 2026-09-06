@@ -14,6 +14,7 @@ function Invoke-RestMethod {
         $Body,
         [int] $TimeoutSec,
         [int] $MaximumRedirection,
+        [switch] $DisableKeepAlive,
         [string] $ErrorAction
     )
     $script:Requests += [PSCustomObject]@{ Uri = $Uri; ContentType = $ContentType; InFile = $InFile; Body = $Body; TimeoutSec = $TimeoutSec; MaximumRedirection = $MaximumRedirection; Headers = $Headers }

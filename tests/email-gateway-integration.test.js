@@ -20,8 +20,11 @@ test('PowerShell guide supports both pasted text and an original EML file', () =
   const command = read('assets/powershell/VeriTrust.EmailInvestigation.ps1');
 
   assert.match(guide, /assets\/powershell\/VeriTrust\.EmailInvestigation\.ps1/u);
-  assert.match(guide, /Get-Command Invoke-VeriTrustEmailInvestigation -ErrorAction Stop/u);
-  assert.match(guide, /if \(-not \(Get-Command Invoke-VeriTrustEmailInvestigation/u);
+  assert.match(guide, /vt login/u);
+  assert.match(guide, /vt email/u);
+  assert.match(guide, /vt text/u);
+  assert.match(guide, /vt image/u);
+  assert.match(guide, /vt link/u);
   assert.match(command, /function Invoke-VeriTrustEmailInvestigation/u);
   assert.match(command, /ParameterSetName = 'Text'/u);
   assert.match(command, /ParameterSetName = 'Eml'/u);
