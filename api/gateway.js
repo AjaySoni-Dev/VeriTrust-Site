@@ -31,6 +31,7 @@ const serverlessWorker = require('../lib/routes/gateway/worker');
 const { hasDispatchSignatureHeaders } = require('../lib/gateway/worker-auth');
 const { isModuleEnabled } = require('../lib/modules');
 const emailV2 = require('../lib/routes/email/v2');
+const { analysisProgress } = require('../lib/analysis-stream');
 
 function route(req) {
   const url = new URL(req.url || '/', 'http://localhost');
@@ -84,19 +85,21 @@ module.exports = async function handler(req, res) {
   if (handleOptions(req, res)) return;
   const ids = requestIdentifiers(req);
 
+  const progress = ['email-text', 'email-eml'].includes(target.resource) ? analysisProgress(req, res) : undefined;
+
   try {
     if (target.resource === 'email-text') {
       requireMethod(req, ['POST']);
-      const result = await emailV2.analyzeText(req);
-      res.setHeader('X-Idempotent-Replayed', result.replayed ? 'true' : 'false');
+      const result = await emailV2.analyzeText(req, progress);
+      if (!res.headersSent) res.setHeader('X-Idempotent-Replayed', result.replayed ? 'true' : 'false');
       sendJson(res, result.status, result.body);
       return;
     }
 
     if (target.resource === 'email-eml') {
       requireMethod(req, ['POST']);
-      const result = await emailV2.analyzeEml(req);
-      res.setHeader('X-Idempotent-Replayed', result.replayed ? 'true' : 'false');
+      const result = await emailV2.analyzeEml(req, progress);
+      if (!res.headersSent) res.setHeader('X-Idempotent-Replayed', result.replayed ? 'true' : 'false');
       sendJson(res, result.status, result.body);
       return;
     }

@@ -34,11 +34,12 @@
   <script src="/assets/js/core/reporting.js" defer></script>
   <script src="/assets/js/core/result-dialog.js" defer></script>
   <script src="/assets/js/core/email-report-pdf.js?v=20260905-format2" defer></script>
-  <script src="/assets/js/pages/detection.js" defer></script>
+  <script src="/assets/js/core/analysis-result.js" defer></script>
+  <script src="/assets/js/core/analysis-progress.js" defer></script>
   <script src="/assets/js/pages/email-investigation.js?v=20260905-pdf2" defer></script>
-  <link rel="stylesheet" href="/assets/css/base/glass-system.css">
+  <link rel="stylesheet" href="/assets/css/pages/analysis-workspace.css">
 </head>
-<body class="vt-tool-page vt-graphite-theme vt-email-investigation">
+<body class="vt-tool-page vt-graphite-theme vt-email-investigation vt-analysis-page">
     <header class="tool-header-shell vt-page-header">
     <div class="tool-header-inner">
       <a href="index.html" class="tool-header-brand" aria-label="VeriTrust home">
@@ -66,28 +67,16 @@
     </div>
   </header>
 
-  <main class="tool-shell">
-    <section class="tool-topbar">
-      <div class="tool-title">
-        <p class="eyebrow">Suspicious email check</p>
-        <h1>Find out whether an email is trying to deceive you.</h1>
-        <p>Paste the message for a quick content check, or upload the original email file for deeper sender, link, attachment, and delivery-route checks.</p>
-        <div class="email-assurance-strip" aria-label="Investigation highlights">
-          <span>Plain-language result</span>
-          <span>Evidence behind every decision</span>
-          <span>No automatic blocking</span>
-        </div>
-      </div>
-    </section>
+  <main class="tool-shell analysis-shell"><nav class="analysis-module-nav" aria-label="Detection modules"><a href="/deepfake">Deepfake</a><a href="/phishing" aria-current="page">Phishing</a><a href="/link-check">Link detection</a></nav>
+    <section class="analysis-heading"><p class="analysis-section-label">DETECTION WORKSPACE</p><h1>Phishing detection</h1><p>Review email content, sender evidence, and embedded links.</p></section>
 
-    <section class="email-workbench" aria-labelledby="emailInputTitle">
-      <form id="phishingForm" class="tool-panel email-input-panel" data-email-workbench novalidate>
+    <section class="analysis-layout" aria-labelledby="emailInputTitle">
+      <form id="phishingForm" class="analysis-input email-input-panel" data-email-workbench novalidate>
         <div class="panel-title">
           <div>
             <h2 id="emailInputTitle">Check an email</h2>
-            <p>Choose what you have available. The original file gives the most complete result.</p>
+            <p>Use the original email file when you need sender and delivery evidence.</p>
           </div>
-          <span class="hint">10 MB maximum</span>
         </div>
 
         <div class="email-mode-tabs" role="tablist" aria-label="Email evidence source">
@@ -98,7 +87,7 @@
         <section id="emailPanelText" class="email-mode-panel" role="tabpanel" aria-labelledby="emailTabText" data-email-panel="text">
           <div class="field email-subject-field">
             <label for="emailSubject">Email subject <span>optional</span></label>
-            <input id="emailSubject" class="input" type="text" maxlength="998" autocomplete="off" placeholder="Account access requires attention">
+            <input id="emailSubject" class="input" type="text" maxlength="998" autocomplete="off" placeholder="Add the subject, if available">
           </div>
           <div class="field">
             <label for="phishingText">Email message</label>
@@ -125,26 +114,18 @@
         </div>
       </form>
 
-      <aside class="tool-panel email-coverage-panel" aria-labelledby="coverageTitle">
-        <div class="panel-title">
-          <div>
-            <h2 id="coverageTitle"><span data-email-term="Checks available" data-email-help="The available checks depend on what you submit. Pasted text supports a quick wording and link check; an original .eml file also preserves sender and delivery evidence.">What VeriTrust can check</span></h2>
-            <p id="activityLog" role="status" aria-live="polite">Ready when you are</p>
-          </div>
-        </div>
-        <div id="emailCoveragePreview" class="email-coverage-list">
-          <div><span>Message wording</span><strong>Available</strong></div>
-          <div><span data-email-term="Sender verification" data-email-help="Sender verification uses email standards such as SPF, DKIM, and DMARC to look for signs that the claimed sender or message was forged.">Sender verification</span><strong data-preview-auth>Needs original email</strong></div>
-          <div><span data-email-term="Sender consistency" data-email-help="Compares the visible From address with reply, return-path, signature, and linked domains to reveal mismatches.">Sender consistency</span><strong data-preview-identity>Limited with pasted text</strong></div>
-          <div><span>Links in the email</span><strong>When links are present</strong></div>
-          <div><span data-email-term="Delivery route" data-email-help="The delivery route is the chain of mail servers recorded in the original email. It can describe server networks, but never proves a person's physical location.">Delivery route</span><strong data-preview-infra>Needs original email</strong></div>
-          <div><span>Attachments</span><strong data-preview-attachments>Needs original email</strong></div>
-        </div>
-        <div class="email-boundary-note"><strong>Need automated checks?</strong><p>Use the <a class="email-coverage-link" href="gateway-powershell.html#phishing">Unified Gateway PowerShell guide</a> to submit pasted text or an .eml file from a terminal.</p></div>
+      <aside class="analysis-activity" aria-label="Analysis activity">
+        <div class="analysis-idle" id="analysisIdle"><span class="analysis-section-label">YOUR ANALYSIS</span><h2>Ready when you are</h2><p>Submit your input to follow processing here. Your report appears below when the server returns a result.</p></div>
+        <section id="analysisProgress" class="analysis-progress" hidden>
+          <div class="analysis-progress-heading"><span class="analysis-status-dot" aria-hidden="true"></span><h2 id="analysisProgressTitle">Analysis in progress</h2></div>
+          <p id="analysisProgressMessage" role="status" aria-live="polite" aria-atomic="true"></p>
+          <details open><summary>Processing activity</summary><ol id="analysisProgressEvents"></ol></details>
+        </section>
+        <p id="activityLog" class="analysis-secondary-status"></p>
       </aside>
     </section>
 
-    <section id="emailInvestigationResult" class="email-result-shell" aria-labelledby="emailResultTitle" aria-live="polite" hidden>
+    <section id="emailInvestigationResult" class="email-result-shell analysis-report" tabindex="-1" aria-labelledby="emailResultTitle" aria-live="polite" hidden>
       <div id="phishingResult" class="email-result-content"></div>
     </section>
   </main>

@@ -179,7 +179,7 @@ Invoke-WebRequest `
 . $CommandPath
 Get-Command Invoke-VeriTrustEmailInvestigation -ErrorAction Stop</code></pre>
           </div>
-          <div class="ps-callout ps-callout-success"><strong>Expected output</strong><span>PowerShell displays <code>Invoke-VeriTrustEmailInvestigation</code> with command type <code>Function</code>. You can also <a href="/assets/powershell/VeriTrust.EmailInvestigation.ps1" download>download the command script</a>, review it, and dot-source it locally.</span></div>
+          <div class="ps-callout ps-callout-success"><strong>Expected output</strong><span>PowerShell displays <code>Invoke-VeriTrustEmailInvestigation</code> with command type <code>Function</code>. You can also <a href="/assets/powershell/VeriTrust.EmailInvestigation.ps1" download>download the command script</a>, review it, and dot-source it locally. The command returns a concise report object; complete evidence remains available through <code>.TechnicalReport</code>. Requests use UTF-8, require an HTTPS origin, and time out after 90 seconds. Set <code>-TimeoutSec</code> to change that limit. When retrying the same submission, reuse an explicit <code>-IdempotencyKey</code> to avoid creating another investigation.</span></div>
           <div class="ps-code-card ps-code-card-compact">
             <div class="ps-code-head"><div><span>PowerShell</span><strong>Option A: investigate pasted email text</strong></div><button type="button" data-copy-code>Copy block</button></div>
             <pre><code>if (-not (Get-Command Invoke-VeriTrustEmailInvestigation -ErrorAction SilentlyContinue)) {

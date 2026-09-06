@@ -34,11 +34,12 @@
   <script src="/assets/js/core/supabase-client.js" defer></script>
   <script src="/assets/js/core/site.js" defer></script>
   <script src="/assets/js/core/reporting.js" defer></script>
-  <script src="/assets/js/core/result-dialog.js" defer></script>
+  <script src="/assets/js/core/analysis-result.js" defer></script>
+  <script src="/assets/js/core/analysis-progress.js" defer></script>
   <script src="/assets/js/pages/detection.js" defer></script>
-  <link rel="stylesheet" href="/assets/css/base/glass-system.css">
+  <link rel="stylesheet" href="/assets/css/pages/analysis-workspace.css">
 </head>
-<body class="vt-tool-page vt-graphite-theme">
+<body class="vt-tool-page vt-graphite-theme vt-analysis-page">
     <header class="tool-header-shell vt-page-header">
     <div class="tool-header-inner">
       <a href="index.html" class="tool-header-brand" aria-label="VeriTrust home">
@@ -66,127 +67,36 @@
     </div>
   </header>
 
-  <main class="tool-shell">
-    <section class="tool-topbar">
-      <div class="tool-title">
-        <p class="eyebrow">Image check</p>
-        <h1>Review an image for synthetic-media risk.</h1>
-        <p>Upload a supported face image to compare real and synthetic model scores. The result is not forensic proof.</p>
-      </div>
-    </section>
-
-    <section class="tool-grid deepfake-grid">
-      <form id="deepfakeForm" class="tool-panel">
-        <div class="panel-title">
-          <div>
-            <h2>Upload image</h2>
-            <p>Use a clear face image that you are authorized to process.</p>
-          </div>
-          <span class="hint">JPG, PNG, WEBP, BMP</span>
-        </div>
-
-        <label class="dropzone tool-dropzone" for="deepfakeImage">
-          <input id="deepfakeImage" type="file" accept="image/*">
-          <span class="drop-content">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="M17 8l-5-5-5 5"/><path d="M12 3v12"/></svg>
-            <span>
-              <strong>Choose image</strong>
-              <span id="imageFileName" class="hint">No image selected</span>
-            </span>
-          </span>
+  <main class="tool-shell analysis-shell"><nav class="analysis-module-nav" aria-label="Detection modules"><a href="/deepfake" aria-current="page">Deepfake</a><a href="/phishing">Phishing</a><a href="/link-check">Link detection</a></nav><section class="analysis-heading"><p class="analysis-section-label">DETECTION WORKSPACE</p><h1>Deepfake detection</h1><p>Review a face image for signs of synthetic media.</p></section><section class="analysis-layout">
+      <form id="deepfakeForm" class="analysis-input" novalidate>
+        <div class="analysis-form-heading"><h2>Choose an image</h2><span>JPG, PNG, WebP or BMP</span></div>
+        <label class="analysis-file" for="deepfakeImage">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M4 16v4h16v-4M12 16V4m-5 5 5-5 5 5"/></svg>
+          <span><strong>Choose image</strong><small id="imageFileName">Select a face image to analyze</small></span>
+          <input id="deepfakeImage" type="file" accept="image/jpeg,image/png,image/webp,image/bmp" aria-describedby="deepfakeInputHelp">
         </label>
-
-        <div id="imagePreviewBox" class="preview-box tool-preview">
-          <img id="imagePreview" alt="Uploaded image preview">
-        </div>
-
-        <div class="field-row">
-          <div class="field model-field">
-            <label for="deepfakeModel">Model</label>
-            <select id="deepfakeModel" class="select native-model-select" aria-label="Model" tabindex="-1">
-              <option value="prism" selected>VeriTrust Prism</option>
-              <option value="pixel">VeriTrust Pixel</option>
-            </select>
-            <div class="model-select" data-model-select="deepfakeModel">
-              <button class="model-select-trigger" type="button" aria-haspopup="listbox" aria-expanded="false">
-                <span class="model-trigger-text">
-                  <strong data-model-label>VeriTrust Prism</strong>
-                  <em data-model-desc>Alternate image classifier</em>
-                </span>
-                <span class="model-badge" data-model-badge>Classifier</span>
-                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 14l5-5 5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-              </button>
-              <div class="model-options" role="listbox" aria-label="Deepfake model">
-                <button class="model-option active" type="button" role="option" aria-selected="true" data-value="prism" data-label="VeriTrust Prism" data-desc="Alternate image classifier" data-badge="Classifier">
-                  <span><strong>VeriTrust Prism</strong><em>Alternate image classifier</em></span>
-                  <span class="model-badge">Classifier</span>
-                </button>
-                <button class="model-option" type="button" role="option" aria-selected="false" data-value="pixel" data-label="VeriTrust Pixel" data-desc="Image classifier">
-                  <span><strong>VeriTrust Pixel</strong><em>Image classifier</em></span>
-                </button>
-              </div>
-            </div>
-          </div>
-          <label class="toggle-row tool-toggle">
-            <input id="autoCropToggle" type="checkbox" checked>
-            <span>Crop Face</span>
-          </label>
-        </div>
-
-        <details class="quiet-details tool-details">
-          <summary>Crop settings</summary>
-          <div class="form-grid">
-            <div class="field">
-              <label for="processingSize">Detector</label>
-              <select id="processingSize" class="select">
-                <option value="768" selected>768 px</option>
-                <option value="512">512 px</option>
-                <option value="1024">1024 px</option>
-                <option value="256">256 px</option>
-              </select>
-            </div>
-            <div class="field">
-              <label for="cropSize">Crop</label>
-              <select id="cropSize" class="select">
-                <option value="256" selected>256 px</option>
-                <option value="224">224 px</option>
-                <option value="384">384 px</option>
-                <option value="512">512 px</option>
-              </select>
-            </div>
-            <div class="field">
-              <label for="cropMargin">Margin</label>
-              <input id="cropMargin" class="input" type="number" min="0" max="0.45" step="0.05" value="0.15">
-            </div>
-          </div>
+        <p id="deepfakeInputHelp" class="analysis-field-help">The image is sent to the selected analysis service. Use an image you are authorized to process.</p>
+        <div id="imagePreviewBox" class="preview-box analysis-image-preview"><img id="imagePreview" alt="Selected image preview"></div>
+        <div class="analysis-options"><div class="field"><label for="deepfakeModel">Analysis model</label><select id="deepfakeModel" class="select"><option value="prism">VeriTrust Prism</option><option value="pixel">VeriTrust Pixel</option></select></div>
+          <label class="analysis-checkbox"><input id="autoCropToggle" type="checkbox" checked><span>Prepare a face crop before analysis</span></label></div>
+        <details class="analysis-advanced"><summary>Face preparation options</summary>
+          <p class="analysis-field-help">Face preparation uses a separate crop service. If it is unavailable, analysis uses the original image.</p>
+          <div class="form-grid"><div class="field"><label for="processingSize">Detection resolution</label><select id="processingSize" class="select"><option value="768">768 px</option><option value="512">512 px</option><option value="1024">1024 px</option><option value="256">256 px</option></select></div>
+            <div class="field"><label for="cropSize">Crop resolution</label><select id="cropSize" class="select"><option value="256">256 px</option><option value="224">224 px</option><option value="384">384 px</option><option value="512">512 px</option></select></div>
+            <div class="field"><label for="cropMargin">Face margin</label><input id="cropMargin" class="input" type="number" min="0" max="0.45" step="0.05" value="0.15"></div></div>
+          <button id="cropButton" class="btn btn-secondary" type="button">Preview face crop</button>
+          <div id="cropResults" class="analysis-crop-result" hidden></div>
         </details>
-
-        <div class="action-row">
-          <button id="cropButton" class="btn btn-secondary" type="button">Prepare Face</button>
-          <button id="deepfakeSubmit" class="btn btn-primary" type="submit">Check Image</button>
-        </div>
-      </form>
-
-      <aside class="tool-panel result-panel-v2 result-status-panel">
-        <div class="panel-title">
-          <div>
-            <h2>Analysis status</h2>
-            <p id="activityLog">Waiting for an image</p>
-          </div>
-        </div>
-        <div id="cropResults" class="crop-output-panel">Face preview will appear here after preparation.</div>
-      </aside>
-    </section>
-    <dialog id="deepfakeResultDialog" class="result-dialog" aria-labelledby="deepfakeResultTitle">
-      <div class="result-dialog-shell">
-        <header class="result-dialog-header">
-          <div><span>Analysis complete</span><h2 id="deepfakeResultTitle">Deepfake detection result</h2></div>
-          <button type="button" class="result-dialog-close" data-result-dialog-close aria-label="Close result dialog">&times;</button>
-        </header>
-        <div class="result-dialog-body"><div id="deepfakeResult" class="result-empty tool-result-empty">Your image result will appear here.</div></div>
-      </div>
-    </dialog>
-  </main>
+        <div class="analysis-submit"><span>AI-assisted review, not forensic proof.</span><button id="deepfakeSubmit" class="btn btn-primary" type="submit">Analyze image <span aria-hidden="true">↗</span></button></div>
+      </form><aside class="analysis-activity" aria-label="Analysis activity">
+        <div class="analysis-idle" id="analysisIdle"><span class="analysis-section-label">YOUR ANALYSIS</span><h2>Ready when you are</h2><p>Submit your input to follow processing here. Your report appears below when the server returns a result.</p></div>
+        <section id="analysisProgress" class="analysis-progress" hidden>
+          <div class="analysis-progress-heading"><span class="analysis-status-dot" aria-hidden="true"></span><h2 id="analysisProgressTitle">Analysis in progress</h2></div>
+          <p id="analysisProgressMessage" role="status" aria-live="polite" aria-atomic="true"></p>
+          <details open><summary>Processing activity</summary><ol id="analysisProgressEvents"></ol></details>
+        </section>
+        <p id="activityLog" class="analysis-secondary-status"></p>
+      </aside></section><section id="deepfakeResultShell" class="analysis-report" aria-label="Deepfake detection report" tabindex="-1" hidden><div id="deepfakeResult"></div></section></main>
   <footer class="legal-footer">
     <a href="privacy.html">Privacy</a><span aria-hidden="true">&middot;</span><a href="terms.html">Terms</a><span aria-hidden="true">&middot;</span><a href="security.html">Security</a><span aria-hidden="true">&middot;</span><a href="disclaimer.html">Disclaimer</a><span aria-hidden="true">&middot;</span><a href="docs.html">Docs</a><span aria-hidden="true">&middot;</span><a href="developers.html">Developers</a><span aria-hidden="true">&middot;</span><a href="model-performance.html">Model Performance</a>
   </footer>

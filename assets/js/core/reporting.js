@@ -126,7 +126,7 @@
 
     return {
       available: Boolean(visuals.available),
-      selected_face_index: Number.isFinite(Number(visuals.selected_face_index))
+      selected_face_index: visuals.selected_face_index != null && Number.isFinite(Number(visuals.selected_face_index))
         ? Number(visuals.selected_face_index)
         : null,
       analyzed_image_url: normalUrl(visuals.analyzed_image_url),
