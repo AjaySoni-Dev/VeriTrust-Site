@@ -532,10 +532,11 @@
         }
 
         .hero-actions {
-            display: flex;
-            justify-content: center;
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
             gap: 0.65rem;
-            flex-wrap: nowrap;
+            width: 100%;
+            margin-inline: auto;
         }
 
         .hero-actions .btn {
@@ -1088,7 +1089,7 @@
                 margin: 0 auto 2rem; 
             }
             .hero-actions { 
-                justify-content: center; 
+                grid-template-columns: repeat(2, minmax(0, 1fr));
             }
             .features-grid {
                 grid-template-columns: repeat(2, 1fr);
@@ -1109,14 +1110,8 @@
             }
 
             .hero-actions {
-                display: grid;
                 grid-template-columns: repeat(2, minmax(0, 1fr));
                 gap: 0.45rem;
-                width: 100%;
-            }
-
-            .hero-actions .btn:first-child {
-                grid-column: 1 / -1;
             }
 
             .hero-actions .btn {
@@ -1198,10 +1193,6 @@
             .hero-actions {
                 grid-template-columns: minmax(0, 1fr);
                 gap: 0.4rem;
-            }
-
-            .hero-actions .btn:first-child {
-                grid-column: auto;
             }
 
             .hero-actions .btn {
