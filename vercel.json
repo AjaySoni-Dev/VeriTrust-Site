@@ -1,0 +1,131 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "framework": "fastapi",
+  "fluid": true,
+  "cleanUrls": false,
+  "trailingSlash": false,
+  "functions": {
+    "server.py": {
+      "maxDuration": 300,
+      "excludeFiles": "{public/**,config/**,**/__pycache__/**,**/.pytest_cache/**,**/*.pyc,**/*.pyo,LICENSE}"
+    }
+  },
+  "rewrites": [
+    {
+      "source": "/login",
+      "destination": "/pages/login/index.html"
+    },
+    {
+      "source": "/login/",
+      "destination": "/pages/login/index.html"
+    },
+    {
+      "source": "/signup",
+      "destination": "/pages/sign-up/index.html"
+    },
+    {
+      "source": "/signup/",
+      "destination": "/pages/sign-up/index.html"
+    },
+    {
+      "source": "/sign-up",
+      "destination": "/pages/sign-up/index.html"
+    },
+    {
+      "source": "/sign-up/",
+      "destination": "/pages/sign-up/index.html"
+    },
+    {
+      "source": "/forgot-password",
+      "destination": "/pages/forgot-password/index.html"
+    },
+    {
+      "source": "/forgot-password/",
+      "destination": "/pages/forgot-password/index.html"
+    },
+    {
+      "source": "/auth/login",
+      "destination": "/pages/login/index.html"
+    },
+    {
+      "source": "/auth/login/",
+      "destination": "/pages/login/index.html"
+    },
+    {
+      "source": "/auth/signup",
+      "destination": "/pages/sign-up/index.html"
+    },
+    {
+      "source": "/auth/signup/",
+      "destination": "/pages/sign-up/index.html"
+    },
+    {
+      "source": "/chat",
+      "destination": "/pages/chat/index.html"
+    },
+    {
+      "source": "/chat/",
+      "destination": "/pages/chat/index.html"
+    },
+    {
+      "source": "/app",
+      "destination": "/pages/chat/index.html"
+    },
+    {
+      "source": "/app/",
+      "destination": "/pages/chat/index.html"
+    },
+    {
+      "source": "/template",
+      "destination": "/pages/template/template.html"
+    },
+    {
+      "source": "/template/",
+      "destination": "/pages/template/template.html"
+    },
+    {
+      "source": "/templates",
+      "destination": "/pages/template/template.html"
+    },
+    {
+      "source": "/templates/",
+      "destination": "/pages/template/template.html"
+    },
+    {
+      "source": "/editor",
+      "destination": "/pages/editor/index.html"
+    },
+    {
+      "source": "/editor/",
+      "destination": "/pages/editor/index.html"
+    }
+  ],
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        {
+          "key": "X-Content-Type-Options",
+          "value": "nosniff"
+        },
+        {
+          "key": "Referrer-Policy",
+          "value": "strict-origin-when-cross-origin"
+        },
+        {
+          "key": "Permissions-Policy",
+          "value": "camera=(), microphone=(self), geolocation=()"
+        }
+      ]
+    },
+    {
+      "source": "/api/(.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "no-store"
+        }
+      ]
+    }
+  ]
+}

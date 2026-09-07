@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script>
+    document.write(`<base href="${window.location.protocol === 'file:' ? './' : '/pages/template/'}">`);
+  </script>
+  <meta name="description" content="Browse live Nexora.AI website templates, sorted into free and premium collections.">
+  <title>Nexora.AI - Templates</title>
+  <link rel="stylesheet" href="../chat/index.css?v=20260831ww">
+  <link rel="stylesheet" href="../chat/production.css?v=20260831ww">
+  <link rel="stylesheet" href="../chat/product-polish.css?v=20260831ww">
+  <link rel="stylesheet" href="template.css?v=20260831ww">
+  <script src="../auth-zoom-guard.js"></script>
+</head>
+<body class="template-page is-loading">
+  <div class="mobile-overlay" id="mobileOverlay"></div>
+
+  <aside class="sidebar" id="sidebar" aria-label="Nexora navigation">
+    <div class="sidebar-header">
+      <a href="#" class="logo-wrapper" id="logoLink" aria-label="Nexora.AI chat">
+        <div class="logo-icon-container">
+          <img class="logo-dark-img" src="../chat/assets/new-dark-mode.webp" alt="Nexora Logo">
+          <img class="logo-light-img" src="../chat/assets/light-mode/light-mode-logo.webp" alt="Nexora Logo">
+        </div>
+        <h1 class="logo-text">Nexora<span>.AI</span></h1>
+      </a>
+      <button class="btn-collapse" id="btnCollapse" type="button" aria-label="Close or collapse sidebar" title="Close or collapse sidebar">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <polyline points="11 17 6 12 11 7"></polyline>
+          <polyline points="18 17 13 12 18 7"></polyline>
+        </svg>
+      </button>
+    </div>
+
+    <div class="sidebar-body">
+      <button class="btn-new-chat" id="btnNewChat" type="button">
+        <div class="new-chat-left">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+          <span>New Chat</span>
+        </div>
+      </button>
+
+      <div class="search-container sidebar-template-search">
+        <input type="search" class="search-input" id="sidebarSearchInput" aria-label="Search templates" placeholder="Search templates…" autocomplete="off">
+        <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+      </div>
+
+      <nav class="nav-menu template-nav-menu">
+        <button class="nav-link" id="navProjects" type="button">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+          <span>Projects</span>
+        </button>
+        <button class="nav-link" id="navLibrary" type="button">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
+          <span>Library</span>
+        </button>
+        <button class="nav-link active" id="navTemplates" type="button" aria-current="page">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="9" y1="3" x2="9" y2="21"></line><line x1="9" y1="9" x2="21" y2="9"></line><line x1="9" y1="15" x2="21" y2="15"></line></svg>
+          <span>Templates</span>
+        </button>
+        <button class="nav-link" id="navSettings" type="button">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09A1.65 1.65 0 0 0 19.4 15z"></path></svg>
+          <span>Settings</span>
+        </button>
+      </nav>
+    </div>
+
+    <div class="sidebar-footer template-sidebar-footer">
+      <button class="user-profile" id="userProfileButton" type="button" aria-label="Signed in account">
+        <div class="profile-left">
+          <div class="profile-avatar" id="profileAvatar">U</div>
+          <div class="profile-info">
+            <span class="profile-name" id="profileName">User</span>
+            <span class="profile-plan" id="profilePlan">Free Plan</span>
+          </div>
+        </div>
+      </button>
+      <button class="btn-sign-out" id="btnSignOut" type="button">Sign out</button>
+    </div>
+  </aside>
+
+  <main class="template-workspace" aria-label="Nexora template library">
+    <header class="top-header template-top-header">
+      <div class="top-header-left">
+        <button class="btn-menu-toggle" id="btnMenuToggle" type="button" aria-label="Toggle menu">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+        </button>
+        <div class="workspace-context">
+          <span class="workspace-kicker">Build workspace</span>
+          <span class="workspace-title">Templates</span>
+        </div>
+        <span class="workspace-status"><span aria-hidden="true"></span><strong id="headerTemplateCount">0</strong>&nbsp;available</span>
+      </div>
+      <div class="top-header-right template-header-actions">
+        <button class="theme-pill" id="themeToggle" type="button" aria-label="Toggle theme" title="Toggle theme">
+          <svg class="sun-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 2v3M12 19v3M4.93 4.93l2.12 2.12M16.95 16.95l2.12 2.12M2 12h3M19 12h3M4.93 19.07l2.12-2.12M16.95 7.05l2.12-2.12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><circle cx="12" cy="12" r="4" stroke="currentColor" stroke-width="1.8"/></svg>
+          <svg class="moon-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <span id="themeText">Dark</span>
+        </button>
+        <button class="template-back-btn" id="backToChat" type="button">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5"></path><path d="m12 19-7-7 7-7"></path></svg>
+          <span>Back to chat</span>
+        </button>
+      </div>
+    </header>
+
+    <div class="template-scroll" id="templateScroll">
+      <section class="template-hero" aria-labelledby="templatePageTitle">
+        <div class="template-hero-copy">
+          <span class="eyebrow"><span class="eyebrow-dot"></span>Curated Nexora starters</span>
+          <h2 id="templatePageTitle">Start with a design that already feels finished.</h2>
+          <p>Browse every template included in your library. Preview the real HTML live, filter by category, then send a selected direction straight back into the Nexora builder.</p>
+        </div>
+        <div class="template-stats" aria-label="Template totals">
+          <div class="stat-card"><strong id="totalCount">0</strong><span>Total templates</span></div>
+          <div class="stat-card"><strong id="freeCount">0</strong><span>Free</span></div>
+          <div class="stat-card premium-stat"><strong id="premiumCount">0</strong><span>Premium</span></div>
+        </div>
+      </section>
+
+      <div class="template-sticky-bar" id="templateStickyBar">
+        <section class="catalog-toolbar" aria-label="Template filters">
+          <div class="catalog-search-wrap">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+            <input id="templateSearch" type="search" placeholder="Search templates, categories, or styles…" autocomplete="off" aria-label="Search template library">
+            <kbd>/</kbd>
+          </div>
+          <div class="tier-tabs" id="tierTabs" role="tablist" aria-label="Template tiers">
+            <button class="tier-tab active" type="button" data-tier="All" role="tab" aria-selected="true">All <span>0</span></button>
+            <button class="tier-tab" type="button" data-tier="Free" role="tab" aria-selected="false">Free <span>0</span></button>
+            <button class="tier-tab premium-tab" type="button" data-tier="Premium" role="tab" aria-selected="false">Premium <span>0</span></button>
+          </div>
+        </section>
+
+        <div class="category-strip" id="categoryStrip" aria-label="Template categories"></div>
+      </div>
+
+      <section class="catalog-results" aria-live="polite">
+        <div class="results-meta">
+          <div>
+            <span class="results-kicker">Library</span>
+            <h3 id="resultsTitle">All templates</h3>
+          </div>
+          <p id="resultsSummary">Loading templates from Supabase Storage…</p>
+        </div>
+        <div id="templateSections"></div>
+        <div class="catalog-empty" id="catalogEmpty" hidden>
+          <div class="empty-icon">NX</div>
+          <h3>No templates found</h3>
+          <p>Try a different search or clear the active filters.</p>
+          <button id="clearFilters" type="button">Clear filters</button>
+        </div>
+      </section>
+      <footer class="template-footer"><span>Nexora.AI Template Library</span><span id="footerCount">Loading template catalog…</span></footer>
+    </div>
+  </main>
+
+  <div class="preview-modal" id="previewModal" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="previewTitle">
+    <div class="preview-backdrop" data-close-preview></div>
+    <div class="preview-shell">
+      <div class="preview-toolbar">
+        <div class="preview-identity">
+          <span class="preview-tier" id="previewTier">Free</span>
+          <div class="preview-identity-text"><strong id="previewTitle">Template preview</strong><span id="previewCategory">Category</span></div>
+        </div>
+        <div class="preview-actions">
+          <button id="openFullPreview" type="button" class="preview-secondary">Open full preview</button>
+          <button id="useTemplateModal" type="button" class="preview-primary">Use template</button>
+          <button type="button" class="preview-close" data-close-preview aria-label="Close preview">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+          </button>
+        </div>
+      </div>
+      <div class="preview-browser">
+        <div class="browser-chrome"><span></span><span></span><span></span><div id="previewAddress">Nexora template preview</div></div>
+        <iframe id="previewFrame" title="Live template preview" sandbox="allow-scripts allow-forms allow-modals"></iframe>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="../../config/app.config.js"></script>
+  <script src="../chat/script/supabase.js"></script>
+  <script src="template.js?v=20260831e"></script>
+</body>
+</html>

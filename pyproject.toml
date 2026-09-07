@@ -1,0 +1,16 @@
+[project]
+name = "nexora-ai-vercel-codex-agentic"
+version = "5.0.0"
+requires-python = "~=3.12.0"
+dependencies = [
+  "fastapi>=0.115,<1",
+  "openai>=1.40,<3",
+  "openai-codex==0.144.4",
+  "cryptography>=43,<47",
+  "pydantic>=2.8,<3",
+  "beautifulsoup4>=4.12,<5",
+  "json-repair>=0.47,<1",
+]
+
+[tool.vercel]
+entrypoint = "server:app"

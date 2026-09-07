@@ -1,0 +1,38 @@
+# Local secrets (keep shareable configuration examples)
+.env
+.env.*
+!.env.example
+
+# Installed dependencies, Python caches, and deployment state
+node_modules/
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.cache/
+.vercel/
+
+# Generated agent state, workspaces, exports, and private auth profiles
+/agent_runtime/runtime/
+/agent_runtime/workspaces/
+/agent_runtime/artifacts/
+
+# Local test output and temporary files
+.coverage
+.coverage.*
+coverage/
+htmlcov/
+/playwright-report/
+/test-results/
+*.log
+*.tmp
+*.bak
+
+# Editor and operating-system metadata
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db
