@@ -17,6 +17,7 @@ coverage/
 tmp/
 *.bak
 *.tmp
+*.zip
 *.tsbuildinfo
 /playwright-report/
 /test-results/
