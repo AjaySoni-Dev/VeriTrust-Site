@@ -16,3 +16,8 @@ private/
 *.md
 LICENSE
 mail-gateway/
+.vscode/
+.idea/
+.DS_Store
+.cache/
+.pytest_cache/

@@ -1,184 +1,161 @@
-# VeriTrust MailGraph
+<h1 align="center">VeriTrust MailGraph</h1>
 
-**AI-powered email threat detection, infrastructure geolocation, and forensic intelligence.**
+<p align="center">
+  <strong>AI-powered email threat detection, infrastructure geolocation, and forensic intelligence</strong><br>
+  A Vercel-hosted investigation platform with bounded email evidence parsing, authentication and identity analysis, URL intelligence, correlation, cases, reports, and an optional persistent SMTP enforcement gateway.
+</p>
 
-VeriTrust turns a suspicious email into a structured investigation instead of stopping at a single phishing score. The current product combines content analysis, sender-authentication evidence, sender-identity relationships, URL intelligence, observable SMTP infrastructure, approximate infrastructure geolocation, evidence correlation, cases, and exportable reports.
+<p align="center">
+  <img alt="Status" src="https://img.shields.io/badge/status-active%20prototype-blue">
+  <img alt="Runtime" src="https://img.shields.io/badge/runtime-Node.js-green">
+  <img alt="Email" src="https://img.shields.io/badge/email-MailGraph-purple">
+  <img alt="Backend" src="https://img.shields.io/badge/backend-Supabase-success">
+  <img alt="Deploy" src="https://img.shields.io/badge/deploy-Vercel-black">
+  <img alt="License" src="https://img.shields.io/badge/license-repository%20license-lightgrey">
+</p>
 
-> **Important boundary:** infrastructure geolocation describes observable mail-server infrastructure. It does not establish the physical location or identity of a person. Missing or failed evidence is never treated as proof that an email is safe.
+<p align="center">
+  <a href="#overview">Overview</a> ·
+  <a href="#what-this-repo-contains">Contents</a> ·
+  <a href="#implemented-pages">Pages</a> ·
+  <a href="#features">Features</a> ·
+  <a href="#deployment">Deployment</a>
+</p>
 
-## Core workflow
+---
 
-```text
-Email input
-  ├─ pasted subject/body
-  ├─ raw .eml
-  ├─ trusted receiver event
-  └─ live SMTP enforcement gateway
-        ↓
-Bounded parsing and capability classification
-        ↓
-Content + authentication + identity + URL + attachment metadata + relay evidence
-        ↓
-Evidence Correlation Gateway
-        ↓
-Risk + recommendation + evidence completeness + limitations
-        ↓
-Case / report / API integration
-```
+## Overview
 
-## Evidence modes
+**VeriTrust MailGraph** turns suspicious email input into structured, provenance-aware threat evidence rather than stopping at a single phishing score.
 
-| Mode | What it can support |
-| --- | --- |
-| `plain_text` | Content and URL analysis. Header, authentication, attachment, and relay evidence are unavailable. |
-| `raw_eml` | Bounded MIME parsing, DKIM/DMARC/ARC evaluation, identity relationships, URL/attachment metadata, and observable relay infrastructure. Historical SPF is not reconstructed without trusted SMTP facts. |
-| `trusted_receiver_event` | Raw-email capabilities plus trusted SMTP facts such as client IP, HELO, MAIL FROM, receiver/authserv identity, enabling SPF evaluation at the trust boundary. |
-
-## Main capabilities
-
-- **MailGuard content specialist** — model-backed phishing evidence plus deterministic social-engineering indicators.
-- **Authentication forensics** — SPF where trusted SMTP facts exist, plus DKIM, DMARC, and ARC evidence.
-- **Identity graph** — From, Reply-To, Return-Path, Sender, Message-ID, authentication domains, linked domains, and sending-infrastructure relationships.
-- **Swift URL intelligence** — URL classifier plus deterministic suspicious-URL observations.
-- **Relay and geo context** — Received-header hops, public/private/reserved IP classification, ASN/provider and approximate country/region/city enrichment when configured.
-- **Attachment metadata intelligence** — filenames, hashes, MIME/extension observations and risky metadata flags; attachments are never executed by the email parser.
-- **Evidence completeness** — coverage is reported separately from threat risk.
-- **Evidence manifest** — schema/pipeline/parser/authentication/identity/infrastructure versions and evidence hash provenance for reproducibility.
-- **Evidence Correlation Gateway** — policy-aware correlation that does not simply average all model scores.
-- **Cases and reports** — human-review workflows, evidence preservation, downloadable reports and audit identifiers.
-- **SMTP enforcement gateway** — a separate persistent Node/PowerShell transport service that receives mail before delivery, supplies trusted SMTP facts to MailGraph, relays `allow/warn`, defers `manual_review/hold`, and rejects `quarantine/block` back to the sender.
-
-## Current product boundaries
-
-VeriTrust is a working prototype with production-oriented controls, not a claim of complete enterprise mail-gateway replacement or legal actor attribution.
-
-- A low risk score is not a safety certificate.
-- Model confidence is not measured product accuracy.
-- No controlled VeriTrust accuracy/precision/recall/F1 benchmark is published yet.
-- Raw `.eml` cannot recreate historical SPF without trusted receiver facts.
-- Received headers below an untrusted boundary can be attacker-controlled or misleading.
-- Infrastructure geolocation is approximate and is not person geolocation.
-- Attachments are metadata-only in the email-forensics pipeline and are not malware-sandboxed or executed.
-- Provider failures remain failed, partial, unavailable, or uncertain rather than silently benign.
-
-## Repository structure
+The main flow is:
 
 ```text
-api/                    Vercel serverless entry points
-assets/                 Browser JavaScript, CSS, images, and PowerShell client
-config/                 Runtime module configuration
-lib/email/               MailGraph parsing, auth, identity, infrastructure and evidence logic
-lib/gateway/             Correlation, policy, persistence, storage and execution
-lib/models/              Model adapters/contracts
-lib/routes/              HTTP route handlers
-mail-gateway/             Persistent SMTP enforcement relay + PowerShell deployment tools
-openapi/                 Email v2 and Gateway OpenAPI contracts
-scripts/                 Verification/configuration utilities
-tests/                   Node regression tests
-worker/                  Gateway worker runtime
+Email / raw EML / trusted receiver event → Bounded parsing → Auth + identity + URL + relay evidence → Correlation → Risk/recommendation → Case/report
 ```
 
-## Models and decision semantics
+A separate long-running SMTP gateway can provide trusted transport observations before delivery. Infrastructure geolocation describes observable mail infrastructure; it does **not** establish a person's physical location or identity.
 
-The qualified email and URL specialists use immutable model contracts where configured. See [Model Registry](docs/MODEL_REGISTRY.md).
+---
 
-The final Gateway risk is **not** a simple average. The correlation layer preserves strong credible evidence, applies deterministic floors/interactions, accounts for required specialist failures, and can escalate to human review. Existing risk formulas are intentionally separate from evidence completeness.
+## What This Repo Contains
 
+| Area | What is included |
+|---|---|
+| MailGraph email stack | Bounded parsing, authentication, identity, relay, infrastructure, and evidence contracts. |
+| Gateway | Evidence correlation, policy, persistence, review, storage, and execution logic. |
+| Model adapters | Phishing, URL, and configured model-provider integration. |
+| Vercel APIs | Account, billing, detection, system, v1, and Gateway entry points. |
+| Analyst UI | Detection, phishing, link, Gateway, cases, account, API-access, and reporting surfaces. |
+| SMTP enforcement | Persistent Node/PowerShell mail relay for controlled private/LAN deployment. |
+| OpenAPI | Email v2 and Gateway contracts. |
+| Tests and verification | Node regression tests, runtime checks, module checks, and repository verification. |
 
-## SMTP transport enforcement
+---
 
-The repository now includes a transport-level SMTP enforcement component for controlled/private deployment. It is intentionally separate from Vercel because SMTP requires a long-running TCP listener. The transport path is:
+## Implemented Pages
+
+| Page | Purpose |
+|---|---|
+| `index.html` | Product landing page. |
+| `detection.html` | Detection hub. |
+| `phishing.html` | Email-threat investigation interface. |
+| `link-check.html` | URL intelligence interface. |
+| `gateway.html` | Unified evidence/correlation interface. |
+| `gateway-powershell.html` | PowerShell/SMTP gateway setup and demonstration guide. |
+| `cases.html` / `case.html` | Case list and case-detail workflows. |
+| `dashboard.html` | Operational dashboard. |
+| `account.html` / `api-access.html` | Account and API credential management surfaces. |
+| `model-performance.html` | Model-performance disclosure and limitations. |
+
+---
+
+## Features
+
+| Area | Current Implementation |
+|---|---|
+| Evidence modes | `plain_text`, `raw_eml`, and `trusted_receiver_event`. |
+| Email parsing | Bounded MIME/header/content processing with explicit failure states. |
+| Authentication | SPF when trusted SMTP facts exist, plus DKIM, DMARC, and ARC evidence. |
+| Identity graph | Sender/header/domain relationships and alignment/confusable analysis. |
+| URL intelligence | Child-link analysis and deterministic suspicious-URL observations. |
+| Infrastructure context | Received-hop extraction, IP classification, ASN/provider, and approximate geo enrichment. |
+| Evidence correlation | Policy-aware aggregation with strong-signal floors and human-review escalation. |
+| Cases and reports | Persisted evidence, review/case workflows, reports, identifiers, and provenance. |
+| SMTP enforcement | Relay, defer, or reject based on the existing Gateway recommendation. |
+| Security controls | CSP/HSTS/security headers, private storage paths, retention controls, and scoped APIs. |
+
+---
+
+## User Flow
 
 ```text
-Sender -> VeriTrust SMTP Gateway -> trusted-receiver MailGraph analysis -> Gateway policy -> downstream SMTP receiver
+Submit suspicious email or receive it through the SMTP gateway
+  ↓
+Classify available evidence capabilities
+  ↓
+Analyze content, authentication, identity, URLs, attachments, and relay infrastructure
+  ↓
+Correlate evidence with policy and completeness state
+  ↓
+Allow / warn / review / hold / quarantine / block as configured
+  ↓
+Preserve evidence in a case and export an investigation report
 ```
 
-The gateway prepends the directly observed `Received:` boundary and calls the server-to-server trusted receiver endpoint before it relays the message. `allow` and `warn` are forwarded by default; `manual_review` and `hold` return SMTP `451`; `quarantine` and `block` return SMTP `550`. If the API/model path is unavailable, the default behavior is temporary failure rather than uninspected delivery. See [SMTP Gateway](mail-gateway/README.md).
+---
 
-## Database compatibility
+## Structure
 
-This repository intentionally does **not** invent or replace the deployed Supabase database contract. The application expects a compatible existing VeriTrust Supabase schema for organizations, scans, cases, Gateway evidence, usage, privacy and related records.
+```text
+VeriTrust-Site/
+├── api/
+├── assets/
+├── config/
+├── docs/
+├── lib/
+│   ├── email/
+│   ├── gateway/
+│   ├── models/
+│   └── routes/
+├── mail-gateway/
+├── openapi/
+├── scripts/
+├── tests/
+├── worker/
+├── vercel.json
+├── README.md
+└── LICENSE
+```
 
-Authoritative database migrations are not included in this repository snapshot. Do not treat inferred SQL as an authoritative production migration. Deploy against the existing compatible database contract or restore the original reviewed migrations from the deployment source of truth.
+---
 
-## Configuration
+## Deployment
 
-Copy `.env.example` if present or configure the deployment environment directly. The active runtime may use variables including:
+The web/API application is configured for Vercel through `vercel.json`. The persistent SMTP gateway is intentionally **not** a Vercel function; it requires a long-running Node.js process or a private/VPN/TLS-capable SMTP edge.
 
-- `SUPABASE_URL`
-- `SUPABASE_ANON_KEY`
-- `SUPABASE_SERVICE_ROLE_KEY`
-- `HF_ACCESS_TOKEN` or `HF_TOKEN`
-- `HF_MODEL_CONTRACTS` / supported model configuration
-- `VERITRUST_SITE_URL`
-- `VERITRUST_ALLOWED_ORIGINS`
-- `VERITRUST_EMAIL_RECEIVER_SECRET`
-- `VERITRUST_TRUSTED_AUTHSERV_IDS`
-- `VERITRUST_GEO_PROVIDER`
-- Gateway/worker secrets required by the deployed worker flow
-
-Do not expose service-role, provider, Gateway, receiver or webhook secrets in browser JavaScript.
-
-## Local verification
-
-Requires the Node.js version declared in `package.json`.
+Local repository verification:
 
 ```bash
 npm install
 npm run check
-```
-
-Useful commands:
-
-```bash
 npm test
-npm run config:check
-npm run config:canary
 ```
 
-`npm run check` validates JavaScript syntax, local references, public/private metadata, Vercel function budget, security headers, CSP assumptions, module switching, regression tests and committed-secret patterns.
+Deployments require the compatible existing Supabase contract and server-side provider/Gateway/receiver secrets. Service-role and receiver secrets must never be exposed to browser JavaScript.
 
-## Documentation
+---
 
-- [Architecture](docs/ARCHITECTURE.md)
-- [Email Forensics](docs/EMAIL_FORENSICS.md)
-- [Model Registry](docs/MODEL_REGISTRY.md)
-- [Deployment](docs/DEPLOYMENT.md)
-- [Email v2 OpenAPI](openapi/veritrust-email-v2.yaml)
-- [Gateway OpenAPI](openapi/veritrust-gateway-v1.yaml)
+## Important Notes
 
-## Security and privacy
+- Infrastructure geolocation is approximate infrastructure context, not person geolocation or actor attribution.
+- Missing, failed, unavailable, or uncertain evidence must not be converted into a benign result.
+- Attachments are metadata-only in the email-forensics path and are never executed by the parser.
+- No controlled VeriTrust accuracy/precision/recall/F1 benchmark is claimed by this repository.
+- The cleanup removes historical validation/readiness notes while retaining durable architecture, security, OpenAPI, test, and SMTP documentation.
 
-VeriTrust keeps authentication, API-key validation, Gateway policy, provider credentials, persistence and sensitive storage operations on the server. The Vercel configuration applies CSP, HSTS, `nosniff`, referrer, permissions, frame and cross-origin controls.
-
-Raw email storage, when used, is private and retention-bound by the configured Gateway policy. Reports should preserve limitations and provenance so reviewers can distinguish verified evidence from unavailable evidence.
-
-See [SECURITY.md](SECURITY.md) and [Deployment](docs/DEPLOYMENT.md).
+---
 
 ## License
 
 Use according to the repository's existing license and deployment policy.
-
-## Persistent PowerShell SMTP enforcement CLI
-
-VeriTrust includes a Windows PowerShell 5.1+ persistent sender/receiver console for the live SMTP enforcement path.
-
-- Website guide: `/gateway-powershell#live-smtp`
-- Complete download: `/assets/downloads/VeriTrust-Lab-Persistent-CLI.zip`
-- Receiver: `/assets/powershell/VeriTrust-Receiver-CLI.ps1`
-- Sender: `/assets/powershell/VeriTrust-Sender-CLI.ps1`
-- Package manifest/checksums: `/assets/downloads/veritrust-cli-manifest.json`
-- CLI logo asset: `/assets/images/veritrust-live-cli-logo.png`
-
-The receiver CLI automatically detects/installs Tailscale, enables incoming tailnet connectivity, creates a Tailscale-scoped Windows Firewall rule, downloads portable Node.js 24 when required, downloads the SMTP gateway runtime, starts the local downstream receiver, generates a session SMTP password, and prints a `VTCLI2|...` pairing code. Accepted `.eml` files are saved in the directory from which the receiver CLI was started.
-
-The sender pairs once and stays open. Type `email.eml`, `/send another.eml`, or an absolute `.eml` path repeatedly. One blocked/deferred message does not terminate the session.
-
-For the simplest two-laptop demonstration, both Windows devices should use the same Tailscale account/tailnet. Different Tailscale accounts are supported only when the receiver is invited/shared into a tailnet whose policy allows the sender.
-
-Receiver-only trust prerequisites remain intentionally manual:
-- a scoped VeriTrust API key with Gateway scan permission;
-- `VERITRUST_EMAIL_RECEIVER_SECRET` configured on the deployed VeriTrust API and entered into the receiver CLI;
-- `VERITRUST_TRUSTED_AUTHSERV_IDS=veritrust-smtp-gateway`.
-
-Never give the API key or receiver secret to the sender. The sender receives only the generated pairing code.
