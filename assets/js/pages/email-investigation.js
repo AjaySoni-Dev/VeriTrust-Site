@@ -165,10 +165,22 @@
     const identity = one('[data-preview-identity]');
     const infra = one('[data-preview-infra]');
     const attachments = one('[data-preview-attachments]');
-    if (auth) auth.textContent = rawEvidence ? 'Available (SPF limited)' : 'Needs original email';
-    if (identity) identity.textContent = rawEvidence ? 'Available' : 'Limited with pasted text';
-    if (infra) infra.textContent = rawEvidence ? 'Available when recorded' : 'Needs original email';
-    if (attachments) attachments.textContent = rawEvidence ? 'Available' : 'Needs original email';
+    if (auth) {
+      auth.textContent = rawEvidence ? 'Available (SPF limited)' : 'Needs original email';
+      auth.dataset.status = rawEvidence ? 'available' : 'needed';
+    }
+    if (identity) {
+      identity.textContent = rawEvidence ? 'Available' : 'Limited with pasted text';
+      identity.dataset.status = rawEvidence ? 'available' : 'limited';
+    }
+    if (infra) {
+      infra.textContent = rawEvidence ? 'Available when recorded' : 'Needs original email';
+      infra.dataset.status = rawEvidence ? 'available' : 'needed';
+    }
+    if (attachments) {
+      attachments.textContent = rawEvidence ? 'Available' : 'Needs original email';
+      attachments.dataset.status = rawEvidence ? 'available' : 'needed';
+    }
     setError('');
     setBusy(false);
     if (focusPanel) {
@@ -539,7 +551,7 @@
       button.className = 'email-help-button';
       button.setAttribute('aria-label', `Explain ${term.dataset.emailTerm || term.textContent.trim()}`);
       button.setAttribute('aria-expanded', 'false');
-      button.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2.75 12s3.35-5.25 9.25-5.25S21.25 12 21.25 12 17.9 17.25 12 17.25 2.75 12 2.75 12Z"/><circle cx="12" cy="12" r="2.4"/></svg>';
+      button.innerHTML = '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="8" cy="8" r="7"/><path d="M8 11.5v-4"/><circle cx="8" cy="5" r=".75" fill="currentColor"/></svg>';
       term.append(button);
       button.addEventListener('pointerenter', () => openHelp(button));
       button.addEventListener('pointerleave', () => { if (pinnedHelpButton !== button) closeHelp(); });
